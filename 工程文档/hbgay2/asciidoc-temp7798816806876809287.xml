@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?asciidoc-toc?>
+<?asciidoc-numbered?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0" xml:lang="zh_cn">
+<info>
+<title>sso 单点登录</title>
+<date>2016-03-20</date>
+</info>
+<simpara>SSO英文全称Single Sign On，单点登录。SSO是在多个应用系统中，用户只需要登录一次就可以访问所有相互信任的应用系统。它包括可以将这次主要的登录映射到其他应用中用于同一个用户的登录的机制。它是目前比较流行的企业业务整合的解决方案之一。</simpara>
+<section xml:id="__">
+<title>实现机制</title>
+<simpara>当用户第一次访问应用系统1的时候，因为还没有登录，会被引导到认证系统中进行登录；根据用户提供的登录信息，认证系统进行身份校验，如果通过校验，应该返回给用户一个认证的凭据－－ticket；用户再访问别的应用的时候就会将这个ticket带上，作为自己认证的凭据，应用系统接受到请求之后会把ticket送到认证系统进行校验，检查ticket的合法性。如果通过校验，用户就可以在不用再次登录的情况下访问应用系统2和应用系统3了。
+要实现SSO，需要以下主要的功能：</simpara>
+<variablelist>
+<varlistentry>
+<term>系统共享</term>
+<listitem>
+<simpara>统一的认证系统是SSO的前提之一。认证系统的主要功能是将用户的登录信息和用户信息库相比较，对用户进行登录认证；认证成功后，认证系统应该生成统一的认证标志（ticket），返还给用户。另外，认证系统还应该对ticket进行校验，判断其有效性。</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>信息识别</term>
+<listitem>
+<simpara>要实现SSO的功能，让用户只登录一次，就必须让应用系统能够识别已经登录过的用户。应用系统应该能对ticket进行识别和提取，通过与认证系统的通讯，能自动判断当前用户是否登录过，从而完成单点登录的功能。</simpara>
+</listitem>
+</varlistentry>
+</variablelist>
+</section>
+<section xml:id="___2">
+<title>主要实现技术</title>
+<variablelist>
+<varlistentry>
+<term>基于cookies实现</term>
+<listitem>
+<simpara>如果是基于两个域名之间传递sessionid的方法可能在windows中成立，在unix&amp;linux中可能会出现问题;可以基于数据库实现；在安全性方面可能会作更多的考虑。另外，关于跨域问题，虽然cookies本身不跨域，但可以利用它实现跨域的SSO。</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>Broker-based（基于经纪人）</term>
+<listitem>
+<simpara>这种技术的特点就是，有一个集中的认证和用户帐号管理的服务器。经纪人给被用于进一步请求的电子的身份存取。</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>Agent-based（基于代理人）</term>
+<listitem>
+<simpara>在这种解决方案中，有一个自动地为不同的应用程序认证用户身份的代理程序。这个代理程序需要设计有不同的功能。比如，它可以使用口令表或加密密钥来自动地将认证的负担从用户移开。代理人被放在服务器上面，在服务器的认证系统和客户端认证方法之间充当一个"翻译"。例如SSH等。</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>Token-based</term>
+<listitem>
+<simpara>例如SecurID,WebID，现在被广泛使用的口令认证，比如FTP,邮件服务器的登录认证，这是一种简单易用的方式，实现一个口令在多种应用当中使用。</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>基于安全断言标记语言（SAML）实现</term>
+<listitem>
+<simpara>SAML(Security Assertion Markup Language，安全断言标记语言）的出现大大简化了SSO，并被OASIS批准为SSO的执行标准。开源组织OpenSAML 实现了 SAML 规范。</simpara>
+</listitem>
+</varlistentry>
+</variablelist>
+</section>
+<section xml:id="___3">
+<title>现有实现设计</title>
+<variablelist>
+<varlistentry>
+<term>实现方式</term>
+<listitem>
+<simpara>目前在现在的系统中，采用了基于 <emphasis>cookies</emphasis> 的实现，在多个系统中使用 <emphasis>cookie</emphasis> 来传输票据。</simpara>
+</listitem>
+</varlistentry>
+</variablelist>
+<simpara>单点登录实现的要点在于将认证中心进行统一，在所有系统之上构建一个唯一的认证中心即可。如下图，多系统之间的访问，票据认证应该全部在统一认证中心完成。</simpara>
+<figure>
+<title>访问示意图</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/sso.png"/>
+</imageobject>
+<textobject><phrase>sso.png</phrase></textobject>
+</mediaobject>
+</figure>
+<simpara>然而在面临多系统之间，不同的用户体系<footnote><simpara>指用户信息不一致，角色权限不一致的情况</simpara></footnote>时，如果还继续将用户的校验放在 <emphasis>dmcas</emphasis> 统一认证中心完成，那么将无法完成多系统不同用户之间的集成。</simpara>
+<simpara>此时的结构应该如下图，各子系统独立完成自己的用户检验，角色权限控制。 <emphasis role="strong"><emphasis>dmcas</emphasis> 只应该存储票据与信任列表，进行票据校验即可</emphasis>。此时 <emphasis>dmcas</emphasis> 在中间还应 <emphasis role="strong">协调</emphasis> 完成各子系统的 <emphasis role="strong">用户匹配</emphasis>，具体如何 <emphasis role="strong">匹配</emphasis> 还是由子系统决定， <emphasis>dmcas</emphasis> 在中间充当一个 <emphasis role="strong">调度者</emphasis> 的角色。</simpara>
+<simpara>这种结构就决定了 <emphasis>dmcas</emphasis> 与子系统之间只需要依赖公共接口，通过 <emphasis>rpc</emphasis> 调用完成。</simpara>
+<figure>
+<title>多系统之间认证</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/sso-cross.png"/>
+</imageobject>
+<textobject><phrase>sso cross.png</phrase></textobject>
+</mediaobject>
+</figure>
+</section>
+<section xml:id="_dmcas">
+<title>dmcas</title>
+<simpara><emphasis>dmcas</emphasis> 作为 <emphasis>sso</emphasis> 中的协调者，主要的职责是：</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>票据的生成与校验</simpara>
+</listitem>
+<listitem>
+<simpara>各子系统之间协调访问</simpara>
+</listitem>
+</orderedlist>
+<section xml:id="___4">
+<title>名词说明</title>
+<variablelist>
+<varlistentry>
+<term>票据中心</term>
+<listitem>
+<simpara>这里指后台专门存放用户 <emphasis>ticket</emphasis> 信息的 <emphasis>cache</emphasis> ，目前采用的是 <emphasis>memcached</emphasis> 进行存储。</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>信任列表</term>
+<listitem>
+<simpara>这里指各接入的子系统的域名列表。只有加入到了信任列表中的子系统，才可与其它子系统互相访问。</simpara>
+</listitem>
+</varlistentry>
+</variablelist>
+</section>
+<section xml:id="___5">
+<title>实现技术</title>
+<variablelist>
+<varlistentry>
+<term>spring</term>
+<listitem>
+<simpara>采用 <emphasis>spring</emphasis> 容器管理 <emphasis>service bean</emphasis></simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>mybatis</term>
+<listitem>
+<simpara>采用 <emphasis>mybatis</emphasis> 完成 <emphasis>database</emphasis> 的访问</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>springmvc</term>
+<listitem>
+<simpara>采用 <emphasis>springmvc</emphasis> 完成页面控制层的请求处理</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>memcached</term>
+<listitem>
+<simpara>采用 <emphasis>memcached</emphasis> 进行后台票据的存储管理</simpara>
+</listitem>
+</varlistentry>
+</variablelist>
+</section>
+<section xml:id="___6">
+<title>实现细节</title>
+<section xml:id="___7">
+<title>包图</title>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/package.svg"/>
+</imageobject>
+<textobject><phrase>package.svg</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<orderedlist numeration="arabic">
+<title>包说明</title>
+<listitem>
+<simpara>core: 存放一些框架包</simpara>
+<itemizedlist>
+<listitem>
+<simpara>builder: 存放 <emphasis>memcached client</emphasis> 构造内容</simpara>
+</listitem>
+<listitem>
+<simpara>dao: 存放 <emphasis>dao</emphasis> 层</simpara>
+</listitem>
+<listitem>
+<simpara>filter: 存放框架上的一些 <emphasis>web filter</emphasis></simpara>
+</listitem>
+<listitem>
+<simpara>util: 存放工具类</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara>server: 存放 <emphasis>dmcas</emphasis> 对外服务内容</simpara>
+<itemizedlist>
+<listitem>
+<simpara>cache: 一些缓存类</simpara>
+</listitem>
+<listitem>
+<simpara>controller: 存放 <emphasis>controller</emphasis> 类等</simpara>
+</listitem>
+<listitem>
+<simpara>service: 接口服务类</simpara>
+</listitem>
+<listitem>
+<simpara>domain: 存放实体类</simpara>
+</listitem>
+<listitem>
+<simpara>handler: 存放一些处理器</simpara>
+</listitem>
+<listitem>
+<simpara>thread: 自定义线程类</simpara>
+</listitem>
+<listitem>
+<simpara>filter: 存放服务上的 <emphasis>web filter</emphasis></simpara>
+</listitem>
+<listitem>
+<simpara>http: 存放 <emphasis>request</emphasis> 包装类等</simpara>
+</listitem>
+<listitem>
+<simpara>util: 存放 <emphasis>web</emphasis> 相关工具类</simpara>
+</listitem>
+<listitem>
+<simpara>config: 存放服务的一些配置信息</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="___8">
+<title>功能模块说明</title>
+<section xml:id="___9">
+<title>登入</title>
+<simpara>用户请求登录的逻辑主要在 <emphasis>AuthController</emphasis> ，此处主要提供的都是异步请求调用的方法（包括 <emphasis>jsonp</emphasis> ）</simpara>
+<formalpara>
+<title>code</title>
+<para>
+<programlisting language="java" linenumbering="unnumbered">/**
+ * 用户账号登录
+ *
+ * @param request  请求
+ * @param response 响应
+ * @return
+ * @throws Exception
+ */
+@SuppressWarnings({"unchecked", "rawtypes"})
+@RequestMapping("/login")
+public ModelAndView login(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    return doLogin(request, response, new LoginSucessHandler() {
+        @Override
+        public void handle(HttpServletRequest request, HttpServletResponse response, Map&lt;String, Object&gt; params) throws Exception {
+            response.sendRedirect(params.get("service").toString());
+        }
+    }, new LoginFailHandler() {
+        @Override
+        public void handle(HttpServletRequest request, HttpServletResponse response, Map&lt;String, Object&gt; params) throws Exception {
+            AuthResult authResult = (AuthResult) params.get("authResult");
+            Domain domain = (Domain) params.get("domain");
+            send2Login(request, response, authResult.getMessage(), domain);
+        }
+    });
+}</programlisting>
+</para>
+</formalpara>
+<simpara>由上面看出，登录的主要逻辑在于 <emphasis>doLogin</emphasis> 方法，此处只是 <emphasis>doLogin</emphasis> 方法使用 <emphasis role="strong">策略模式</emphasis> ，要求调用者传入了两个接口实现。</simpara>
+<simpara>而在 <emphasis>doLogin</emphasis> 中，请求逻辑也相对简单，分为以下几步。</simpara>
+<itemizedlist>
+<listitem>
+<simpara>获取请求参数并校验</simpara>
+</listitem>
+<listitem>
+<simpara><emphasis>rpc</emphasis> 调用子系统实现，完成 <emphasis role="strong">用户名、密码</emphasis> 的校验</simpara>
+</listitem>
+<listitem>
+<simpara>调用 <emphasis role="strong">登录成功/失败</emphasis> 的子系统处理逻辑</simpara>
+</listitem>
+<listitem>
+<simpara>生成票据信息，存入 <emphasis role="strong">票据中心</emphasis></simpara>
+</listitem>
+<listitem>
+<simpara>返回登录结果及票据</simpara>
+</listitem>
+</itemizedlist>
+<example>
+<title>code</title>
+<programlisting language="java" linenumbering="unnumbered">authResult = this.getAuthResult(request, domain); <co xml:id="CO1-1"/>
+
+if (authResult.isValid()) {
+  // rpc调用子系统登录成功后处理实现
+ ReturnMessage returnMessage = invokeLoginPostProcess(domain, request, authResult, username, password); <co xml:id="CO1-2"/>
+
+ authid = AuthCache.set(username, ip, domain.getDomainName(), idCardNo); <co xml:id="CO1-3"/>
+ // 调用方自定义登录成功后处理逻辑
+ sucessHandler.handle(request, response, params); <co xml:id="CO1-4"/>
+}else{
+  // rpc调用子系统登录失败后处理实现
+  ReturnMessage returnMessage = invokeLoginFailProcess(domain, request, authResult,  username, password); <co xml:id="CO1-5"/>
+  params.put("returnMessage", returnMessage);
+  // 调用方自定义登录失败后处理逻辑
+  failHandler.handle(request, response, params); <co xml:id="CO1-6"/>
+}</programlisting>
+<calloutlist>
+<callout arearefs="CO1-1">
+<para><emphasis>rpc</emphasis> 调用子系统完成用户名/密码的校验</para>
+</callout>
+<callout arearefs="CO1-2">
+<para><emphasis>prc</emphasis> 调用子系统登录成功后的处理逻辑</para>
+</callout>
+<callout arearefs="CO1-3">
+<para>存储票据至票据中心</para>
+</callout>
+<callout arearefs="CO1-4">
+<para>调用自定义登录成功处理逻辑（策略模式）</para>
+</callout>
+<callout arearefs="CO1-5">
+<para><emphasis>rpc</emphasis> 调用子系统登录失败后处理实现</para>
+</callout>
+<callout arearefs="CO1-6">
+<para>调用自定义登录失败后处理逻辑（策略模式）</para>
+</callout>
+</calloutlist>
+</example>
+</section>
+<section xml:id="___10">
+<title>登出</title>
+<simpara>登出则非常简单，分两个步骤。</simpara>
+<itemizedlist>
+<listitem>
+<simpara>注销用户票据</simpara>
+</listitem>
+<listitem>
+<simpara>重定向至登出页面</simpara>
+</listitem>
+</itemizedlist>
+</section>
+<section xml:id="___11">
+<title>票据验证</title>
+<simpara>子系统的访问请求被 <emphasis>cas-client</emphasis> 拦截后，会通过模拟 <emphasis>http</emphasis> 请求完成校验。</simpara>
+<simpara>而</simpara>
+</section>
+<section xml:id="___12">
+<title>子系统及跨系统访问</title>
+<simpara>getauthinfo</simpara>
+</section>
+</section>
+</section>
+</section>
+<section xml:id="_dmcas_client">
+<title>dmcas-client</title>
+</section>
+<section xml:id="_dmcas_validation">
+<title>dmcas-validation</title>
+
+</section>
+</article>

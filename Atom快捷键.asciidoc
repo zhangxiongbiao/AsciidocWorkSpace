@@ -1,0 +1,175 @@
+= Atom快捷键
+zhang xiong biao<zxb@dameng.com>
+:experimental:
+:toc: left
+
+== 基本操作
+
+=== 打开目录
+
+[%header]
+|===
+|快捷键|操作说明
+|kbd:[Ctrl+P] | 打开工程文件搜索框
+|kbd:[Ctrl+B] | 在当前窗口所有已打开的文件列表中搜索文件，方便快速切换已经打开的文件。
+|kbd:[Ctrl+Shift+B]|在使用git提交后的已经修改的文件或新文件中搜索
+|===
+
+== 使用Atom
+
+=== Packages
+
+[%header]
+|===
+|快捷键|操作说明
+|`apm intall [package]`| 安装package
+|`apm search [package]`| 搜索package
+|`apm update [package]`| 更新package
+|`apm uninstall [package]`|卸载package
+|===
+
+=== Moving in Atom
+
+[%header]
+|===
+|快捷键|操作说明
+|kbd:[Alt+Left]|逐词向左移
+|kbd:[Alt+Right]|逐词向右移
+|kbd:[Ctrl+Left]|移到行首（然并卵）
+|kbd:[Ctrl+Right]|移到行尾（然并卵）
+|kbd:[Home]|移到行首
+|kbd:[End]|移到行尾
+|kbd:[Ctrl+Up]|将该行内容上移（类似Eclipse中的Ctrl+Shift+Up）
+|kbd:[Ctrl+Down]|将该行内容下移
+|kbd:[Ctrl+G]|移动到指定行[指定列]，如输入30:5
+|===
+
+==== Navigating by Symbols
+
+[%header]
+|===
+|快捷键|操作说明
+|kbd:[Ctrl+R]|在当前文件的方法名中搜索并跳转到该方法
+|kbd:[Ctrl+Shift+R]|在当前工程的所有方法名中搜索并跳转到该方法
+|===
+
+[NOTE]
+使用kbd:[Ctrl+Shift+R]时需要确定你已经事先安装了link:https://atoo/packages/autocomplete-ctags[atom-ctags] package.
+
+==== 书签
+
+[%header]
+|===
+|快捷键|操作说明
+|kbd:[Ctrl+F2]|查看当前工程所有的书签
+|kbd:[Ctrl+Shift+F2]|在当前行添加/取消书签
+|kbd:[Ctrl+Alt+F2]|清除所有的书签
+|kbd:[F2]|跳到当前文件的下一个书签
+|kbd:[Shift+F2]|跳到当前文件的上一书签
+|===
+
+=== Atom选择区域
+[%header]
+|===
+|快捷键|操作说明
+|kbd:[Ctrl+Alt+Up]|向上添加选择区域（[small red]#列编辑#）
+|kbd:[Ctrl+Alt+Down]|向下添加选择区域（[small red]#列编辑#）
+|kbd:[Ctrl+Shift+Home]|向上选择直至内容最开头
+|kbd:[Ctrl+Shift+End]|向下选择直至内容最尾部
+|kbd:[Ctrl+L]|选择当前行
+|kbd:[Ctrl+Shift+Left]|逐词向左选择
+|kbd:[Ctrl+Shift+Right]|逐词向右选择
+|===
+
+=== 编辑与删除文本
+
+==== 编辑文本
+
+[%header]
+|===
+|快捷键|操作说明
+|kbd:[Ctrl+Up]|向上移动当前行
+|kbd:[Ctrl+Down]|向下移动当前行
+|kbd:[Ctrl+Shift+D]|复制当前行
+|kbd:[Ctrl+K+U]|将当前行转为大写
+|kbd:[Ctrl+K+L]|将当前行转为小写
+|===
+
+==== 删除文本
+
+[%header]
+|===
+|快捷键  |操作说明
+|kbd:[Ctrl+Shift+K]|删除当前行
+|===
+
+=== 括弧
+
+[%header]
+|===
+|快捷键  |操作说明
+|kbd:[Ctrl+M] | 光标跳转到当前对应的括弧处
+|kbd:[Ctrl+Alt+M] | 选择这对括弧之内的内容
+|===
+
+=== 片段
+
+[%header]
+|===
+|快捷键  | 操作说明
+|kbd:[Alt+Shift+S] | 查看当前可用的片段（跟当前的语法有关）
+|===
+
+==== 自定义片段
+
+[TIP]
+.自定义片段
+====
+. 用户可以自己编辑`~/.atom/snippet.cson`来添加自定义的片段。
+. 或者使用kbd:[Ctrl+Shift+P]并输入`Open Your Snippets`来打开该文件并编辑。
+====
+
+==== 自定义片段格式
+
+[source,java]
+----
+'.source.js': //<1>
+   'console.log': //<2>
+        'prefix': 'log' //<3>
+          'body': 'console.log(${1:"crash"});$2' //<4>
+----
+
+<1> 定义这个片段在哪里生效，这个在对应的language-package的Grammer下面找Scope就行了
+<2> 这里定义片段的名字，起个可读性强的名字即可。
+<3> 定义片段的前缀，即片段的缩写。定义后输入这个前缀再按tab键即可生成片段。
+<4> 具体的片段内容。其中`${1:xxx}`指光标留停在这里并选中内容xxx，$2表示按了tab键后光标会跳向这里但是不选中什么内容（依次类推）。
+
+=== 自动完成
+
+[%header]
+|===
+|快捷键|操作说明
+| kbd:[Ctrl+Space]  | 弹出自动完成的提示 （此快捷键由于跟我的输入法冲突，已修改为 kbd:[Alt+/]） |
+|===
+
+=== 折叠收缩与展开
+
+[%header]
+|===
+|快捷键|操作说明
+| kbd:[Ctrl+Alt+Shift+[]  | 收缩所有方法与函数
+| kbd:[Ctrl+Alt+Shift + \] ]  | 展开所有方法与函数
+|===
+
+[TIP]
+搜索关键字：Fold
+
+=== Panel面板
+请自行搜索 Panel 关键字
+
+=== Grammer语法
+[%header]
+|===
+|快捷键|操作说明
+| kbd:[Ctrl+Shift+L]    | 设置语法  |
+|===

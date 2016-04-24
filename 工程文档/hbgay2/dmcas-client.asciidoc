@@ -1,0 +1,254 @@
+= dmcas-client
+:imagesdir: ./images
+:iconsdir: ./images/icons
+
+_dmcas-client_ 作为 _sso_ 校验中的客户端，用来拦截各子系统发送的请求，在请求抵达子系统前完成访问 _dmcas_ 完成用户信息校验工作。
+
+正因为如此， _dmcas-client_ 必须部署在各子系统中，通常也是以一个 _jar_ footnote:[方便集成其它系统] 包的方式存在。
+
+== 部署使用说明
+=== 获取程序包
+第三方需要联系 *湖北公安云* 项目组获取 _dmcas-client_ 的程序 _jar_ 包。
+
+=== 编写配置文件
+如新建 _cas-client.properties_ 文件。编写如下内容：
+
+.cas-client.properties
+[source,java]
+----
+casURL=http://localhost:8080/dmcas // <1>
+loginURL=http://localhost:8080/portal/login.do // <2>
+exceptPathPrefix=/ui/;/services/ // <3>
+publicPathPrefix=/common/;/portal/;/wmf/casAuth // <4>
+----
+<1> 指定 _dmcas_ 验证中心的访问地址，请填写实际地址。
+<2> 指定用户未登录后需要跳转到的地址，即配置登陆地址。
+<3> 希望加入例外的 _url_ 匹配规则。 *注意，不会获取用户信息，检测为例外请求后，会直接放行。*
+<4> 配置为公共请求 _url_ 的匹配规则。 *注意，会尝试获取用信息，不论是否获取得到，只要是公共请求，都会放行。*
+
+
+=== 配置过滤器
+在子系统的 _web.xml_ 文件中添加如下过滤器，请注意 _filter_ 的顺序。具体该 _filter_ 放在哪个位置视各系统而定。
+
+.web.xml
+[source,xml]
+----
+<!-- 单点登录客户端 -->
+<filter>
+  <filter-name>CASAuthFilter</filter-name>
+  <filter-class>com.dm.cas.client.filter.AuthFilter</filter-class>
+  <init-param>
+    <param-name>configMethod</param-name>
+    <param-value>file</param-value> // <1>
+  </init-param>
+  <init-param>
+    <param-name>configFilePath</param-name>
+    <param-value>/WEB-INF/config/cas-client.properties</param-value> // <2>
+  </init-param>
+</filter>
+<filter-mapping>
+  <filter-name>CASAuthFilter</filter-name>
+  <url-pattern>*.do</url-pattern> // <3>
+</filter-mapping>
+<filter-mapping>
+  <filter-name>CASAuthFilter</filter-name>
+  <url-pattern>*.html</url-pattern> // <4>
+</filter-mapping>
+----
+<1> 指定为 _file_ 表示从配置文件中读取配置信息。
+<2> 指定配置文件的路径，此处应该配 _web_ 工程的相对路径。
+<3> 指定请求拦截的 _url_ 规则，例如此处为 *.do
+<4> 指定请求拦截的 _url_ 规则，例如此处为 *.html
+
+=== 添加域至信任列表
+本来完成上述几步后，应该整个过程就结束了。这里最后一步是 _dmcas_ 升级方案中需要做的。只有子系统的域在信任列表中时，才允许通过 _dmcas_ 进行单点登陆。
+
+所以最后需要联系 *湖北公安云项目组* 将子系统的域添加至信任列表中即可。
+
+== 实现讲解说明
+整个 _dmcas-client_ 其实内容并不多，只有一个核心的过滤器和几个辅助工具类。
+
+其实 _dmcas-client_ 本身并不需要完成多少功能，它只需要拦截用户请求，请求 _dmcas_ 完成用户信息校验，转发或重定向用户请求即可。
+
+=== AuthFilter核心过滤器
+_AuthFilter_ 是 _javax.servlet.Filter_ 的一个实现类。所以也就实现了该接口的三个方法。
+
+* init
+* doFilter
+* destory
+
+在 _init_ 方法中，主要就是完成配置参数的加载工作了。此处是分为 *从文件加载* 和 *从数据库加载* 两种方式了。
+
+.init
+[source,java]
+----
+public void init(FilterConfig filterConfig) throws ServletException {
+// 获取配置方式
+String configMethod = filterConfig.getInitParameter("configMethod");
+// 获取配置文件路径
+String configFilePath = filterConfig.getInitParameter("configFilePath");
+// 使用配置文件cas-client.properties
+if ("file".equalsIgnoreCase(configMethod)) {
+    try {
+        String filePath = filterConfig.getServletContext().getRealPath(configFilePath);
+        CASConf.init(filePath); // <1>
+    } catch (Exception e) {
+        logger.error("init AuthFilter from file error!", e);
+    }
+    return;
+}
+// 使用数据库参数表
+if ("db".equalsIgnoreCase(configMethod)) {
+    try {
+        String filePath = filterConfig.getServletContext().getRealPath(configFilePath);
+        CASConf.initFromDB(filePath); // <2>
+    } catch (Exception e) {
+        logger.error("init AuthFilter from database error!", e);
+    }
+}
+}
+----
+<1> 一般，第三方集成进来时采用配置文件的方式。
+<2> 自己的子系统集成进来时则采用数据库加载的方式,方便统一管理，多子系统时不需要维护多个配置文件。
+
+doFilter方法中则包含了主要的控制逻辑。大致分为以下几个步骤：
+
+. 获取用户将要请求的 _url_
+. 检查是否为例个请求，是则放行
+. 从 _cookie_ 中获取用户票据，去 _dmcas_ 校验用户票据是否合法
+. 根据 _ip_ 检验用户是否存在票据信息
+. 检查请求是否为公共请求
+. 无用户信息并且不是公共请求，则重定向至登录页面。否则就放行。
+
+
+.doFilter
+[source,java]
+----
+public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+        throws IOException, ServletException {
+
+    // TODO 设置线程的当前request,user
+    HttpServletRequest hrequest = (HttpServletRequest) request;
+    HttpServletResponse hresponse = (HttpServletResponse) response;
+
+    String path = hrequest.getServletPath();
+    if (StringUtils.hasText(hrequest.getPathInfo())) {
+        path += hrequest.getPathInfo();
+    }
+
+    // 如果为例外请求，直接通过，不通过cas获取当前登录用户
+    if (this.isExceptRequest(path)) {
+        chain.doFilter(request, response);
+        return;
+    }
+
+    // 通过cas获取当前登录用户
+    // 基于cookie
+    String username = null;
+    String authid = CookieUtil.getCookie(hrequest, CASConf.getCasTicketName());
+
+    // 用户浏览器存在cookie信息
+    if (StringUtils.hasText(authid)) {
+        username = this.getAuthUser(authid); // <1>
+    } else {
+        // 不存在cookie信息，根据用户ip获取票据信息
+        String clientIp = IPUtil.getClientIpAddr(hrequest);
+        if (StringUtils.hasText(clientIp)) {
+            // 如果根据clientIp获取到用户信息，则认为请求通过
+            String authInfo = this.getAuthInfo(clientIp); // <2>
+            if (StringUtils.hasText(authInfo)) {
+                String[] authInfoArr = authInfo.split("&");
+                if (authInfoArr.length >= 2) {
+                    authid = authInfoArr[0];
+                    username = authInfoArr[1];
+
+                    // 往用户浏览器回写当前域的cookie
+                    this.setCookie(hresponse, authid, username);
+                } else {
+                    logger.error("invalid auth info:" + authInfo);
+                }
+            }
+        }
+    }
+
+    // 取消基于请求参数方式, modify by zxb
+    // TODO 登录校验
+    boolean isPublicRequest = this.isPublicRequest(hrequest, path);
+
+    if (StringUtils.isEmpty(username) && !isPublicRequest) {
+        this.redirectView(hrequest, hresponse);
+        return;
+    }
+
+    chain.doFilter(new CasHttpServletRequest(hrequest, username), response);
+}
+----
+<1> 模拟发送 _http_ 请求至 _dmcas_ 校验用户票据有效性
+<2> 模拟发送 _http_ 请求至 _dmcas_ 根据 _ip_ 获取用户信息
+
+_destory_ 方法在 _Filter_ 中一般是作为释放资源而存在的，此处则只留了一个空实现。
+
+=== CASConf配置
+_CASConf_ 作为一个配置类，保存了 _AuthFilter_ 中使用到的一些配置信息。同时也作为工具类，提供了加载配置信息的方法。
+
+image::dmcas-client-casconf.png[]
+
+=== CASUtil 工具
+与第三方系统集成时，通常他们也希望能根据票据获取到具体的用户信息。而在 _CASUtil_ 中就提供了该方法。
+
+image::dmcas-client-casutil.png[]
+
+此处获取用户信息，同样是模拟发送 _http_ 请求到 _dmcas_ ，通过参数 _casauthid_ (即票据)获取用户的具体信息。
+
+.CASUtil
+[source,java]
+----
+/**
+ * 用户登录后用户信息（不包含密码）
+ *
+ * @param authid
+ * @preserve
+ * @return
+ */
+
+public static User getUserInfo(String authid) {
+  // 空值直接返回null
+  if (StringUtils.isEmpty(authid)) {
+    return null;
+  }
+  // 建立http连接并获取信息
+  String userinfo = null;
+  User user = new User();
+  try {
+    // 建立connection
+    String urlString = CASConf.getCasURL() + CASConf.getGetUserInfoPath() + "?" + CASConf.getCasTicketName()
+        + "=" + authid + "_userinfo";
+    System.out.println("CASAuthID 工具:" + authid);
+    URL url = new URL(urlString);
+    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+    // 设置建立连接超时时间
+    connection.setConnectTimeout(5000);
+    connection.setRequestMethod("POST");
+    connection.setDoOutput(true);
+    connection.setDoInput(true);
+    connection.setUseCaches(false);
+    // 获取响应
+    connection.connect();
+    InputStream inputStream = connection.getInputStream();
+    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+    userinfo = reader.readLine();
+    System.out.println("userinfo 工具encode:" + userinfo);
+    userinfo = URLDecoder.decode(userinfo, "utf-8");
+    JSONObject jsonObject = JSONObject.fromObject(userinfo);
+    user = (User) JSONObject.toBean(jsonObject, User.class);
+
+    // 关闭连接
+    reader.close();
+    inputStream.close();
+    connection.disconnect();
+  } catch (Exception e) {
+    e.printStackTrace();
+  }
+  return user;
+}
+----

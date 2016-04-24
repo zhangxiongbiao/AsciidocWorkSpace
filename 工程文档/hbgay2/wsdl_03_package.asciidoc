@@ -1,0 +1,215 @@
+== 启动与打包
+:imagesdir: ./images
+:iconsdir: ./images/icons
+
+由于 _wsdl_ 非 _web_ 工程，所以只需要直接使用 _java_ 命令启动包含 _main_ 方法的类即可。
+
+=== 启动方式
+==== 编写main方法启动
+整个 _wsdl_ 工程中的服务的发布与注册均是通过配置文件完成的。
+
+.spring配置文件
+image::wsdl_resource.png[]
+
+所以从 _main_ 方法启动则直接加载这些 _spring_ 配置文件即可。
+
+.示例
+====
+使用 _ClassPathXmlApplicationContext_ 加载 _Spring_ 配置文件。
+
+[source,java]
+----
+ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:beans-*.xml");
+applicationContext.start();
+
+System.in.read(); // <1>
+----
+<1> 阻止主线程自动运行关闭
+====
+
+==== 以 _dubbo_ 提供的 _Main_ 类启动
+其实在 _dubbo_ 的官网上既不推荐以 _tomcat_ 容器方式启动，也不推荐上面的 _main_ 方法启动，而是推荐 _dubbo_ 自己提供的 _Main_ 类启动的，因为它支持 *优雅停机* 。
+
+.idea下配置示例
+image::wsdl_main.png[]
+
+* 在 _ide_ 下则配置以 _com.alibaba.dubbo.container.Main_ 启动运行即可。
+* 生产环境下，则应该以 `java com.alibaba.dubbo.container.Main` 方式启动。
+
+=== 打包
+如果直接将 _dmga-dubbo-wsdl_ 工程打成一个 _jar_ 包扔到生产环境下去跑的话，那么它的依赖 _jar_ 呢？
+所以在打包的同时，也需要同时将它的依赖 _jar_ 也一起打包。
+
+此时需要配置 *_pom.xml_* 中的 _maven-jar-plugin_ 以及 _maven-assembly-plugin_ . 配置步骤如下。
+
+maven-jar-plugin::
+在 *_pom.xml_* 中添加 _maven-jar-plugin_ 的配置，注意放在 `<bulid><plugins></plugins></build>` 中。
++
+[source,xml]
+----
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-jar-plugin</artifactId>
+    <version>2.4</version>
+    <!-- The configuration of the plugin -->
+    <configuration>
+        <!-- 排队根目录下的配置文件，因为配置文件会使用assembly插件打包到conf目录 -->
+        <excludes>
+            <exclude>*.xml</exclude>
+            <exclude>*.properties</exclude>
+        </excludes>
+        <!-- Configuration of the archiver -->
+        <archive>
+
+            <!--
+                生成的jar中，不要包含pom.xml和pom.properties这两个文件
+            -->
+            <addMavenDescriptor>false</addMavenDescriptor>
+
+            <!-- Manifest specific configuration -->
+            <manifest>
+
+                <!--
+                    是否要把第三方jar放到manifest的classpath中
+                -->
+                <!--<addClasspath>true</addClasspath>-->
+                <!--
+                   生成的manifest中classpath的前缀，因为要把第三方jar放到lib目录下，所以classpath的前缀是lib/
+               -->
+                <classpathPrefix>lib/</classpathPrefix>
+                <!--<mainClass>com.alibaba.dubbo.container.Main</mainClass>-->
+                <!--
+                    应用的main class
+                -->
+            </manifest>
+        </archive>
+        <!--
+            过滤掉不希望包含在jar中的文件
+        -->
+    </configuration>
+</plugin>
+----
+
+maven-assembly-plugin::
+该插件加载具体的打包配置
++
+[source,xml]
+----
+<!-- The configuration of maven-assembly-plugin -->
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-assembly-plugin</artifactId>
+    <version>2.4</version>
+    <!-- The configuration of the plugin -->
+    <configuration>
+        <!-- Specifies the configuration file of the assembly plugin -->
+        <descriptors>
+            <descriptor>${project.basedir}/src/main/resources/package.xml</descriptor> // <1>
+        </descriptors>
+    </configuration>
+    <executions>
+        <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+                <goal>single</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+----
++
+<1> 指定了package.xml的路径
+
+package.xml ::
+package.xml中配置了具体的打包细节。
++
+[source,xml]
+----
+<assembly>
+    <id>bin</id>
+    <!-- 最终打包成一个用于发布的zip文件 -->
+    <formats>
+        <format>zip</format>
+    </formats>
+
+    <!-- Adds dependencies to zip package under lib directory -->
+    <dependencySets>
+        <dependencySet>
+            <!--
+               不使用项目的artifact，第三方jar不要解压，打包进zip文件的lib目录
+           -->
+            <useProjectArtifact>false</useProjectArtifact>
+            <outputDirectory>lib</outputDirectory>
+            <unpack>false</unpack>
+        </dependencySet>
+    </dependencySets>
+
+    <fileSets>
+        <!-- 把项目相关的说明文件，打包进zip文件的根目录 -->
+        <fileSet>
+            <directory>${project.basedir}</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>README*</include>
+                <include>LICENSE*</include>
+                <include>NOTICE*</include>
+            </includes>
+        </fileSet>
+
+        <!-- 把项目的配置文件，打包进zip文件的config目录 -->
+        <fileSet>
+            <directory>${project.build.directory}/classes</directory>
+            <outputDirectory>conf</outputDirectory>
+            <includes>
+                <include>*.xml</include>
+                <include>*.properties</include>
+            </includes>
+        </fileSet>
+
+        <!-- 把项目的脚本文件目录（ src/main/scripts ）中的启动脚本文件，打包进zip文件的bin目录 -->
+        <fileSet>
+            <directory>${project.build.scriptSourceDirectory}</directory>
+            <outputDirectory>bin</outputDirectory>
+            <!--
+            <includes>
+                <include>startup.*</include>
+            </includes>
+            -->
+        </fileSet>
+
+        <!-- 把项目的脚本文件（除了启动脚本文件），打包进zip文件的script目录 -->
+        <!--
+        <fileSet>
+            <directory>${project.build.scriptSourceDirectory}</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <exclude>startup.*</exclude>
+            </includes>
+        </fileSet>
+        -->
+
+        <!-- 把项目自己编译出来的jar文件，打包进zip文件的lib目录 -->
+        <fileSet>
+            <directory>${project.build.directory}</directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>*.jar</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+</assembly>
+----
+
+按上述配置文件配置完毕后，使用 _maven_ 执行命令 `mvn clean package -Dmaven.test.skip=true` 将会在 _target_ 目录下产生出 *-bin.zip 文件。该 _zip_ 包解压后即是一个可运行包。
+
+image::wsdl_bin.png[]
+
+=== 启动脚本
+为了简化生产环境下的一些启动与停止服务操作，则特地将一些命令整成启动脚本存放。
+
+image::wsdl_scripts.png[]
+
+在上述的打包命令中，则是直接将这些启动 _scripts_ 打包到了 _bin_ 目录。
+
+具体内容可直接查看脚本内容。

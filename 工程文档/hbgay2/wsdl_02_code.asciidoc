@@ -1,0 +1,790 @@
+== 代码说明
+:imagesdir: ./images
+:iconsdir: ./images/icons
+
+//本工程采用 *_jar_* 包方式进行加载运行，并非 *_web_* 工程。
+本工程依赖于 _dmga-dubbo-service_ 工程，部分使用的 _interface_ 及 _domain entity_ 均在该工程下。
+
+=== 包图及描述
+
+image::wsdl_package.png[]
+
+image::wsdl_package2.png[]
+
+.包说明
+[horizontal]
+service:: 抽象的服务接口
+service.impl:: 服务实现类
+util:: 工具包
+intercept.service:: 拦截器接口
+
+== 各功能模块说明
+.整个工程主要分为三个模块。
+. _ws_ 服务的注册
+. _ws_ 服务的调用
+. _wsdl_ 文档解析
+
+[TIP]
+*_ws_ 服务的注册与调用* 一起完成了 _ws_ 服务的代理工作。而 *_wsdl_ 文档解析* 则是提供给调用者的一个工具类接口。
+
+=== _ws_ 服务的注册
+
+==== 类图
+image::Registry.png[]
+
+==== 加载ws配置信息
+默认的一些ws配置信息是由 _spring_ 配置文件中注入进来的。
+[source,java]
+----
+public class RegistryServiceImpl implements RegistryService, BeanFactoryPostProcessor {
+    /**
+     * 服务提供方环境
+     */
+    private Environment env;
+}
+----
+
+[source,xml]
+----
+<bean id="defaultEnv" class="com.dm.dubbo.wsdl.registry.domain.Environment">
+  <property name="registryAddress" value="zookeeper://localhost:1234"></property> // <1>
+  <property name="protocolName" value="webservice"></property>
+  <property name="protocolPort" value="8081"></property> // <2>
+  <property name="protocolServer" value="jetty"></property> // <3>
+  <property name="appName" value="WsGenericService"></property>
+</bean>
+
+<!-- 定义注册wsdl服务实现 -->
+<bean id="registryService"
+  class="com.dm.dubbo.wsdl.registry.service.impl.RegistryServiceImpl">
+  <property name="env" ref="defaultEnv" /> // <4>
+</bean>
+----
+<1> 定义注册中心的连接地址，新注册的 _ws_ 服务将会连接该注册中心
+<2> 定义发布的 _ws_ 服务发布到哪个端口。 *不同的 _ws_ 服务应该指定不同的端口*
+<3> 定义发布 _ws_ 服务采用的容器，可选 _jetty_ 和 _servlet_ ，此处 _servlet_ 指的是tomcat容器。
+<4> 此处将上面配置的环境信息注入到 *注册service* 中
+
+==== 动态生成接口
+当发布不同的 _wsdl_ 的 _webservice_ 服务时，为了在 _dubbo_ 及 _cxf_ 中显示不同的接口，此时需要动态生成接口。
+
+.注意
+[IMPORTANT]
+====
+在 _dubbo_ 中，如果 _interface name_ 相同，那么需要设置不同的 _group name_ 来保证是不同的服务。
+
+*而在 _cxf_ 中，如果 _interface name_ 相同，那么是不能重复发布的，* 此时就必须要动态生成接口。
+====
+
+.动态生成接口思路
+****
+使用 _asm_ 框架生成 _interface_ 的 _bytecode_ 写成 _class_ 文件，而此 _interface_ 只需要是继承现有的 _GenericService_ 即可。
+****
+
+.GenericService
+[source,java]
+----
+/**
+ * dubbo注册wsdl服务代理
+ * @author zxb
+ * 2016年3月3日 上午11:15:34
+ */
+@WebService
+public interface GenericService {
+
+	/**
+	 * 通过此接口请求代理方，然后调用提供方的ws服务
+	 * @param methodName
+	 * @param condition
+	 * @return
+	 * @throws Exception
+	 */
+	public Object query(String methodName, String condition) throws Exception;
+}
+----
+
+.generate interface code
+[source,java]
+----
+/**
+ * 为该wsdl生成一个对应的接口
+ *
+ * @param wsEnv ws环境信息
+ * @return 接口类
+ * @throws ClassNotFoundException 加载的接口类未找到时抛出
+ */
+private Class generateInterface(WsEnvironment wsEnv) throws ClassNotFoundException {
+    // 获取上下文的类加载器
+    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+    String classpath = classLoader.getResource("").getPath(); // 获取classpath绝对uri
+    logger.debug("current classpath:" + classpath);
+
+    // 生成接口文件
+    File interfaceClassFile = new File(classpath + "/com/dm/dubbo/wsdl/registry/service/" + wsEnv.getInterfaceName() + ".class");
+    logger.debug("interfaceClassFile:" + interfaceClassFile);
+
+    if (!interfaceClassFile.exists()) {
+        logger.info("interfaceClassFile:" + interfaceClassFile.getName() + "does't exists! begin generate class file!");
+        FileOutputStream fos = null;
+        try {
+            // 生成一个继承于GenericService的接口
+            ClassWriter cw = new ClassWriter(0);
+            cw.visit(V1_5, ACC_PUBLIC + ACC_ABSTRACT + ACC_INTERFACE,
+                    "com/dm/dubbo/wsdl/registry/service/" + wsEnv.getInterfaceName(), null, "java/lang/Object",
+                    new String[]{"com/dm/dubbo/wsdl/registry/service/GenericService"});
+            cw.visitEnd();
+
+            // 写成class文件
+            interfaceClassFile.getParentFile().mkdirs();
+            fos = new FileOutputStream(interfaceClassFile);
+            fos.write(cw.toByteArray());
+        } catch (IOException e) {
+            logger.error("generate class file:" + interfaceClassFile.getName() + " error!", e);
+            return null;
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    logger.error("close file output stream error! class file:" + interfaceClassFile.getName(), e);
+                }
+            }
+        }
+        logger.info("interfaceClassFile:" + interfaceClassFile.getName() + " generate success! write into " + interfaceClassFile);
+    }
+
+    // 加载class入classLoader
+    logger.info("begin load interface class " + interfaceClassFile.getName());
+    Class dynamicInterfaceClass = classLoader.loadClass("com.dm.dubbo.wsdl.registry.service." + wsEnv.getInterfaceName());
+    logger.info("end load interface class " + interfaceClassFile.getName());
+    return dynamicInterfaceClass;
+}
+----
+从上面代码可以看出，生成接口主要分为以下几步
+
+* 根据 _classloader_ 获取 _classpath_ 绝对 *_URI_*
+* 生成一个继承自 _GenericService_ 的接口
+* 将生成的接口写入 _classpath_ 下对应的 _class_ 文件
+* 使用 _classloader_ 将刚才生成的接口对应的 _class_ 文件加载到jvm
+
+[TIP]
+====
+先前尝试过使用 *_gclib_* 的 _interface maker_ 来完成 _interface_ 的动态生成。后来在 _dubbo_ 框架中生成该 _interface_ 的 _wrapper_ 时一直报错：
+javassist : [compare source error] no such class
+====
+
+
+
+==== 动态生成实现类
+虽然动态生成了接口，但是已经的 _GenericService_ 接口的实现类 _GenericServiceAxis1Impl_ 与 _GenericServiceCxfImpl_ 是没有实现动态接口的。所以此时还需要这两个实现类也能实现动态接口。
+
+.实现思路
+****
+此时动态实现类有两种解决思路。
+
+代理实现类::
+  通过 _gclib_ 生成现有的实现类的子类，同时实现 _dynamic interface_
+持有实现类引用::
+  直接通过 _gclib_ 生成 _dynamic interface_ 的实现类（ *实际代理类* ），在该 *代理* 类中维持一个具体实现类的引用。当调用具体的接口方法时， *代理* 类则调用具体实现类的该方法。
+****
+
+.code
+[source,java]
+----
+/**
+    * 生成动态接口的实现类
+    *
+    * @param wsEnv            ws环境上下文
+    * @param dynamicInterface 动态接口
+    * @return 接口实现类
+    * @throws ClassNotFoundException
+    * @throws InstantiationException
+    * @throws IllegalAccessException
+    * @throws java.lang.reflect.InvocationTargetException
+    */
+   private GenericService getGenericService(WsEnvironment wsEnv, final Class dynamicInterface) throws ClassNotFoundException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
+       // 获取clientClass实例，即具体的ws调用实例
+       logger.info("begin get " + wsEnv.getClientClassName() + "'s instance!");
+       Constructor<GenericService> cons = (Constructor<GenericService>) ClassUtils.getConstructorIfAvailable(
+               ClassUtils.forName(wsEnv.getClientClassName(), Thread.currentThread().getContextClassLoader()),
+               WsEnvironment.class, List.class);
+       final GenericService genericService = cons.newInstance(wsEnv, this.interceptList);
+       logger.info("get " + wsEnv.getClientClassName() + "'s instance success!");
+
+       // 生成动态接口的实现类
+       logger.info("begin generate " + dynamicInterface.getName() + "'s implementation class");
+       Enhancer enhancer = new Enhancer();
+       enhancer.setInterfaces(new Class[]{dynamicInterface});
+       enhancer.setCallback(new MethodInterceptor() {
+           public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
+               if (method.getName().equals("query")) { // <1>
+                   return genericService.query(args[0].toString(), args[1].toString()); // 调用具体的clientClass实例的方法。
+               }
+               return method.invoke(obj, args);
+           }
+       });
+       GenericService proxyService = (GenericService) enhancer.create();
+       logger.info("generate " + dynamicInterface.getName() + "'s implementation class success! proxy class name " + proxyService.getClass().getName());
+       return proxyService;
+   }
+----
+<1> 拦截 *代理* 类的 *_query_* 方法,调用 *具体实现类* 的 _query_ 方法。
+
+==== 服务缓存
+由于每次发布的服务对象实例非常重，所以需要将该服务缓存起来，以备后用。这里直接通过写了一个本地 _cache_ 来实现。
+
+===== 服务对象缓存
+
+.code
+[source,java]
+----
+/**
+ * 服务缓存
+ */
+private Map<Environment, ServiceConfig> serviceCache = new ConcurrentHashMap<Environment, ServiceConfig>();
+
+// 暴露及注册服务
+service.setInterface(dynamicInterface);
+service.setRef(proxyService); // 真正的服务实现
+service.setVersion(wsEnv.getVersion());
+service.export();
+
+// 缓存服务
+serviceCache.put(wsEnv, service);
+----
+
+===== 处理重复发布的服务
+通过现有的服务 _cache_ ，完成阻止重复服务的发布。
+
+[source,java]
+----
+ServiceConfig serviceConfig = serviceCache.get(context);
+if (serviceConfig != null) {
+    logger.info("deploy a duplicate service, contextAppName:" + context.getAppName() + ", contextRegistryAddress:" + context.getRegistryAddress());
+    return new RegistryMessage(ReturnStatus.OTHER, "服务已存在，请勿重复发布！");
+}
+----
+同时，在具体的服务发布时，使用了同步代码块防止多线程并发时重复发布服务。
+
+[source,java]
+----
+synchronized (RegistryServiceImpl.class) {
+            serviceConfig = serviceCache.get(context);
+            if (serviceConfig != null) {
+                logger.info("deploy a duplicate service, contextAppName:" + context.getAppName() + ", wsdl:" + wsEnv.getWsdlAddress());
+                return new RegistryMessage(ReturnStatus.OTHER, "服务已存在，请勿重复发布！");
+            }
+
+            // 发布服务
+            serviceConfig.export();
+}
+----
+由代码可以看出，服务是否重复取决于 _cache_ 中的 _key_ 是否相等。
+因此在 _Environment_ 与 _WsEnvironment_ 中重写了 _hashcode_ 与 _equals_ 方法。
+
+==== 服务配置
+在线上测试过程中，出现过一些如连接超时等问题。所以在代码中也添加了部分配置。
+
+[source,java]
+----
+// 服务提供者协议配置
+ProtocolConfig protocol = new ProtocolConfig();
+protocol.setName(env2use.getProtocolName());
+protocol.setPort(env2use.getProtocolPort());
+protocol.setServer(env2use.getProtocolServer());
+protocol.setAccepts(500); // 可接受的长连接为500个
+
+// 服务提供者暴露服务配置
+ServiceConfig<GenericService> service = new ServiceConfig<GenericService>(); // 此实例很重，封装了与注册中心的连接，请自行缓存，否则可能造成内存和连接泄漏
+service.setApplication(application);
+service.setRegistry(registry); // 多个注册中心可以用setRegistries()
+service.setProtocol(protocol); // 多个协议可以用setProtocols()
+service.setGroup(wsEnv.getGroup());
+service.setTimeout(3000); //远程调用超时时间 // <1>
+service.setRetries(0); //远程调用失败重试次数
+service.setLoadbalance("roundrobin"); // 设置负载为轮循方式
+----
+<1> _timeout_ 时间建议设大一些。否则调用方可能会收到一些 _TimeOut_ 相关的异常。
+
+=== _ws_ 服务的调用
+本工程中通过发布出去的 _webservice_ 服务来反向调用第三方的 _webservice_ 服务。
+
+==== 类图
+image::wsdl_client_class.png[]
+
+* *_GenericServiceAxis1Impl_* 完成对 _axis1.4_ 提供的 _webservice_ 服务的调用
+* *_GenericServiceCxfImpl_* 完成对 _cxf_ 、 _axis1.6_ 提供的 _webservice_ 服务的调用
+
+==== *_CXF_* 调用
+_cxf_ 的调用是直接用 _cxf_ 的客户端来完成 _webservcie_ 的调用 的。 _cxf_ 客户端又分成 静态调用（生成代码） 与 动态调用 两种方式，此处采用的是 *动态生成客户端代码* 并调用的方式。
+
+.代码实现
+[source,java]
+----
+// 获取Client
+Client client = WsdlUtil.getCxfClient(super.wsContext.getWsdlAddress()); // <1>
+Assert.notNull(client);
+
+// 添加消息拦截器
+client.getOutInterceptors().add(new LoggingOutInterceptor());
+client.getInInterceptors().add(new LoggingInInterceptor());
+
+Object[] result = client.invoke(methodName, params.values().toArray());
+return result[0]; // <2>
+----
+<1> 获取client，此处是写地本地 _cache_ 来获取客户端的，它实现是通过 _JaxWsDynamicClientFactory_ 来创建客户端的。
+<2> 此处目前没有考虑返回结果的类型，这里需要分析 _wsdl_ 中对应方法的返回类型。
+
+==== *_axis1.4_* 调用
+_axis1.4_ 的调用也是直接通过 _axis1.4_ 的客户端来完成调用的。当时考虑采用 _soapui_ footnote:[_soapui_ 是一个开源的 _webservice_ 调用工具] 的实现，出于时间问题，最后放弃了。
+
+.代码实现
+[source,java]
+----
+@Override
+public Object doQuery(String methodName, Map<String, Object> params) throws Exception {
+  return Axis1ClientUtil.invoke(super.wsContext.getWsdlAddress(), methodName,
+      (LinkedHashMap<String, Object>) params);
+} // <1>
+
+public static Object invoke(String wsdl, String methodName, LinkedHashMap<String, Object> params) throws Exception {
+  Call call = Axis1ClientUtil.initCall(wsdl, null, null); // <2>
+  call.setOperationName(methodName); // <3>
+
+  // 设置参数
+  Object[] objArr = new Object[0];
+  if (params != null && params.size() > 0) {
+    objArr = new Object[params.size()];
+
+    int i = 0;
+    for (Entry<String, Object> param : params.entrySet()) {
+      call.addParameter(param.getKey(), Constants.XSD_ANY, ParameterMode.IN);
+      objArr[i] = param.getValue();
+      i++;
+    }
+  } // <4>
+  return call.invoke(objArr);  // <5>
+}
+----
+<1> 调用工具类完成 _ws_ 调用
+<2> 根据 _wsdl_ 地址初始化 _Call_
+<3> 设置要调用的 _ws_ 方法
+<4> 设置 _arguments_
+<5> 完成调用并返回结果
+
+=== _ws_ 服务拦截
+在调用第三方的 _ws_ 服务时，通常需要记录请求方的 _ip_ 等作为日志信息。此处为了方便后期的扩展，对 _ws_ 调用请求的前后添加了额外处理，可以实现请求调用拦截，处理调用结果等。
+
+==== 类图
+
+image::Intercept.png[]
+
+==== 实现思路
+在注册 _ws_ 服务到 _dubbo_ 时，将实现了指定接口的实现类注入到调用 _client_ 实现中。在 _client_ 调用第三方 _ws_ 服务请求的前后添加拦截逻辑。
+
+==== 实现细节
+所有需要定义为拦截服务的类，只需要实现 _InterceptService_ 或 _PostProcessService_ 或 _PreProcessService_ 中的任意一个即可。
+
+===== 手动配置拦截服务
+在 _RegistryServiceImpl_ 中添加了拦截服务集合。
+[source,java]
+----
+/**
+ * 拦截集合
+ */
+private List<InterceptService> interceptList;
+----
+所以，用户在 _spring_ 配置文件中定义 _RegistryService_ 时，可以直接在注入对应的 _InterceptService_
+[source,xml]
+----
+<!-- 定义注册wsdl服务实现 -->
+<bean id="registryService"
+  class="com.dm.dubbo.wsdl.registry.service.impl.RegistryServiceImpl">
+  <property name="env" ref="defaultEnv" />
+  <property name="interceptList" ref="" /> // <1>
+</bean>
+----
+<1> 此处注入拦截服务的集合
+
+===== 自动加载配置为springBean的拦截服务
+在 _RegistryServiceImpl_ 中实现了 _BeanFactoryPostProcessor_ 接口， _spring_ 会将 _beanFactory_ 注入进来。
+
+[source,java]
+----
+public class RegistryServiceImpl implements RegistryService, BeanFactoryPostProcessor{ // <1>
+
+  public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+    if (this.interceptList == null) {
+        this.interceptList = new ArrayList<InterceptService>();
+    } // <2>
+    String[] beanNames = beanFactory.getBeanNamesForType(InterceptService.class, false, false); // <3>
+    if (beanNames != null) {
+        InterceptService interceptService = null;
+        for (String beanName : beanNames) {
+            interceptService = (InterceptService) beanFactory.getBean(beanName);
+            if (!this.interceptList.contains(interceptService)) {
+                this.interceptList.add(interceptService);
+            }
+        }
+    } // <4>
+}
+}
+----
+<1> 实现 _BeanFactoryPostProcessor_ 以获取 _BeanFactory_
+<2> 获取 _interceptList_
+<3> `获得所有实现了 _InterceptService_ 接口的 _spring bean_`
+<4> 将实现了 _InterceptService_ 接口的 _bean_ 装载入集合
+
+注入拦截服务集合至 _client_ 实现中
+[source,java]
+----
+final GenericService genericService = cons.newInstance(wsEnv, this.interceptList); // <1>
+----
+<1> 通过构造注入 _interceptList_
+
+
+===== 处理拦截服务集合逻辑
+
+_AbstractGenericService_ 作为 _client_ 实现的父类，完成了拦截服务的逻辑，同时也将相关方法声明为 _protected_ 方便子类重写。
+
+. 将注入的 _InterceptService_ 分类为前置拦截与后置拦截服务
++
+[source,java]
+----
+/**
+ * 初始化InterceptService
+ */
+private void initInterceptService() {
+  if (this.interceptList != null && this.interceptList.size() > 0) {
+    this.preList = new ArrayList<PreProcessService>();
+    this.postList = new ArrayList<PostProcessService>();
+
+    for (InterceptService service : this.interceptList) {
+      if (service instanceof PreProcessService) {
+        this.preList.add((PreProcessService) service);
+      }
+      if (service instanceof PostProcessService) {
+        this.postList.add((PostProcessService) service);
+      }
+    }
+  }
+}
+----
+
+. 处理前置逻辑
++
+拦截逻辑都是在请求调用的 _query_ 方法中完成的。
++
+[source,java]
+----
+Object preProcessObj = doPreProcess(methodName, params);
+if (preProcessObj != null)
+          return preProcessObj;
+----
++
+[NOTE]
+====
+由上可以看出，前置处理时可以直接返回，不进行请求处理。所以此处可以方便地添加一些 *请求参数校验，用户信息校验* 等。
+====
+
+. 处理后置逻辑
++
+[source,java]
+----
+// 调用子类具体查询方法
+returnObj = doQuery(methodName, realParams);
+
+// 处理postProcess
+params.put("returnObj", returnObj);
+Object postProcessObj = doPostProcess(params);
+if (postProcessObj != null)
+          return postProcessObj; // 修改返回结果
+----
++
+[NOTE]
+====
+同上，后置处理，可以添加一些日志记录功能。也同样可以完成一些返回信息过滤功能，此处可以更改返回结果。
+====
+
+=== _wsdl_ 文档解析
+对 _wsdl_ 文档的解析，主要是方便对 _webservice_ 服务的调用，在调用过程中方便指定请求的 _arguments_ 及返回的 _returnType_ 等。
+
+==== 类图
+
+image::WsdlParse.png[]
+
+==== 实现框架
+同样，与 _webservice_ 调用类似，对 _wsdl_ 的解析也分为了 _CXF_ 与 _axis1.4_ 两种实现。
+
+对 _CXF_ 生成的 _wsdl_ 解析，则直接使用的 _CXF_ 客户端来完成的。
+
+对 _axis1.4_ 生成的 _wsdl_ 解析，则是使用 _wsdl4j_ footnote:[ _wsdl4j_ 是一个开源的 _wsdl_ 文档解析组件，不过现在快被 _out_ 了。] 开源组件完成的。
+
+.cxf解析与axis1.4的不同之处
+====
+_axis1.4_ 的解析相对容易，直接使用 _wsdl4j_ 即可完成。
+
+而 _cxf_ 则对方法的参数使用了嵌入的 _schema_ 文档来定义的。而 _wsdl4j_ 不支持这种 _schema_ 文档的解析footnote:[其官网资料上也明确指出， _wsdl4j_ 不支持这种 _schema_ 的解析，只支持将其简单地转换为 _w3c dom_ ]，因为对 _schema_ 的解析需要自己手工完成。
+
+_soapui_ 中对这两种 _wsdl_ 的解析均有提供，迫于时间关系，未细研究。
+====
+
+==== _CXF_ 的 _wsdl_ 解析
+对 _CXF_ 生成的 _wsdl_ 的解析，则由实现类 _WsdlParseServiceCxfImpl_ 完成。基本思路都是逐步解析 _wsdl_ 各元素来完成的。
+
+.code
+[source,java]
+----
+public class WsdlParseServiceCxfImpl extends AbstractWsdlParseService {
+
+	public WsService parse(String url) throws Exception {
+		WsService wsService = new WsService();
+
+		// 创建动态客户端
+		JaxWsDynamicClientFactory factory = JaxWsDynamicClientFactory.newInstance();
+		// 创建客户端连接
+		Client client = factory.createClient(url);
+		ClientImpl clientImpl = (ClientImpl) client;
+		Endpoint endpoint = clientImpl.getEndpoint();
+
+		wsService.setWsdlUrl(url);
+		wsService.setServiceName(endpoint.getService().getName().getLocalPart());
+		wsService.setTargetNameSpace(endpoint.getService().getName().getNamespaceURI());
+
+		BindingInfo bindingInfo = endpoint.getBinding().getBindingInfo();
+		Collection<BindingOperationInfo> opInfoCol = bindingInfo.getOperations();
+		Iterator<BindingOperationInfo> it = opInfoCol.iterator();
+
+		// 遍历方法
+		List<WsOperation> opList = new ArrayList<WsOperation>();
+		WsOperation wsOperation = null;
+		while (it.hasNext()) {
+			wsOperation = new WsOperation();
+
+			BindingOperationInfo boi = it.next();
+			String opName = boi.getName().getLocalPart();
+			wsOperation.setName(opName); // 设置方法名
+
+			// 通过输入消息找到对应的请求参数列表
+			BindingMessageInfo inputMsgInfo = boi.getInput();
+			List<MessagePartInfo> parts = inputMsgInfo.getMessageParts();
+
+			List<WsArgument> args = new LinkedList<WsArgument>();
+			WsArgument wsArg = null;
+			for (MessagePartInfo part : parts) {
+				Field[] fields = part.getTypeClass().getDeclaredFields();
+				for (Field field : fields) {
+					Type type = field.getGenericType();
+					String typeStr = type.toString();
+					if (typeStr.indexOf("<") != -1 && typeStr.indexOf(">") != -1) {
+						typeStr = typeStr.substring(typeStr.indexOf("<") + 1, typeStr.indexOf(">"));
+					}
+
+					// 设置入参
+					// TODO 目前只支持简单类型的入参，复杂类型需要递归处理
+					wsArg = new WsArgument();
+					wsArg.setName(field.getName());
+					wsArg.setType(typeStr);
+					args.add(wsArg);
+				}
+			}
+
+			// 通过输出消息拿到返回类型
+			BindingMessageInfo outputMsgInfo = boi.getInput();
+			parts = outputMsgInfo.getMessageParts();
+
+			for (MessagePartInfo part : parts) {
+				Field[] fields = part.getTypeClass().getDeclaredFields();
+				for (Field field : fields) {
+					Type type = field.getGenericType();
+					String typeStr = type.toString();
+					if (typeStr.indexOf("<") != -1 && typeStr.indexOf(">") != -1) {
+						typeStr = typeStr.substring(typeStr.indexOf("<") + 1, typeStr.indexOf(">"));
+					}
+					wsOperation.setReturnType(typeStr);
+					break;
+				}
+			}
+
+			wsOperation.setInputArgs(args);
+			opList.add(wsOperation);
+		}
+		wsService.setOpList(opList);
+		return wsService;
+	}
+}
+----
+
+
+==== _axis1.4_ 的 _wsdl_ 解析
+_axis1.4_ 的 _wsdl_ 解析，则是由 _wsdl4j_ 完成。思路同上，直接读取 _wsdl_ 文件，逐一解析各元素即可。
+
+.code
+[source,java]
+----
+package com.dm.dubbo.wsdl.registry.util;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.wsdl.Binding;
+import javax.wsdl.Definition;
+import javax.wsdl.Input;
+import javax.wsdl.Message;
+import javax.wsdl.Operation;
+import javax.wsdl.Output;
+import javax.wsdl.Part;
+import javax.wsdl.Port;
+import javax.wsdl.PortType;
+import javax.wsdl.Service;
+import javax.wsdl.WSDLException;
+import javax.wsdl.factory.WSDLFactory;
+import javax.wsdl.xml.WSDLReader;
+import javax.xml.namespace.QName;
+
+import org.apache.log4j.Logger;
+import org.springframework.util.Assert;
+
+import com.dm.dubbo.wsdl.registry.domain.WsArgument;
+import com.dm.dubbo.wsdl.registry.domain.WsOperation;
+import com.dm.dubbo.wsdl.registry.domain.WsService;
+
+public class WsdlParseUtil {
+
+	private static Logger logger = Logger.getLogger(WsdlParseUtil.class);
+	private static WSDLFactory factory;
+	private static WSDLReader reader;
+
+	static {
+		try {
+			factory = WSDLFactory.newInstance();
+			reader = factory.newWSDLReader();
+
+			reader.setFeature("javax.wsdl.verbose", true);
+			reader.setFeature("javax.wsdl.importDocuments", true);
+		} catch (WSDLException e) {
+			logger.error("init wsdl factory error!", e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static WsService parse(String url) {
+		Assert.notNull(url, "wsdl url can't be null or empty!");
+
+		try {
+			// 解析wsdl
+			Definition def = reader.readWSDL(url);
+
+			// 设置命名空间
+			WsService wsService = new WsService();
+			wsService.setWsdlUrl(url);
+			wsService.setTargetNameSpace(def.getTargetNamespace());
+
+			// 获取服务
+			Map<QName, Service> map = def.getServices();
+			if (map == null || map.size() <= 0) {
+				logger.error("no service found on wsdl:" + url);
+				return null;
+			}
+
+			Service service = null;
+			Iterator<Service> it = map.values().iterator();
+			while (it.hasNext()) {
+				service = it.next();
+				break; // 只取第一个服务
+			}
+
+			if (service != null) {
+				wsService.setServiceName(service.getQName().getLocalPart());
+
+				// 获取Ports
+				Map<String, Port> ports = service.getPorts();
+				if (ports != null && ports.size() > 0) {
+
+					Port port = null;
+					Iterator<Port> portIt = ports.values().iterator();
+					while (portIt.hasNext()) {
+						port = portIt.next();
+						break;
+					}
+
+					// 获取所有方法
+					if (port != null) {
+						Binding binding = port.getBinding();
+						PortType portType = binding.getPortType();
+						List<Operation> operations = portType.getOperations();
+
+						if (operations == null || operations.size() <= 0) {
+							logger.info("no operation found on this wsdl :" + url);
+						} else {
+							WsOperation wsOp = null;
+							List<WsOperation> opList = new ArrayList<WsOperation>();
+							for (Operation op : operations) {
+								if (!op.isUndefined()) {
+									// 获取输入参数与返回类型
+									List<WsArgument> args = WsdlParseUtil.getInputParameters(op);
+									String returnType = WsdlParseUtil.getReturnType(op);
+
+									// 组装为WsOperation
+									wsOp = new WsOperation(op.getName(), args, returnType);
+									opList.add(wsOp);
+								}
+							}
+							wsService.setOpList(opList);
+						}
+					}
+				}
+
+				return wsService;
+			}
+		} catch (WSDLException e) {
+			logger.error("parse wsdl error! url:" + url, e);
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static String getReturnType(Operation op) {
+		Output output = op.getOutput();
+		Message msgOut = output.getMessage();
+
+		if (!msgOut.isUndefined()) {
+			Iterator<Part> partIter = msgOut.getParts().values().iterator();
+
+			while (partIter.hasNext()) {
+				Part part = partIter.next();
+				if (part.getTypeName() != null) {
+					return part.getTypeName().getLocalPart(); // 获取返回类型
+				}
+			}
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static List<WsArgument> getInputParameters(Operation op) {
+		List<WsArgument> list = new ArrayList<WsArgument>();
+
+		WsArgument arg = null;
+		Input input = op.getInput();
+		Message msg = input.getMessage();
+
+		// 构造请求参数
+		if (!msg.isUndefined()) {
+			Iterator<Part> partIter = msg.getParts().values().iterator();
+			while (partIter.hasNext()) {
+				Part part = partIter.next();
+				arg = new WsArgument();
+				arg.setName(part.getName());
+				if (part.getTypeName() != null) {
+					arg.setType(part.getTypeName().getLocalPart());
+				}
+				list.add(arg);
+			}
+		}
+		return list;
+	}
+}
+----

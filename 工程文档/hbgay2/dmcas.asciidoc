@@ -1,0 +1,287 @@
+= dmcas
+:imagesdir: ./images
+:iconsdir: ./images/icons
+
+_dmcas_ 作为 _sso_ 中的协调者，主要的职责是：
+
+. 票据的生成与校验
+. 各子系统之间协调访问
+
+== 名词说明
+票据中心::
+这里指后台专门存放用户 _ticket_ 信息的 _cache_ ，目前采用的是 _memcached_ 进行存储。
+
+信任列表::
+这里指各接入的子系统的域名列表。只有加入到了信任列表中的子系统，才可与其它子系统互相访问。
+
+== 实现技术
+spring::
+采用 _spring_ 容器管理 _service bean_
+
+mybatis::
+采用 _mybatis_ 完成 _database_ 的访问
+
+springmvc::
+采用 _springmvc_ 完成页面控制层的请求处理
+
+memcached::
+采用 _memcached_ 进行后台票据的存储管理
+
+== 实现细节
+
+=== 包图
+
+image::package.svg[]
+
+.包说明
+. core: 存放一些框架包
+* builder: 存放 _memcached client_ 构造内容
+* dao: 存放 _dao_ 层
+* filter: 存放框架上的一些 _web filter_
+* util: 存放工具类
+
+. server: 存放 _dmcas_ 对外服务内容
+* cache: 一些缓存类
+* controller: 存放 _controller_ 类等
+* service: 接口服务类
+* domain: 存放实体类
+* handler: 存放一些处理器
+* thread: 自定义线程类
+* filter: 存放服务上的 _web filter_
+* http: 存放 _request_ 包装类等
+* util: 存放 _web_ 相关工具类
+* config: 存放服务的一些配置信息
+
+=== 功能模块说明
+==== 登入
+用户请求登录的逻辑主要在 _AuthController_ ，此处主要提供的都是异步请求调用的方法（包括 _jsonp_ ）
+
+.code
+[source,java]
+----
+/**
+ * 用户账号登录
+ *
+ * @param request  请求
+ * @param response 响应
+ * @return
+ * @throws Exception
+ */
+@SuppressWarnings({"unchecked", "rawtypes"})
+@RequestMapping("/login")
+public ModelAndView login(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    return doLogin(request, response, new LoginSucessHandler() {
+        @Override
+        public void handle(HttpServletRequest request, HttpServletResponse response, Map<String, Object> params) throws Exception {
+            response.sendRedirect(params.get("service").toString());
+        }
+    }, new LoginFailHandler() {
+        @Override
+        public void handle(HttpServletRequest request, HttpServletResponse response, Map<String, Object> params) throws Exception {
+            AuthResult authResult = (AuthResult) params.get("authResult");
+            Domain domain = (Domain) params.get("domain");
+            send2Login(request, response, authResult.getMessage(), domain);
+        }
+    });
+}
+----
+由上面看出，登录的主要逻辑在于 _doLogin_ 方法，此处只是 _doLogin_ 方法使用 *策略模式* ，要求调用者传入了两个接口实现。
+
+而在 _doLogin_ 中，请求逻辑也相对简单，分为以下几步。
+
+* 获取请求参数并校验
+* _rpc_ 调用子系统实现，完成 *用户名、密码* 的校验
+* 调用 *登录成功/失败* 的子系统处理逻辑
+* 生成票据信息，存入 *票据中心*
+* 返回登录结果及票据
+
+.code
+====
+[source,java]
+----
+authResult = this.getAuthResult(request, domain); // <1>
+
+if (authResult.isValid()) {
+  // rpc调用子系统登录成功后处理实现
+ ReturnMessage returnMessage = invokeLoginPostProcess(domain, request, authResult, username, password); // <2>
+
+ authid = AuthCache.set(username, ip, domain.getDomainName(), idCardNo); // <3>
+ // 调用方自定义登录成功后处理逻辑
+ sucessHandler.handle(request, response, params); // <4>
+}else{
+  // rpc调用子系统登录失败后处理实现
+  ReturnMessage returnMessage = invokeLoginFailProcess(domain, request, authResult,  username, password); // <5>
+  params.put("returnMessage", returnMessage);
+  // 调用方自定义登录失败后处理逻辑
+  failHandler.handle(request, response, params); // <6>
+}
+----
+<1> _rpc_ 调用子系统完成用户名/密码的校验
+<2> _prc_ 调用子系统登录成功后的处理逻辑
+<3> 存储票据至票据中心
+<4> 调用自定义登录成功处理逻辑（策略模式）
+<5> _rpc_ 调用子系统登录失败后处理实现
+<6> 调用自定义登录失败后处理逻辑（策略模式）
+====
+
+==== 登出
+登出则非常简单，分两个步骤。
+
+* 注销用户票据
+* 重定向至登出页面
+
+==== 票据验证
+子系统的访问请求被 _cas-client_ 拦截后，会通过模拟 _http_ 请求完成校验。具体见 _cas-client_ 中的 _AuthFilter_ 的 _getAuthUser_ 方法。
+
+在 _dmcas_ 中则提供了该 _http_ 请求的服务方法。
+
+.AuthInfoController
+[source,java]
+----
+/**
+ * 根据authid获取认证的用户信息
+ *
+ * @param request
+ * @param response
+ * @return
+ * @throws Exception
+ */
+@RequestMapping("/getAuthUser")
+public ModelAndView getAuthUser(HttpServletRequest request,HttpServletResponse response) throws Exception {
+    // 用户原来的访问地址
+    String authid = request.getParameter(CASConf.getCasTicketName());
+    String ip = RequestUtil.getRemoteAddr(request);
+    String username = AuthCache.get(authid, ip); // <1>
+    if (StringUtils.hasText(username)) {
+        response.getWriter().write(username);
+    }
+    return null;
+}
+----
+<1> 直接从票据中心获取票据信息
+
+_cas-client_ 中通过此途径获取票据信息后，则只需要判断是否存在信息即可确定票据是否存在。
+
+==== 子系统及跨系统访问
+众所周知，基于 _cookie_ 挟带票据的 _sso_ 中会受限于 _cookie_ 无法跨域访问。此时需要一个公共的 *父域* ，而各子系统的域名则作为 *子域* 存在。但是在目前的环境下，通常不能方便地申请到这样的域名。此时需要寻找其它的方法来解决这个问题。
+
+.解决思路
+****
+. 在登录的同时，对各子域设计跨域 _cookie_ ，然后再访问各子系统时自然就能带 _cookie_ 访问。
+优点:: 实现简单且有效
+缺点::
+* 登录时较慢（由于在设置跨域 _cookie_ ）
+* 如果子系统设置 _cookie_ 失败（如子系统正好宕机了），稍候访问子系统将会要求重新登录。
+* 不易与其它非子系统的第三方系统（有独立用户体系）集成。
+
+. 独立 _dmcas_ 验证中心，各系统验证信息独自完成。 _dmcas_ 作好协调者。此时基于用户来访 _ip_ 来确定是同一用户的访问。
+优点:: 方便集成其它系统，很容易拓展。
+缺点:: ip可被伪装，且已登录时关闭浏览器后再打开会自动登录。
+
+[TIP]
+====
+现有的系统中 _dmcas_ 采用的是第一种解决方案。
+
+目前正在做的是升级为第二种解决方案。
+====
+****
+
+===== 实现细节
+
+image::dmcas_request.png[]
+
+整个验证流程如上图所示。
+
+===== 实现代码
+
+代码如下：
+见 `AuthInfoController` 中的 `getAuthInfo`
+
+.AuthInfoController.getAuthInfo
+[source,java]
+----
+String clientIp = request.getParameter(CASConf.getIpName()); // <1>
+
+// 获取ip对应的用户信息
+ String authInfo = AuthCache.getByClientIp(clientIp);
+ if (!StringUtils.hasText(authInfo)) {
+     logger.error("[clientIP:" + clientIp + "] no auth info found by clientIp " + clientIp);
+     return null; // <2>
+ }
+
+String host = request.getRemoteHost();
+logger.debug("[clientIP:" + clientIp + "] getAuthInfo,the user request domain：" + host);
+
+Domain requestDomain = DomainCache.get(host); // <3>
+
+String[] authArr = authInfo.split("&");
+String userCode = authArr[1];
+String loginHost = authArr[2];
+Domain loginDomain = DomainCache.get(loginHost); // <4>
+
+// 获取该用户在登录时的域对应的系统中的用户信息
+logger.debug("[clientIP:" + clientIp + ", userCode:" + userCode + "] begin get login domain(" + loginDomain.getDomainName() + ")'s user info!");
+UserMapperService userMapperService = ConsumerCache.get(loginDomain, UserMapperService.class);
+if (userMapperService == null) {
+logger.error("can't find login domain's consumer from registry center! domain name:" + loginDomain.getDomainName() + ", group:" + loginDomain.getGroupName());
+return null;
+}  // <5>
+
+// 根据该用户信息获取其在被请求的域对应的系统中的用户信息
+ logger.debug("[clientIP:" + clientIp + ", userCode:" + userCode + "] begin get " + user.getUser_code() + " mappingUser from requestDomain " + requestDomain.getDomainName());
+ userMapperService = ConsumerCache.get(requestDomain, UserMapperService.class);
+ if (userMapperService == null) {
+     logger.error("can't find request domain's consumer from registry center! domain name:" + requestDomain.getDomainName() + ", group:" + requestDomain.getGroupName());
+     return null;
+ }
+
+ User mapperUser = userMapperService.getUser(user);
+
+ // 未返回映射用户
+ if (mapperUser == null || !StringUtils.hasText(mapperUser.getUser_code())) {
+     logger.error("[clientIP:" + clientIp + ", userCode:" + userCode + "] current login user:" + user.getUser_code() + " can't visit from login domain " + loginDomain.getDomainName() + " to request domain:" + requestDomain.getDomainName());
+     return null;
+ }  // <6>
+
+ response.getWriter().write(sb.toString()); // <7>
+----
+<1> 获取 _client_ 拦截时获取到的用户访问 <<ip,ip>> ，这里可能会有问题，如果对方通过 _nginx_ 代理的请求，且未提供一个 _header_ 保存用户的 _ip_ 。
+<2> 校验用户 _authInfo_ 信息是否存在
+<3> 获取用户正要请求的域
+<4> 从 _authinfo_ 中获取用户登陆时存储的域地址
+<5> 获取用户登录时的用户信息。 _rpc_ 调用
+<6> 获取用户在目前被访问的系统中的映射后的用户信息。 _rpc_ 调用
+<7> 将获取到的映射用户信息回写
+
+
+
+[[ip]]
+.get user ip address
+[source,java]
+----
+public static String getClientIpAddr(HttpServletRequest request) {
+
+  String ip = request.getHeader("x-forwarded-for");
+
+  if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+
+    ip = request.getHeader("Proxy-Client-IP");
+
+  }
+
+  if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+
+    ip = request.getHeader("WL-Proxy-Client-IP");
+
+  }
+
+  if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+
+    ip = request.getRemoteAddr();
+
+  }
+
+  return ip;
+
+}
+----

@@ -1,0 +1,121 @@
+= dmga-dubbo-logger部署
+:imagesdir: ./images
+:iconsdir: ./images/icons
+
+_logger_ 是一个日志记录模块，完成服务请求中的日志记录功能。该模块独立后将集中日志的记录。
+
+== 获取安装包
+. 从开发人员处获取程序包
+. 从 http://svn.dameng.com:2688/code/DM-GAHYB-CODE/product/dmga-dubbo-logger[svn]下载源代码编译出程序包
+
+== 布署安装包
+安装包目录结构：
+
+image::logger_dir.png[]
+
+
+
+. 解压安装包到服务器上，记住解压后的目录路径。例如： `/opt/gaCloudHome2/dmga-dubbo-logger`
+
+. 修改conf目录下的dubbo.properties文件
++
+image::logger_dubbo.png[]
++
+image::logger_dubbo_properties.png[]
++
+修改注册中心地址，将先前安装好的zookeeper地址填下， *例如*：
++
+[source,c++]
+----
+dubbo.registry.address=zookeeper://10.72.38.50:2181
+----
+
+. 修改logjdbc.properties文件
++
+image::logger_logjdbc.png[]
++
+image::logger_jdbc.png[]
++
+修改 `日志库` 的连接地址，例如公安云的应该修改为：
++
+[source,c]
+----
+log.url=jdbc:dm//10.72.38.47:5236
+log.username=GAYLOG
+log.password=888888
+----
+
+== 启动服务
+=== 安装 `nc`
+启动脚本中使用到了 `nc` 工具命令（ _Linux_ 下）。
+
+. 修改本机 _yum_ 源地址
++
+----
+cd /etc/yum.repos.d/
+----
++
+image::logger_yum.png[]
++
+如果没有 _RHEL.repo_ 文件，则手动新建一个，并把该目录下的其它文件打包到 _bak_ 文件夹（无则新建）下。
++
+在 _RHEL.repo_ 中添加内容如下:
++
+----
+[rhel6]
+name=rhel6
+baseurl=ftp://10.72.10.250/pub/
+enabled=1
+gpgcheck=0
+----
++
+[TIP]
+====
+其中 `ftp://10.72.10.250` 这个 _ftp_ 为小舒提供的 _ftp_ ，如果不可访问，请将 `ftp://10.72.10.250/pub/` 修改为 `ftp://10.72.24.175/02-yum/` 。
+
+`ftp://10.72.24.175` 这个 _ftp_ 在我的机器上提供，需要使用时需要我机器是开机状态。
+====
+
+. 使用 _yum_ 安装 _nc_
++
+配置好 _yum_ 源后，键入如下命令，执行安装 _nc_
++
+----
+yum install nc -y
+----
+
+=== 给启动脚本添加可执行权限
+. 进入安装包的bin目录，给 `*.sh` 添加执行权限
++
+----
+chmod +x *.sh
+----
+
+. 进入bin目录，启动程序
++
+----
+./start.sh
+----
+<1> windows下为 `./start.bat`
+
+[TIP]
+====
+. start.sh 启动服务
+. stop.sh 停止服务
+. restart.sh 重启服务
+. dump.sh 生成jvm的堆快照信息
+. server.sh 将该脚本放到 /etc/init.d/下可做成服务开机自启
+====
+
+当服务启动后，可执行 `jps|grep Main` 命令查看是否存在
+----
+jps |grep Main
+----
+
+=== 查看日志信息
+进入安装包根目录/logs目录下，可查看对应的日志信息。
+例如：
+
+----
+tail -f logs/stdout.log
+----

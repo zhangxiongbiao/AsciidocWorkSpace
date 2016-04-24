@@ -1,0 +1,74 @@
+= Linux学习计划
+
+== Windows下搭建Linux环境
+. 安装 *VMWare*
+. 在 *VMWare* 上安装 *CentOS6.5* 的虚拟机
+
+== XShell、XFTP等的使用
+. 下载安装 _XShell_ 、 _XFTP_软件
+. 使用 _Xshell_ 远程连接本机的 _Linux_ 虚拟机，并能执行命令
+. 使用 _XFTP_ 远程连接本机的 _Linux_ 虚拟机，并能上传文件等。
+* 会修改 _XFTP_ 默认的文本编辑器
+. 修改 _XShell_ 、 _XFTP_ 等的编码格式，主题样式等。
+
+
+== 完成 jdk、tomcat等安装
+. 完成 _Linux_ 下的 _jdk_ 及 _tomcat_ 安装
+. 配置相应的环境变量
+. _tomcat_ 可正常运行
+. 再装一个 _tomcat2_ 并保证能正常运行
+
+== 使用yum或rpm安装任一linux软件
+. 使用 _rpm_ 安装及卸载 _linux_ 软件
+. 使用 _yum_ 安装及卸载 _linux_ 软件
+. 使用 _yum_ 安装 _gcc_
+. 切换 _yum_ 源
+
+== 掌握基本命令
+
+|===
+|命令|说明
+|man|
+|history|
+|cd|
+|ls|
+|ll|
+|rm|
+|mv|
+|cp|
+|chmod|
+|chown|
+|chgroup|
+|less|
+|more|
+|head|
+|tail|
+|vi|
+|vim|
+|find|
+|sed|
+|xargs|
+|grep|
+|egrep|
+|===
+
+.达到目标
+. 熟练使用 _man_ 命令查看 *命令* 帮助文档
+. 使用 vi 或 vim 编辑、查找、替换文件内容
+. 指定关键字搜索 _tomcat_ 日志，并从中找出相应的日志片段
+. 批量替换 *.properties 文件中，定义的 ip 。如将程序包下所有的 *.properties文件中的 localhost 替换为 10.72.38.47
+
+
+== 编写简单的 _shell_ 脚本，可定时执行
+.达到目标
+. 编写脚本，轮循 _ping_ _192.168.0.1 - 192.168.0.100_ 段的所有 _ip_ 地址
+. 编写删除日志脚本文件
+. 使用 _crontab_ 定时执行
+
+== 完成 _Linux_ 下 _tomcat_ 开机自启
+.达到目标
+. 添加脚本使 _tomcat_ 可开机自启
+
+== Do it yourself
+
+

@@ -1,0 +1,132 @@
+[[char-ref-table]]
+= Built-in attributes for character replacements
+:author: Sarah White
+
+// tag::entity[]
+.Built-in entity attributes
+[width="70%", cols="^1l,^1l,^1"]
+|===
+|Attribute reference |Replacement |Rendered
+
+|\{blank}, \{empty}
+|_nothing_
+|{empty}
+
+|\{sp}
+|_single space_
+|{sp}
+
+|\{nbsp}
+|\&#160;
+|{nbsp}
+
+|\{zwsp}
+|\&#8203;
+|{zwsp}
+
+|\{wj}
+|\&#8288;
+|{wj}
+
+|\{apos}
+|\&#39;
+|{apos}
+
+|\{quot}
+|\&#34;
+|{quot}
+
+|\{lsquo}
+|\&#8216;
+|{lsquo}
+
+|\{rsquo}
+|\&#8217;
+|{rsquo}
+
+|\{ldquo}
+|\&#8220;
+|{ldquo}
+
+|\{rdquo}
+|\&#8221;
+|{rdquo}
+
+|\{deg}
+|\&#176;
+|{deg}
+
+|\{plus}
+|\&#43;
+|{plus}
+
+|\{brvbar}
+|\&#166;
+|&#166;
+|===
+// end::entity[]
+
+// tag::lit[]
+.Built-in literal attributes
+[width="70%", cols="^1l,^1l,^1"]
+|===
+|Attribute reference |Replacement |Rendered
+
+|\{lt}
+|<
+|<
+
+|\{gt}
+|>
+|>
+
+|\{amp}
+|&
+|&
+
+|\{startsb}
+|[
+|[
+
+|\{endsb}
+|]
+|]
+
+|\{vbar}
+|{vbar}
+|{vbar}
+
+|\{caret}
+|^
+|^
+
+|\{asterisk}
+|*
+|*
+
+|\{tilde}
+|~
+|~
+
+|\{backslash}
+|\
+|\
+
+|\{backtick}
+|`
+|`
+
+|\{two-colons}
+|::
+|::
+
+|\{two-semicolons}
+|;;
+|;;
+
+|\{cpp}
+|C++
+|C++
+
+|===
+// end::lit[]

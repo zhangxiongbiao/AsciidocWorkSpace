@@ -1,0 +1,131 @@
+= dmga-dubbo-wsdl部署
+:imagesdir: ./images
+:iconsdir: ./images/icons
+
+== 简述
+
+_wsdl_ 服务主要完成了将第三方 _ws_ 服务接入到 _dubbo_ 中，并通过代理提供出一个新的 _ws_ 服务给调用方使用。
+
+image::flow.png[]
+
+调用方通过调用 _wsdl_ 提供的 _ws_ 服务，完成对第三方 _ws_ 服务的调用。
+
+[TIP]
+目前，内部与外部 _ws_ 服务均通过该服务统一对外提供服务。
+
+本服务部署安装过程与dmga-dubbo-logger极为相似。
+
+== 获取安装包
+. 从开发人员处获取程序包
+. 从 http://svn.dameng.com:2688/code/DM-GAHYB-CODE/product/dmga-dubbo-wsdl[svn]下载源代码编译出程序包
+
+== 布署安装包
+安装包目录结构
+
+image::wsdl_dir.png[]
+
+=== 布署文件
+将安装包拷贝到服务器上指定位置，解压缩即可。记住解压后的目录路径。例如： `/opt/gaCloudHome2/dmga-dubbo-wsdl`
+
+
+=== 修改配置文件
+进入安装目录
+
+. 修改conf/dubbo.properties
++
+image::wsdl_properties.png[]
++
+修改注册中心地址，将先前安装好的zookeeper地址填下， *例如*：
++
+[source,c++]
+----
+dubbo.registry.address=zookeeper://10.72.38.50:2181
+----
+
+. 修改conf/beans-config.xml
++
+image::wsdl_beans_config.png[]
++
+image::wsdl_beans_config2.png[]
++
+修改上图所示的注册中心地址，将先前安装好的zookeeper地址填下， *例如*：
++
+[source,xml]
+----
+<property name="registryAddress" value="zookeeper://10.72.38.50:2181"></property>
+----
+
+== 启动服务
+=== 安装 `nc`
+启动脚本中使用到了 `nc` 工具命令（ _Linux_ 下）。
+
+. 修改本机 _yum_ 源地址
++
+----
+cd /etc/yum.repos.d/
+----
++
+image::logger_yum.png[]
++
+如果没有 _RHEL.repo_ 文件，则手动新建一个，并把该目录下的其它文件打包到 _bak_ 文件夹（无则新建）下。
++
+在 _RHEL.repo_ 中添加内容如下:
++
+----
+[rhel6]
+name=rhel6
+baseurl=ftp://10.72.10.250/pub/
+enabled=1
+gpgcheck=0
+----
++
+[TIP]
+====
+其中 `ftp://10.72.10.250` 这个 _ftp_ 为小舒提供的 _ftp_ ，如果不可访问，请将 `ftp://10.72.10.250/pub/` 修改为 `ftp://10.72.24.175/02-yum/` 。
+
+`ftp://10.72.24.175` 这个 _ftp_ 在我的机器上提供，需要使用时需要我机器是开机状态。
+====
+
+. 使用 _yum_ 安装 _nc_
++
+配置好 _yum_ 源后，键入如下命令，执行安装 _nc_
++
+----
+yum install nc -y
+----
+
+=== 给启动脚本添加可执行权限
+. 进入安装包的bin目录，给 `*.sh` 添加执行权限
++
+----
+chmod +x *.sh
+----
+
+. 进入bin目录，启动程序
++
+----
+./start.sh
+----
+<1> windows下为 `./start.bat`
+
+[TIP]
+====
+. start.sh 启动服务
+. stop.sh 停止服务
+. restart.sh 重启服务
+. dump.sh 生成jvm的堆快照信息
+. server.sh 将该脚本放到 /etc/init.d/下可做成服务开机自启
+====
+
+当服务启动后，可执行 `jps|grep Main` 命令查看是否存在
+----
+jps |grep Main
+----
+
+=== 查看日志信息
+进入安装包根目录/logs目录下，可查看对应的日志信息。
+例如：
+
+----
+tail -f logs/stdout.log
+----

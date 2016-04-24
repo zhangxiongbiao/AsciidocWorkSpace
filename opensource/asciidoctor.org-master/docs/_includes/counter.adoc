@@ -1,0 +1,13 @@
+////
+Included in:
+
+- user-manual: Counter Attributes
+////
+
+----
+include::ex-counter.adoc[tags=base]
+----
+
+====
+include::ex-counter.adoc[tags=base]
+====

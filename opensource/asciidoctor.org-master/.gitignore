@@ -1,0 +1,9 @@
+/_archive/
+/_site/
+/_tmp/
+/.awestruct/
+/.bundle/
+/.rbx/
+/.sass-cache/
+/vendor/
+Gemfile.lock

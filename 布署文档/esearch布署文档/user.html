@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="author" content="zxb123 zxb@dameng.com">
+  <meta name="dcterms.date" content="2016-02-21">
+  <title>Esearch布署手册</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header>
+<h1 class="title">Esearch布署手册</h1>
+<h2 class="author">zxb123 <script type="text/javascript">
+<!--
+h='&#100;&#x61;&#x6d;&#x65;&#110;&#x67;&#46;&#x63;&#x6f;&#x6d;';a='&#64;';n='&#122;&#120;&#98;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#122;&#120;&#98;&#32;&#x61;&#116;&#32;&#100;&#x61;&#x6d;&#x65;&#110;&#x67;&#32;&#100;&#x6f;&#116;&#32;&#x63;&#x6f;&#x6d;</noscript></h2>
+<h3 class="date">2016-02-21</h3>
+</header>
+<h1></h1>
+<p>ESearch工程为elasticsearch插件的java客户端，通过本工程可完成以下操作。</p>
+<ul>
+<li><p>将数据库表数据导入到elasticsearch中</p></li>
+<li><p>基于已有的elasticsearch提供全文检索功能</p></li>
+<li><p>管理现有的elasticsearch索引资源</p></li>
+</ul>
+<blockquote>
+<p><strong>Tip</strong></p>
+<p>布署本工程前，请先确保已经安装了 <a href="https://www.elastic.co">elasticsearch</a> 插件。 elasticsearch安装请参考相关文档。本工程目前对应的elasticsearch版本为 <strong><em>version1.4.4</em></strong> ，请安装对应版本的elasticsearch插件。</p>
+</blockquote>
+<blockquote>
+<p><strong>Important</strong></p>
+<p>本工程部分功能依赖于metadata及wmf，请确保线上已经布署了这两个工程。</p>
+</blockquote>
+<h1 id="获取程序包">获取程序包</h1>
+<p>最新版本的esearch2程序源码在svn库上 <a href="http://svn.dameng.com:2688/code/DM-GAHYB-CODE/product/dmga-esearch" class="uri">http://svn.dameng.com:2688/code/DM-GAHYB-CODE/product/dmga-esearch</a></p>
+<h2 id="svn库上下载源码并编译">svn库上下载源码并编译</h2>
+<ol type="1">
+<li><p>从上面的 <a href="http://svn.dameng.com:2688/code/DM-GAHYB-CODE/product/dmga-esearch">svn</a> 地址下载源代码。</p></li>
+<li><p>导入eclipse</p></li>
+<li><p>编译并使用maven打成war包</p></li>
+</ol>
+<h2 id="从开发人员处获取">从开发人员处获取</h2>
+<ul>
+<li><p>联系开发人员获取该工程war包</p></li>
+</ul>
+<h1 id="环境准备">环境准备</h1>
+<p>在进行该工程布署前，需要在服务器上做好以下准备工作。</p>
+<h2 id="jdk准备">jdk准备</h2>
+<p>请自行百度或点此 <a href="http://jingyan.baidu.com/article/d621e8dae805272865913fa7.html">参考</a></p>
+<h2 id="tomcat准备">tomcat准备</h2>
+<p>请自行百度或点此 <a href="http://blog.csdn.net/zhuying_linux/article/details/6583096/">参考</a></p>
+<h2 id="初始化sql">初始化sql</h2>
+<p>在文档目录下找到/etc目录</p>
+<p><img src="./images/sql.png" alt="sql文件" /></p>
+<ol type="1">
+<li><p>执行create_table.sql</p></li>
+<li><p>执行init.sql</p></li>
+</ol>
+<h1 id="布署程序包">布署程序包</h1>
+<ol type="1">
+<li><p>war包布署</p>
+<p>如果是war包，则直接将war包拷贝到tomcat根目录的webapps下，然后启动tomcat，war包会自动解压。</p></li>
+<li><p>非war包方式布署</p>
+<p>非war包方式，需要在conf/server.xml中手动配置程序包所有位置。</p>
+<p><strong>配置示例.</strong></p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;Context</span><span class="ot"> path=</span><span class="st">&quot;/esearch2&quot;</span><span class="ot"> docBase=</span><span class="st">&quot;C:\zxbProgramFiles\workdir\project\code\DM-GAHYB-CODE\product\dmga-esearch\1.0.1\trunk\src\main\webapp&quot;</span> <span class="kw">&gt;</span>
+<span class="kw">&lt;/Context&gt;</span></code></pre></div></li>
+</ol>
+<blockquote>
+<p><strong>Important</strong></p>
+<p>配置完成后需要手动修改管理库连接地址及密码等</p>
+<figure>
+<img src="./images/jdbc.png" alt="配置文件位置" /><figcaption>配置文件位置</figcaption>
+</figure>
+</blockquote>
+<h1 id="索引抽取">索引抽取</h1>
+<p>索引抽取在这里指的是从数据库表中将数据抽取到全文库中（即插件处）。 程序实现了索引的全量抽取与增量抽取以及简单的清洗转换功能(数据最好ETL提前清洗好)。</p>
+<h2 id="添加es连接节点">添加es连接节点</h2>
+<figure>
+<img src="./images/manage.png" alt="进入索引管理界面" /><figcaption>进入索引管理界面</figcaption>
+</figure>
+<figure>
+<img src="./images/node.png" alt="索引节点管理界面" /><figcaption>索引节点管理界面</figcaption>
+</figure>
+<blockquote>
+<p><strong>Tip</strong></p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">名称</th>
+<th style="text-align: left;">解释</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><p>节点名称</p></td>
+<td style="text-align: left;"><p>指定一个节点名称</p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p>节点ip</p></td>
+<td style="text-align: left;"><p>如 <code>10.75.198.114:9300</code></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p>集群名称</p></td>
+<td style="text-align: left;"><p>必须如插件所配置的 <code>cluster.name</code> 保持一致</p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p>是否集群节点</p></td>
+<td style="text-align: left;"><p>建议默认选择 <code>是</code></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p>状态</p></td>
+<td style="text-align: left;"><p>表示是否启用该节点</p></td>
+</tr>
+</tbody>
+</table>
+<p>可以先点击右上角的 <strong>测试</strong> 按扭进行连接测试。</p>
+</blockquote>
+<h2 id="添加索引表">添加索引表</h2>
+<ol type="1">
+<li><p>进入索引表管理界面，点击 <strong>新增</strong> 按钮</p>
+<figure>
+<img src="./images/index.png" alt="进入索引表管理界面" /><figcaption>进入索引表管理界面</figcaption>
+</figure></li>
+<li><p>选择数据表所属数据源</p>
+<figure>
+<img src="./images/datasource.png" alt="进入数据源选择界面" /><figcaption>进入数据源选择界面</figcaption>
+</figure></li>
+<li><p>进入数据集选择界面</p>
+<figure>
+<img src="./images/dataset.png" alt="进入数据集选择界面" /><figcaption>进入数据集选择界面</figcaption>
+</figure>
+<p>选择要添加的数据集，点击 <strong>添加到索引管理表</strong> 即可。</p></li>
+</ol>
+<h2 id="配置索引字段信息">配置索引字段信息</h2>
+<blockquote>
+<p><strong>Important</strong></p>
+<p>在添加索引表后， <strong>需要配置索引字段信息后</strong> ，方可进行索引的创建</p>
+</blockquote>
+<ol type="1">
+<li><p>在索引表管理界面，点击 <strong>索引字段配置</strong></p>
+<figure>
+<img src="./images/index2.png" alt="索引字段配置" /><figcaption>索引字段配置</figcaption>
+</figure></li>
+<li><p>进入索引字段配置后，可进行字段的配置</p>
+<figure>
+<img src="./images/column.png" alt="索引列编辑界面" /><figcaption>索引列编辑界面</figcaption>
+</figure>
+<p>在上面的配置项中，可编辑的配置项依次为。</p>
+<dl>
+<dt>列注释</dt>
+<dd><p>列注释是确保在没有数据列注释的情况下，可以手动添加该列的注释信息。</p>
+</dd>
+<dt>属性设置</dt>
+<dd><p>属性设置指配置该列的属性信息。目前包括如下可配置的属性字段。</p>
+<ol type="1">
+<li><p>asc:升序排序</p>
+<p>结果展示时将以该列进行升序排序</p></li>
+<li><p>desc:降序排序</p>
+<p>结果展示时将以该列进行降序排序</p></li>
+<li><p>csrq:标识该字段为出生日期字段</p>
+<p>备用属性</p></li>
+<li><p>date:标识该列为日期列</p>
+<p>标识该字段为日期列，配置该项后，可提供类似 <code>张三 25</code> , <code>张三 1990</code> 这种搜索。</p></li>
+<li><p>gxsj:更新时间</p>
+<p>指定该字段为更新时间， <strong>同步索引</strong> 时将根据该字段进行索引更新。</p></li>
+<li><p>rksj:入库时间</p>
+<p>指定该字段为更新时间， <strong>同步索引</strong> 时将根据该字段进行索引追加。</p></li>
+<li><p>is_notAnalyzed:不分词处理</p>
+<p>不分词处理，配置该项后，可支持 <code>张？丰</code> , <code>张三*</code> 这种搜索。 <strong>不建议多数字段配该项，会影响性能。对关键字段如XM可以配置该项。</strong></p></li>
+<li><p>is_store:存储索引</p>
+<p>保留属性</p></li>
+<li><p>key:关键列</p>
+<p><code>云搜索中使用</code></p></li>
+<li><p>not_query:非查询列</p>
+<p>指定该列在数据检索时，不检索该列内容。</p></li>
+<li><p>not_result:非结果列</p>
+<p>指定该列在数据检索完成后，不获取该列内容。</p></li>
+<li><p>not_show:不显示</p>
+<p>指定该列在数据展示页面不显示。</p></li>
+<li><p>pk:主键列</p>
+<p>指定该列为主键</p></li>
+<li><p>second_query:二次查询列</p>
+<p>指定该列为二次查询列（ <strong>一键搜索</strong> 中使用），配置该项后，在详细页面，点击该列可进行二次查询。</p></li>
+<li><p>sfzh:身份证号列</p>
+<p><strong>强烈建议配置此项</strong></p>
+<p>一键搜索中照片展示会使用该项信息。</p></li>
+</ol>
+</dd>
+<dt>日期格式</dt>
+<dd><p>配置数据的日期格式</p>
+</dd>
+<dt>权重值</dt>
+<dd><p>权重，指在数据检索过程中，该列权重值越高，如果该列有匹配内容，对应的那行数据将会显示越靠前。</p>
+<p><strong>强烈建议配置此项，可选值为1~10，值越高表示权重值越大，匹配后越靠前，默认值为1</strong></p>
+<p><strong>该项只有在索引创建前配置方生效，如果索引已经创建后再配置此项将不生效。</strong></p>
+</dd>
+<dt>索引分词</dt>
+<dd><p>当使用到了分词器时需要配置此项，如ik。未使用分词器时，配置此项将会报错。默认不配置。</p>
+</dd>
+<dt>搜索分词</dt>
+<dd><p>当使用到了分词器时需要配置此项，如ik。未使用分词器时，配置此项将会报错。默认不配置。</p>
+</dd>
+<dt>是否索引</dt>
+<dd><p>建议默认 <strong>分词索引</strong> ，当该列不需要建索引时选择 <strong>不索引</strong></p>
+</dd>
+<dt>数据字典</dt>
+<dd><p>指定后可以 <strong>在创建索引过程中</strong> 对该列进行字典翻译。</p>
+</dd>
+<dt>排序号</dt>
+<dd><p>指定后将控制在 <strong>一键搜索</strong> 中列的显示顺序。</p>
+</dd>
+</dl></li>
+</ol>
+<h2 id="创建索引">创建索引</h2>
+<p>创建索引指的是将数据库表数据抽取到全文资源库。</p>
+<h3 id="指定创建索引sql">指定创建索引sql</h3>
+<ol type="1">
+<li><p>选择自定义sql</p>
+<figure>
+<img src="./images/custom_sql.png" alt="自定义sql" /><figcaption>自定义sql</figcaption>
+</figure></li>
+<li><p>指定sql语句</p>
+<figure>
+<img src="./images/edit_sql.png" alt="指定sql语句" /><figcaption>指定sql语句</figcaption>
+</figure>
+<dl>
+<dt>创建索引sql</dt>
+<dd><p>指定用来创建索引的sql语句</p>
+</dd>
+<dt>更新索引sql</dt>
+<dd><p>指定同步索引时用来更新索引的sql语句</p>
+</dd>
+<dt>追加索引sql</dt>
+<dd><p>指定同步索引时用来追加新索引数据的sql语句</p>
+</dd>
+</dl>
+<blockquote>
+<p><strong>Tip</strong></p>
+<p>指定索引sql时，上面三者可指定其中一到多个</p>
+</blockquote></li>
+</ol>
+<h3 id="直接创建索引">直接创建索引</h3>
+<p>当指定或者没有指定创建索引sql语句后，点击创建索引即可开始索引的创建。</p>
+<blockquote>
+<p><strong>Tip</strong></p>
+<p>如果没有手动指定创建索引sql，则会以下面的sql默认创建索引。 <code>select * from schema.table</code></p>
+</blockquote>
+<p>当需要同时创建多个索引时，可以在多个索引表上点击创建索引。</p>
+<blockquote>
+<p><strong>Warning</strong></p>
+<p>注意，此时是并行创建，不推荐使用这种方式同时创建多索引。可查看 <code>加入队列</code> 后创建索引。</p>
+</blockquote>
+<h3 id="加入队列后创建索引">加入队列后创建索引</h3>
+<p>当需要为多个索引表创建索引时，可将待创建的索引表 <code>加入队列</code> ，然后在 <code>查看队列</code> 中点击 <code>创建索引</code> 完成索引的创建。队列中的索引表创建任务是串行的，即按顺序依次创建。</p>
+<ol type="1">
+<li><p>将待创建索引表加入队列</p>
+<p><img src="./images/add_queue.png" alt="加入队列" /></p></li>
+<li><p>点击查看队列</p>
+<p><img src="./images/view_queue.png" alt="查看队列" /></p></li>
+<li><p>队列任务中点击创建索引</p>
+<p><img src="./images/queue.png" alt="队列创建索引" /></p>
+<blockquote>
+<p><strong>Tip</strong></p>
+<ol type="1">
+<li><p>队列中 <strong>正在被创建的索引任务</strong> 不可以移出队列，而后面 <strong>尚未开始创建</strong> 的索引任务可以被移出队列。</p></li>
+<li><p>队列任务执行过程中，可随时添加新的索引任务。</p></li>
+</ol>
+</blockquote></li>
+</ol>
+<h1 id="检索测试">检索测试</h1>
+<p>当索引创建完成后，可以直接在这个管理界面，点击 <strong>测试查询</strong> 进行查询测试。</p>
+<ol type="1">
+<li><p>进入测试查询界面</p>
+<p><img src="./images/view_search.png" alt="view search" /></p></li>
+<li><p>点击测试查询</p>
+<p><img src="./images/do_search.png" alt="do search" /></p></li>
+</ol>
+<h1 id="一键搜索">一键搜索</h1>
+<p>一键搜索是基于已经整合的索引表进行综合检索的功能。见下图：</p>
+<p><img src="./images/esearch.png" alt="esearch" /></p>
+<blockquote>
+<p><strong>Tip</strong></p>
+<p>完成上述功能需要完成以下几步</p>
+<ol type="1">
+<li><p>索引表对应的数据集进行资源编目</p>
+<p>未编目的资源不会显示在一键搜索中</p></li>
+<li><p>后台管理中配置查询方案</p></li>
+<li><p>挂接索引表到查询方案对应的分类下</p></li>
+</ol>
+</blockquote>
+<h2 id="配置查询方案">配置查询方案</h2>
+<ol type="1">
+<li><p>点击查询方案</p>
+<p><img src="./images/view_schema.png" alt="view schema" /></p>
+<p>此处的查询方案同 <strong>数据资源&gt;查询方案</strong> 相同，只是挂了个链接。</p>
+<p><img src="./images/schema2.png" alt="schema2" /></p></li>
+<li><p>手动添加 <strong>查询方案</strong> ，进入查询方案后，手动添加 <strong>分类</strong></p></li>
+<li><p>依次点击 <strong>设置分类</strong> ， <strong>设置索引</strong></p>
+<p><img src="./images/set_schema.png.jpg" alt="set schema.png" /></p>
+<p><img src="./images/set_classify.jpg" alt="set classify" /></p></li>
+<li><p>将左侧的资源添加至右侧即可</p>
+<p><img src="./images/set_index.jpg" alt="set index" /></p>
+<blockquote>
+<p><strong>Note</strong></p>
+<ul>
+<li><p>左侧的资源为索引表中的数据，且必须为已经 _编目_过的。</p></li>
+<li><p>资源名称分为三种颜色。</p>
+<ul>
+<li><p>红色 红色表示该资源未创建索引。</p></li>
+<li><p>紫色 紫色表示该资源被其它分类已经挂接过。</p></li>
+<li><p>绿色 绿色表示该资源已创建索引且未被其它分类挂接过。</p></li>
+</ul></li>
+</ul>
+</blockquote></li>
+</ol>
+<p>上述步骤完成后，整个一键搜索即配置完成。</p>
+<blockquote>
+<p><strong>Important</strong></p>
+<p>为提高检索速度，分类信息均缓存。配置成功后，请点击 <strong>清除缓存</strong></p>
+</blockquote>
+<h2 id="一键搜索页面">一键搜索页面</h2>
+<p>上述工作完成后，可按以下地址进入一键搜索界面。 <a href="http://host:port/esearch2/elasticsearch/DefaultQuery_init.do?scheme_id=scheme_id" class="uri">http://host:port/esearch2/elasticsearch/DefaultQuery_init.do?scheme_id=scheme_id</a></p>
+<dl>
+<dt>host</dt>
+<dd><p>你布署esearhc2的机器ip</p>
+</dd>
+<dt>port</dt>
+<dd><p>你的tomcat的端口号</p>
+</dd>
+<dt>scheme_id</dt>
+<dd><p>你刚才配的查询方案的ID（点击查询方案详细可看到）</p>
+</dd>
+</dl>
+<p><a href="http://localhost:8080/esearch2/elasticsearch/DefaultQuery_init.do?scheme_id=ejc" class="uri">http://localhost:8080/esearch2/elasticsearch/DefaultQuery_init.do?scheme_id=ejc</a></p>
+<h3 id="直接搜索">直接搜索</h3>
+<p>主关键字框中输入关键字，点击搜索直接开始搜索。</p>
+<p><img src="./images/search_step1.png" alt="search step1" /></p>
+<h3 id="资源展示顺序">资源展示顺序</h3>
+<p>左侧资源展示顺序，可在后台管理中进行配置。</p>
+<p><img src="./images/search_order.png" alt="search order" /></p>
+<ol type="1">
+<li><p>点击修改表</p>
+<p><img src="./images/edit_table.png" alt="edit table" /></p></li>
+<li><p>修改排序号并保存</p>
+<p><img src="./images/save_table.png" alt="save table" /></p></li>
+</ol>
+<h3 id="照片展示">照片展示</h3>
+<p>人物照片展示会在如下两个位置进行展示。</p>
+<figure>
+<img src="./images/photo_list.png" alt="数据列表处展示" /><figcaption>数据列表处展示</figcaption>
+</figure>
+<figure>
+<img src="./images/photo_view.png" alt="数据详细页面展示" /><figcaption>数据详细页面展示</figcaption>
+</figure>
+<p>如上所示，图片均挂了，图片展示功能不属于一键搜索的范围。需要其它系统提供一个获取照片的接口。例如：</p>
+<pre><code>http://localhost:8080/esearch2/elasticsearch/GetImg_getImg.do?sfzh=422130194202175629</code></pre>
+<blockquote>
+<p><strong>Tip</strong></p>
+<p>需要添加照片展示功能，需要具备如下条件。</p>
+<ol type="1">
+<li><p>具备一个照片获取接口，可根据身份证号获取的。</p></li>
+<li><p>该索引表已经指定了身份证号列。</p>
+<p><img src="./images/sfzh.png" alt="sfzh" /></p></li>
+</ol>
+</blockquote>
+<h3 id="二次查询">二次查询</h3>
+<p>二次查询，在此处是指通过在详细页面点击某列信息，然后基于该列值再次进行检索。</p>
+<dl>
+<dt>功能介绍</dt>
+<dd><ol type="1">
+<li><p>点击详细页面中的二次查询列后，将以该列值进行二次检索。</p>
+<p><img src="./images/second_query.png" alt="second query" /></p></li>
+<li><p>点击检索后的结果行，将跳转到对应资源页面</p>
+<p><img src="./images/resource.png" alt="resource" /></p></li>
+</ol>
+</dd>
+<dt>配置说明</dt>
+<dd><ol type="1">
+<li><p>配置二次查询列</p>
+<p><img src="./images/second_query_column.png" alt="second query column" /></p></li>
+<li><p>配置可被二次查询检索的资源</p>
+<ol type="a">
+<li><p>点击查询方案，添加方案，如 <strong>关联查询分类</strong></p>
+<p><img src="./images/image001.png" alt="image001" /></p></li>
+<li><p>点击详细，此处scheme_id需要修改为[big red]<em>renyuan</em></p>
+<p><img src="./images/image002.png" alt="image002" /></p></li>
+<li><p>依次点击设置分类，设置索引。同上面挂接资源一样即可。</p>
+<p><img src="./images/image003.png" alt="image003" /></p></li>
+</ol></li>
+</ol>
+</dd>
+</dl>
+<h3 id="筛选查询">筛选查询</h3>
+<p>筛选查询指的是在已经查询后的结果集中进行筛选，支持多个条件同时筛选。</p>
+<p><img src="./images/search2.png" alt="search2" /></p>
+<h3 id="搜索小提示">搜索小提示</h3>
+<p>搜索按钮右侧可以点击提示按钮获取搜索语法。</p>
+<ol type="1">
+<li><p>点击搜索提示按钮</p>
+<p><img src="./images/tip.png" alt="tip" /></p></li>
+<li><p>查看搜索提示</p>
+<p><img src="./images/tip2.png" alt="tip2" /></p></li>
+</ol>
+<h3 id="其它定制化项">其它定制化项</h3>
+<p>在孝感部门共享中，还添加了其它定制化开发的一些功能。</p>
+<h4 id="户成员">户成员</h4>
+<p>户成员即展示该用户的户藉变动信息。点击后会跳到对应页面根据身份证号进行查询。</p>
+<blockquote>
+<p><strong>Tip</strong></p>
+<p>不需要此功能时，可修改页面使不显示。</p>
+<p><img src="./images/query_xg.png" alt="query xg" /></p>
+</blockquote>
+<h4 id="比对">比对</h4>
+<p>比对，指将同一资源下的多条数据放在一起进行比对显示。 不需要此功能时，可修改页面使不显示。</p>
+<h1 id="定时同步索引">定时同步索引</h1>
+<p>程序实现了定时执行索引同步任务。需要在如下配置文件中配置。</p>
+<p><img src="./images/task.png" alt="task" /></p>
+<p>下图则是已经配置好了同步。</p>
+<p><img src="./images/task2.png" alt="task2" /></p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;property</span><span class="ot"> name=</span><span class="st">&quot;cronExpression&quot;</span><span class="ot"> value</span> <span class="ot">=</span> <span class="st">&quot;0 28 10 * * ?&quot;</span><span class="kw">&gt;&lt;/property&gt;</span> 
+
+<span class="co">&lt;!-- 引用trigger --&gt;</span>
+    <span class="kw">&lt;bean</span><span class="ot">  class=</span><span class="st">&quot;org.springframework.scheduling.quartz.SchedulerFactoryBean&quot;</span><span class="kw">&gt;</span> 
+        <span class="kw">&lt;property</span><span class="ot"> name=</span><span class="st">&quot;triggers&quot;</span><span class="kw">&gt;</span>
+            <span class="kw">&lt;list&gt;</span>
+                <span class="kw">&lt;ref</span><span class="ot"> local=</span><span class="st">&quot;sychronizedTrigger&quot;</span> <span class="kw">/&gt;</span>
+            <span class="kw">&lt;/list&gt;</span>
+        <span class="kw">&lt;/property&gt;</span>
+    <span class="kw">&lt;/bean&gt;</span></code></pre></div>
+<ul>
+<li><p>此处配置定时调度频率，为cron表达式。请自行百度如何编写cron表达式。</p></li>
+<li><p>当不需要此定时任务执行时，请将此bean给注释掉即可。</p></li>
+</ul>
+</body>
+</html>

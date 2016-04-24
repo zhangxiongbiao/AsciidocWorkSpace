@@ -1,0 +1,9 @@
+= dmga-dubbo-wsdl
+:imagesdir: ./images
+:iconsdir: ./images/icons
+
+include::wsdl_01_.asciidoc[]
+
+include::wsdl_02_code.asciidoc[]
+
+include::wsdl_03_package.asciidoc[]

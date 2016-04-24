@@ -1,0 +1,95 @@
+= dmcas线上更新手册
+
+== 获取程序包
+
+从svn地址获取::
+http://svn.dameng.com:2688/code/DM-GAHYB-CODE/framework/dmga-cas/1.0.1/tags/dmga-cas-hb
++
+从上面地址下载源代码，手动编译打包。
+
+从开发人员处获取::
+找开发人员协助打包程序
+
+== 布署安装
+
+=== 安装环境
+dmcas布署在下面2个节点中，所以做程序更新时需要同时更新以下两个位置。
+
+[%header]
+|===
+|ip|地址|服务器类型
+|10.72.38.49|/opt/gaCloudHome2/dmcas2|Linux
+|10.72.38.54|D:\gaCloudHome\dmcas2-2.0|Windows
+|===
+
+=== 布署方案
+dmcas采用nginx作负载，所以可以很方便地暂停某一节点的请求，完成布署后再切换到另一节点。
+
+==== nginx环境
+[%header]
+|===
+|ip|地址|服务器类型
+|10.72.38.50|/opt/nginx_service|Linux
+|===
+
+==== 修改nginx配置文件
+所有访问dmcas的请求均是通过nginx来作的转发及负载，所以通过修改nginx配置文件可以达到指定请求只访问某一台dmcas服务。
+
+[TIP]
+nginx配置文件在nginx安装目录下的conf/nginx.conf
+
+[source,java]
+----
+location ~* /(dmcas|portal)$ {
+  proxy_set_header X-Forwarded-For $remote_addr;
+     proxy_set_header Host $http_host;
+  proxy_pass http://servicepool1; // <1>
+  proxy_connect_timeout 600s;
+  proxy_send_timeout 900s;
+  proxy_read_timeout 900s;
+}
+
+upstream servicepool1 { // <2>
+    server 10.72.38.49:8080 max_fails=50 fail_timeout=15s; // <3>
+    server 10.72.38.54:8080 max_fails=50 fail_timeout=15s;
+    ip_hash;
+}
+----
+<1> proxy_pass指向了反向代理服务配置
+<2> 此处的upstream对应 1 中的proxy_pass
+<3> 使用 `#` 将该行注释后，请求将不会再发向该台服务器
+
+[TIP]
+当注释了某一个`server`后，是不会立即生效的，需要重新加载nginx配置文件
+
+==== 重新加载nginx配置
+. 获取nginx主进程id
++
+----
+ps -ef|grep nginx|grep master
+----
+第二列就是主进程ID
+
+. 执行命令
++
+[source,shell]
+----
+kill -HUP proces_id  // <1>
+----
+<1> process_id为nginx的主进程ID
+
+==== 升级布署
+完成nginx配置重新加载后，上面被注释的那个server就不会再有请求了。此时便可以到被注释的那个server上进行安装布署了。
+
+找到老程序安装目录，备份::
+  例如,`/opt/gaCloudHome2/dmcas2` 重全名为 `/opt/gaCloudHome2/dmcas2_bak20160309_zxb`
+将新程序包拷贝到此目录，重全名::
+  需要将新程序包的文件夹全名为老程序包的名字。例如，重全名为 `/opt/gaCloudHome2/dmcas2`
+重启tomcat::
+  Linux/Windows操作自行百度
+
+
+==== 切换到另一节点布署
+上述操作完成后，再重新进入nginx，修改配置，打开刚才的server注释，重新加载nginx配置即可。
+
+另一个节点更新重复上面的步骤即可。

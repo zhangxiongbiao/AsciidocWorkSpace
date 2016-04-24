@@ -1,0 +1,971 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?asciidoc-toc maxdepth="3"?>
+<?asciidoc-numbered?>
+<book xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
+<info>
+<title>Esearch布署手册</title>
+<date>2016-02-21</date>
+<author>
+<personname>
+<firstname>zxb123</firstname>
+</personname>
+<email>zxb@dameng.com</email>
+</author>
+<authorinitials>z</authorinitials>
+<revhistory>
+<revision>
+<revnumber>1.0</revnumber>
+<date>2016-02-21</date>
+<authorinitials>z</authorinitials>
+</revision>
+</revhistory>
+</info>
+<preface>
+<title></title>
+<simpara>ESearch工程为elasticsearch插件的java客户端，通过本工程可完成以下操作。</simpara>
+<itemizedlist>
+<listitem>
+<simpara>将数据库表数据导入到elasticsearch中</simpara>
+</listitem>
+<listitem>
+<simpara>基于已有的elasticsearch提供全文检索功能</simpara>
+</listitem>
+<listitem>
+<simpara>管理现有的elasticsearch索引资源</simpara>
+</listitem>
+</itemizedlist>
+<tip>
+<simpara>布署本工程前，请先确保已经安装了 <link xl:href="https://www.elastic.co">elasticsearch</link> 插件。
+elasticsearch安装请参考相关文档。本工程目前对应的elasticsearch版本为 <emphasis role="strong"><emphasis>version1.4.4</emphasis></emphasis> ，请安装对应版本的elasticsearch插件。</simpara>
+</tip>
+<important>
+<simpara>本工程部分功能依赖于metadata及wmf，请确保线上已经布署了这两个工程。</simpara>
+</important>
+</preface>
+<chapter xml:id="获取程序包">
+<title>获取程序包</title>
+<simpara>最新版本的esearch2程序源码在svn库上 <link xl:href="http://svn.dameng.com:2688/code/DM-GAHYB-CODE/product/dmga-esearch">http://svn.dameng.com:2688/code/DM-GAHYB-CODE/product/dmga-esearch</link></simpara>
+<section xml:id="svn库上下载源码并编译">
+<title>svn库上下载源码并编译</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>从上面的 <link xl:href="http://svn.dameng.com:2688/code/DM-GAHYB-CODE/product/dmga-esearch">svn</link> 地址下载源代码。</simpara>
+</listitem>
+<listitem>
+<simpara>导入eclipse</simpara>
+</listitem>
+<listitem>
+<simpara>编译并使用maven打成war包</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="从开发人员处获取">
+<title>从开发人员处获取</title>
+<itemizedlist>
+<listitem>
+<simpara>联系开发人员获取该工程war包</simpara>
+</listitem>
+</itemizedlist>
+</section>
+</chapter>
+<chapter xml:id="环境准备">
+<title>环境准备</title>
+<simpara>在进行该工程布署前，需要在服务器上做好以下准备工作。</simpara>
+<section xml:id="jdk准备">
+<title>jdk准备</title>
+<simpara>请自行百度或点此 <link xl:href="http://jingyan.baidu.com/article/d621e8dae805272865913fa7.html">参考</link></simpara>
+</section>
+<section xml:id="tomcat准备">
+<title>tomcat准备</title>
+<simpara>请自行百度或点此 <link xl:href="http://blog.csdn.net/zhuying_linux/article/details/6583096/">参考</link></simpara>
+</section>
+<section xml:id="初始化sql">
+<title>初始化sql</title>
+<simpara>在文档目录下找到/etc目录</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/sql.png"/>
+</imageobject>
+<textobject><phrase>sql文件</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>执行create_table.sql</simpara>
+</listitem>
+<listitem>
+<simpara>执行init.sql</simpara>
+</listitem>
+</orderedlist>
+</section>
+</chapter>
+<chapter xml:id="布署程序包">
+<title>布署程序包</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>war包布署</simpara>
+<simpara>如果是war包，则直接将war包拷贝到tomcat根目录的webapps下，然后启动tomcat，war包会自动解压。</simpara>
+</listitem>
+<listitem>
+<simpara>非war包方式布署</simpara>
+<simpara>非war包方式，需要在conf/server.xml中手动配置程序包所有位置。</simpara>
+<formalpara>
+<title>配置示例</title>
+<para>
+<programlisting language="xml" linenumbering="unnumbered">&lt;Context path="/esearch2" docBase="C:\zxbProgramFiles\workdir\project\code\DM-GAHYB-CODE\product\dmga-esearch\1.0.1\trunk\src\main\webapp" &gt;
+&lt;/Context&gt;</programlisting>
+</para>
+</formalpara>
+</listitem>
+</orderedlist>
+<important>
+<simpara>配置完成后需要手动修改管理库连接地址及密码等</simpara>
+<figure>
+<title>配置文件位置</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/jdbc.png"/>
+</imageobject>
+<textobject><phrase>配置文件位置</phrase></textobject>
+</mediaobject>
+</figure>
+</important>
+</chapter>
+<chapter xml:id="索引抽取">
+<title>索引抽取</title>
+<simpara>索引抽取在这里指的是从数据库表中将数据抽取到全文库中（即插件处）。
+程序实现了索引的全量抽取与增量抽取以及简单的清洗转换功能(数据最好ETL提前清洗好)。</simpara>
+<section xml:id="添加es连接节点">
+<title>添加es连接节点</title>
+<figure>
+<title>进入索引管理界面</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/manage.png"/>
+</imageobject>
+<textobject><phrase>manage</phrase></textobject>
+</mediaobject>
+</figure>
+<figure>
+<title>索引节点管理界面</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/node.png"/>
+</imageobject>
+<textobject><phrase>索引节点管理界面</phrase></textobject>
+</mediaobject>
+</figure>
+<tip>
+<title>说明</title>
+<informaltable frame="all" rowsep="1" colsep="1">
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<thead>
+<row>
+<entry align="left" valign="top">名称</entry>
+<entry align="left" valign="top">解释</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>节点名称</simpara></entry>
+<entry align="left" valign="top"><simpara>指定一个节点名称</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>节点ip</simpara></entry>
+<entry align="left" valign="top"><simpara>如 <literal>10.75.198.114:9300</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>集群名称</simpara></entry>
+<entry align="left" valign="top"><simpara>必须如插件所配置的 <literal>cluster.name</literal> 保持一致</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>是否集群节点</simpara></entry>
+<entry align="left" valign="top"><simpara>建议默认选择 <literal>是</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>状态</simpara></entry>
+<entry align="left" valign="top"><simpara>表示是否启用该节点</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<simpara>可以先点击右上角的 <emphasis role="strong">测试</emphasis> 按扭进行连接测试。</simpara>
+</tip>
+</section>
+<section xml:id="添加索引表">
+<title>添加索引表</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>进入索引表管理界面，点击 <emphasis role="strong">新增</emphasis> 按钮</simpara>
+<figure>
+<title>进入索引表管理界面</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/index.png"/>
+</imageobject>
+<textobject><phrase>索引表管理界面</phrase></textobject>
+</mediaobject>
+</figure>
+</listitem>
+<listitem>
+<simpara>选择数据表所属数据源</simpara>
+<figure>
+<title>进入数据源选择界面</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/datasource.png"/>
+</imageobject>
+<textobject><phrase>进入数据源选择界面</phrase></textobject>
+</mediaobject>
+</figure>
+</listitem>
+<listitem>
+<simpara>进入数据集选择界面</simpara>
+<figure>
+<title>进入数据集选择界面</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/dataset.png"/>
+</imageobject>
+<textobject><phrase>进入数据集选择界面</phrase></textobject>
+</mediaobject>
+</figure>
+<simpara>选择要添加的数据集，点击 <emphasis role="strong">添加到索引管理表</emphasis> 即可。</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="配置索引字段信息">
+<title>配置索引字段信息</title>
+<important>
+<simpara>在添加索引表后， <emphasis role="strong">需要配置索引字段信息后</emphasis> ，方可进行索引的创建</simpara>
+</important>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>在索引表管理界面，点击 <emphasis role="strong">索引字段配置</emphasis></simpara>
+<figure>
+<title>索引字段配置</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/index2.png"/>
+</imageobject>
+<textobject><phrase>索引字段配置</phrase></textobject>
+</mediaobject>
+</figure>
+</listitem>
+<listitem>
+<simpara>进入索引字段配置后，可进行字段的配置</simpara>
+<figure>
+<title>索引列编辑界面</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/column.png"/>
+</imageobject>
+<textobject><phrase>索引列编辑界面</phrase></textobject>
+</mediaobject>
+</figure>
+<sidebar>
+<title>配置说明</title>
+<simpara>在上面的配置项中，可编辑的配置项依次为。</simpara>
+<variablelist>
+<varlistentry>
+<term>列注释</term>
+<listitem>
+<simpara>列注释是确保在没有数据列注释的情况下，可以手动添加该列的注释信息。</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>属性设置</term>
+<listitem>
+<simpara>属性设置指配置该列的属性信息。目前包括如下可配置的属性字段。</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>asc:升序排序</simpara>
+<simpara>结果展示时将以该列进行升序排序</simpara>
+</listitem>
+<listitem>
+<simpara>desc:降序排序</simpara>
+<simpara>结果展示时将以该列进行降序排序</simpara>
+</listitem>
+<listitem>
+<simpara>csrq:标识该字段为出生日期字段</simpara>
+<simpara>备用属性</simpara>
+</listitem>
+<listitem>
+<simpara>date:标识该列为日期列</simpara>
+<simpara>标识该字段为日期列，配置该项后，可提供类似 <literal>张三 25</literal> , <literal>张三 1990</literal> 这种搜索。</simpara>
+</listitem>
+<listitem>
+<simpara>gxsj:更新时间</simpara>
+<simpara>指定该字段为更新时间， <emphasis role="strong">同步索引</emphasis> 时将根据该字段进行索引更新。</simpara>
+</listitem>
+<listitem>
+<simpara>rksj:入库时间</simpara>
+<simpara>指定该字段为更新时间， <emphasis role="strong">同步索引</emphasis> 时将根据该字段进行索引追加。</simpara>
+</listitem>
+<listitem>
+<simpara>is_notAnalyzed:不分词处理</simpara>
+<simpara>不分词处理，配置该项后，可支持 <literal>张？丰</literal> , <literal>张三*</literal> 这种搜索。
+<emphasis role="strong">不建议多数字段配该项，会影响性能。对关键字段如XM可以配置该项。</emphasis></simpara>
+</listitem>
+<listitem>
+<simpara>is_store:存储索引</simpara>
+<simpara>保留属性</simpara>
+</listitem>
+<listitem>
+<simpara>key:关键列</simpara>
+<simpara><literal>云搜索中使用</literal></simpara>
+</listitem>
+<listitem>
+<simpara>not_query:非查询列</simpara>
+<simpara>指定该列在数据检索时，不检索该列内容。</simpara>
+</listitem>
+<listitem>
+<simpara>not_result:非结果列</simpara>
+<simpara>指定该列在数据检索完成后，不获取该列内容。</simpara>
+</listitem>
+<listitem>
+<simpara>not_show:不显示</simpara>
+<simpara>指定该列在数据展示页面不显示。</simpara>
+</listitem>
+<listitem>
+<simpara>pk:主键列</simpara>
+<simpara>指定该列为主键</simpara>
+</listitem>
+<listitem>
+<simpara>second_query:二次查询列</simpara>
+<simpara>指定该列为二次查询列（ <emphasis role="strong">一键搜索</emphasis> 中使用），配置该项后，在详细页面，点击该列可进行二次查询。</simpara>
+</listitem>
+<listitem>
+<simpara>sfzh:身份证号列</simpara>
+<simpara><emphasis role="strong">强烈建议配置此项</emphasis></simpara>
+<simpara>一键搜索中照片展示会使用该项信息。</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>日期格式</term>
+<listitem>
+<simpara>配置数据的日期格式</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>权重值</term>
+<listitem>
+<simpara>权重，指在数据检索过程中，该列权重值越高，如果该列有匹配内容，对应的那行数据将会显示越靠前。</simpara>
+<simpara><emphasis role="strong">强烈建议配置此项，可选值为1~10，值越高表示权重值越大，匹配后越靠前，默认值为1</emphasis></simpara>
+<simpara><emphasis role="strong">该项只有在索引创建前配置方生效，如果索引已经创建后再配置此项将不生效。</emphasis></simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>索引分词</term>
+<listitem>
+<simpara>当使用到了分词器时需要配置此项，如ik。未使用分词器时，配置此项将会报错。默认不配置。</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>搜索分词</term>
+<listitem>
+<simpara>当使用到了分词器时需要配置此项，如ik。未使用分词器时，配置此项将会报错。默认不配置。</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>是否索引</term>
+<listitem>
+<simpara>建议默认 <emphasis role="strong">分词索引</emphasis> ，当该列不需要建索引时选择 <emphasis role="strong">不索引</emphasis></simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>数据字典</term>
+<listitem>
+<simpara>指定后可以 <emphasis role="strong">在创建索引过程中</emphasis> 对该列进行字典翻译。</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>排序号</term>
+<listitem>
+<simpara>指定后将控制在 <emphasis role="strong">一键搜索</emphasis> 中列的显示顺序。</simpara>
+</listitem>
+</varlistentry>
+</variablelist>
+</sidebar>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="创建索引">
+<title>创建索引</title>
+<simpara>创建索引指的是将数据库表数据抽取到全文资源库。</simpara>
+<section xml:id="指定创建索引sql">
+<title>指定创建索引sql</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>选择自定义sql</simpara>
+<figure>
+<title>自定义sql</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/custom_sql.png"/>
+</imageobject>
+<textobject><phrase>custom sql</phrase></textobject>
+</mediaobject>
+</figure>
+</listitem>
+<listitem>
+<simpara>指定sql语句</simpara>
+<figure>
+<title>指定sql语句</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/edit_sql.png"/>
+</imageobject>
+<textobject><phrase>edit sql</phrase></textobject>
+</mediaobject>
+</figure>
+<variablelist>
+<varlistentry>
+<term>创建索引sql</term>
+<listitem>
+<simpara>指定用来创建索引的sql语句</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>更新索引sql</term>
+<listitem>
+<simpara>指定同步索引时用来更新索引的sql语句</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>追加索引sql</term>
+<listitem>
+<simpara>指定同步索引时用来追加新索引数据的sql语句</simpara>
+</listitem>
+</varlistentry>
+</variablelist>
+<tip>
+<simpara>指定索引sql时，上面三者可指定其中一到多个</simpara>
+</tip>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="直接创建索引">
+<title>直接创建索引</title>
+<simpara>当指定或者没有指定创建索引sql语句后，点击创建索引即可开始索引的创建。</simpara>
+<tip>
+<simpara>如果没有手动指定创建索引sql，则会以下面的sql默认创建索引。
+<literal>select * from schema.table</literal></simpara>
+</tip>
+<simpara>当需要同时创建多个索引时，可以在多个索引表上点击创建索引。</simpara>
+<warning>
+<simpara>注意，此时是并行创建，不推荐使用这种方式同时创建多索引。可查看 <literal>加入队列</literal> 后创建索引。</simpara>
+</warning>
+</section>
+<section xml:id="加入队列后创建索引">
+<title>加入队列后创建索引</title>
+<simpara>当需要为多个索引表创建索引时，可将待创建的索引表 <literal>加入队列</literal> ，然后在 <literal>查看队列</literal> 中点击 <literal>创建索引</literal> 完成索引的创建。队列中的索引表创建任务是串行的，即按顺序依次创建。</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>将待创建索引表加入队列</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/add_queue.png"/>
+</imageobject>
+<textobject><phrase>加入队列</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>点击查看队列</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/view_queue.png"/>
+</imageobject>
+<textobject><phrase>查看队列</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>队列任务中点击创建索引</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/queue.png"/>
+</imageobject>
+<textobject><phrase>队列创建索引</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<tip>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>队列中 <emphasis role="strong">正在被创建的索引任务</emphasis> 不可以移出队列，而后面 <emphasis role="strong">尚未开始创建</emphasis> 的索引任务可以被移出队列。</simpara>
+</listitem>
+<listitem>
+<simpara>队列任务执行过程中，可随时添加新的索引任务。</simpara>
+</listitem>
+</orderedlist>
+</tip>
+</listitem>
+</orderedlist>
+</section>
+</section>
+</chapter>
+<chapter xml:id="检索测试">
+<title>检索测试</title>
+<simpara>当索引创建完成后，可以直接在这个管理界面，点击 <emphasis role="strong">测试查询</emphasis> 进行查询测试。</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>进入测试查询界面</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/view_search.png"/>
+</imageobject>
+<textobject><phrase>view search</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>点击测试查询</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/do_search.png"/>
+</imageobject>
+<textobject><phrase>do search</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+</orderedlist>
+</chapter>
+<chapter xml:id="一键搜索">
+<title>一键搜索</title>
+<simpara>一键搜索是基于已经整合的索引表进行综合检索的功能。见下图：</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/esearch.png"/>
+</imageobject>
+<textobject><phrase>esearch</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<tip>
+<simpara>完成上述功能需要完成以下几步</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>索引表对应的数据集进行资源编目</simpara>
+<simpara>未编目的资源不会显示在一键搜索中</simpara>
+</listitem>
+<listitem>
+<simpara>后台管理中配置查询方案</simpara>
+</listitem>
+<listitem>
+<simpara>挂接索引表到查询方案对应的分类下</simpara>
+</listitem>
+</orderedlist>
+</tip>
+<section xml:id="配置查询方案">
+<title>配置查询方案</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>点击查询方案</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/view_schema.png"/>
+</imageobject>
+<textobject><phrase>view schema</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<simpara>此处的查询方案同 <emphasis role="strong">数据资源&gt;查询方案</emphasis> 相同，只是挂了个链接。</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/schema2.png"/>
+</imageobject>
+<textobject><phrase>schema2</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>手动添加 <emphasis role="strong">查询方案</emphasis> ，进入查询方案后，手动添加 <emphasis role="strong">分类</emphasis></simpara>
+</listitem>
+<listitem>
+<simpara>依次点击 <emphasis role="strong">设置分类</emphasis> ， <emphasis role="strong">设置索引</emphasis></simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/set_schema.png.jpg"/>
+</imageobject>
+<textobject><phrase>set schema.png</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/set_classify.jpg"/>
+</imageobject>
+<textobject><phrase>set classify</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>将左侧的资源添加至右侧即可</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/set_index.jpg"/>
+</imageobject>
+<textobject><phrase>set index</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<note>
+<itemizedlist>
+<listitem>
+<simpara>左侧的资源为索引表中的数据，且必须为已经 _编目_过的。</simpara>
+</listitem>
+<listitem>
+<simpara>资源名称分为三种颜色。</simpara>
+<itemizedlist>
+<listitem>
+<simpara>红色
+红色表示该资源未创建索引。</simpara>
+</listitem>
+<listitem>
+<simpara>紫色
+紫色表示该资源被其它分类已经挂接过。</simpara>
+</listitem>
+<listitem>
+<simpara>绿色
+绿色表示该资源已创建索引且未被其它分类挂接过。</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+</itemizedlist>
+</note>
+</listitem>
+</orderedlist>
+<simpara>上述步骤完成后，整个一键搜索即配置完成。</simpara>
+<important>
+<simpara>为提高检索速度，分类信息均缓存。配置成功后，请点击 <emphasis role="strong">清除缓存</emphasis></simpara>
+</important>
+</section>
+<section xml:id="一键搜索页面">
+<title>一键搜索页面</title>
+<simpara>上述工作完成后，可按以下地址进入一键搜索界面。
+<link xl:href="http://host:port/esearch2/elasticsearch/DefaultQuery_init.do?scheme_id=scheme_id">http://host:port/esearch2/elasticsearch/DefaultQuery_init.do?scheme_id=scheme_id</link></simpara>
+<variablelist>
+<varlistentry>
+<term>host</term>
+<listitem>
+<simpara>你布署esearhc2的机器ip</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>port</term>
+<listitem>
+<simpara>你的tomcat的端口号</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>scheme_id</term>
+<listitem>
+<simpara>你刚才配的查询方案的ID（点击查询方案详细可看到）</simpara>
+</listitem>
+</varlistentry>
+</variablelist>
+<sidebar>
+<title>示例</title>
+<simpara><link xl:href="http://localhost:8080/esearch2/elasticsearch/DefaultQuery_init.do?scheme_id=ejc">http://localhost:8080/esearch2/elasticsearch/DefaultQuery_init.do?scheme_id=ejc</link></simpara>
+</sidebar>
+<section xml:id="直接搜索">
+<title>直接搜索</title>
+<simpara>主关键字框中输入关键字，点击搜索直接开始搜索。</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/search_step1.png"/>
+</imageobject>
+<textobject><phrase>search step1</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</section>
+<section xml:id="资源展示顺序">
+<title>资源展示顺序</title>
+<simpara>左侧资源展示顺序，可在后台管理中进行配置。</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/search_order.png"/>
+</imageobject>
+<textobject><phrase>search order</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>点击修改表</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/edit_table.png"/>
+</imageobject>
+<textobject><phrase>edit table</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>修改排序号并保存</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/save_table.png"/>
+</imageobject>
+<textobject><phrase>save table</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="照片展示">
+<title>照片展示</title>
+<simpara>人物照片展示会在如下两个位置进行展示。</simpara>
+<figure>
+<title>数据列表处展示</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/photo_list.png"/>
+</imageobject>
+<textobject><phrase>photo list</phrase></textobject>
+</mediaobject>
+</figure>
+<figure>
+<title>数据详细页面展示</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/photo_view.png"/>
+</imageobject>
+<textobject><phrase>photo view</phrase></textobject>
+</mediaobject>
+</figure>
+<simpara>如上所示，图片均挂了，图片展示功能不属于一键搜索的范围。需要其它系统提供一个获取照片的接口。例如：</simpara>
+<screen>http://localhost:8080/esearch2/elasticsearch/GetImg_getImg.do?sfzh=422130194202175629</screen>
+<tip>
+<simpara>需要添加照片展示功能，需要具备如下条件。</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>具备一个照片获取接口，可根据身份证号获取的。</simpara>
+</listitem>
+<listitem>
+<simpara>该索引表已经指定了身份证号列。</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/sfzh.png"/>
+</imageobject>
+<textobject><phrase>sfzh</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+</orderedlist>
+</tip>
+</section>
+<section xml:id="二次查询">
+<title>二次查询</title>
+<simpara>二次查询，在此处是指通过在详细页面点击某列信息，然后基于该列值再次进行检索。</simpara>
+<variablelist>
+<varlistentry>
+<term>功能介绍</term>
+<listitem>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>点击详细页面中的二次查询列后，将以该列值进行二次检索。</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/second_query.png"/>
+</imageobject>
+<textobject><phrase>second query</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>点击检索后的结果行，将跳转到对应资源页面</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/resource.png"/>
+</imageobject>
+<textobject><phrase>resource</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+</orderedlist>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>配置说明</term>
+<listitem>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>配置二次查询列</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/second_query_column.png"/>
+</imageobject>
+<textobject><phrase>second query column</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>配置可被二次查询检索的资源</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>点击查询方案，添加方案，如 <emphasis role="strong">关联查询分类</emphasis></simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/image001.png"/>
+</imageobject>
+<textobject><phrase>image001</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>点击详细，此处scheme_id需要修改为[big red]<emphasis role="marked">renyuan</emphasis></simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/image002.png"/>
+</imageobject>
+<textobject><phrase>image002</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>依次点击设置分类，设置索引。同上面挂接资源一样即可。</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/image003.png"/>
+</imageobject>
+<textobject><phrase>image003</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</listitem>
+</varlistentry>
+</variablelist>
+</section>
+<section xml:id="筛选查询">
+<title>筛选查询</title>
+<simpara>筛选查询指的是在已经查询后的结果集中进行筛选，支持多个条件同时筛选。</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/search2.png"/>
+</imageobject>
+<textobject><phrase>search2</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</section>
+<section xml:id="搜索小提示">
+<title>搜索小提示</title>
+<simpara>搜索按钮右侧可以点击提示按钮获取搜索语法。</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>点击搜索提示按钮</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/tip.png"/>
+</imageobject>
+<textobject><phrase>tip</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>查看搜索提示</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/tip2.png"/>
+</imageobject>
+<textobject><phrase>tip2</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="其它定制化项">
+<title>其它定制化项</title>
+<simpara>在孝感部门共享中，还添加了其它定制化开发的一些功能。</simpara>
+<section xml:id="户成员">
+<title>户成员</title>
+<simpara>户成员即展示该用户的户藉变动信息。点击后会跳到对应页面根据身份证号进行查询。</simpara>
+<tip>
+<simpara>不需要此功能时，可修改页面使不显示。</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/query_xg.png"/>
+</imageobject>
+<textobject><phrase>query xg</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</tip>
+</section>
+<section xml:id="比对">
+<title>比对</title>
+<simpara>比对，指将同一资源下的多条数据放在一起进行比对显示。
+不需要此功能时，可修改页面使不显示。</simpara>
+</section>
+</section>
+</section>
+</chapter>
+<chapter xml:id="定时同步索引">
+<title>定时同步索引</title>
+<simpara>程序实现了定时执行索引同步任务。需要在如下配置文件中配置。</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/task.png"/>
+</imageobject>
+<textobject><phrase>task</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<simpara>下图则是已经配置好了同步。</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./images/task2.png"/>
+</imageobject>
+<textobject><phrase>task2</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<programlisting language="xml" linenumbering="unnumbered">&lt;property name="cronExpression" value = "0 28 10 * * ?"&gt;&lt;/property&gt; <co xml:id="CO1-1"/>
+
+&lt;!-- 引用trigger --&gt;
+	&lt;bean  class="org.springframework.scheduling.quartz.SchedulerFactoryBean"&gt; <co xml:id="CO1-2"/>
+		&lt;property name="triggers"&gt;
+			&lt;list&gt;
+				&lt;ref local="sychronizedTrigger" /&gt;
+			&lt;/list&gt;
+		&lt;/property&gt;
+	&lt;/bean&gt;</programlisting>
+<calloutlist>
+<callout arearefs="CO1-1">
+<para>此处配置定时调度频率，为cron表达式。请自行百度如何编写cron表达式。</para>
+</callout>
+<callout arearefs="CO1-2">
+<para>当不需要此定时任务执行时，请将此bean给注释掉即可。</para>
+</callout>
+</calloutlist>
+</chapter>
+</book>

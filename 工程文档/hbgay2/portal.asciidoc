@@ -1,0 +1,3 @@
+= dmga-portal-hb
+
+include::portal_pki.asciidoc[]

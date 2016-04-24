@@ -1,0 +1,23 @@
+== 简述
+:imagesdir: ./images
+:iconsdir: ./images/icons
+
+=== 概要说明
+在基于 _rpc_ 框架 _dubbo_ 的基础上构建的 _soa_ 并不能直接接入第三方的 _webservice_ 服务。而公安内部的接口通讯则主要是以 _webservice_ 进行通讯，此时就需要开发一个工具包，完成 _webservice_ 服务的接入。
+
+=== 实现框架
+_dubbo_ ::
+_dubbo_ 是阿里开源出来的一个优秀的 _rpc_ 框架，而且该框架被许多大的电商网站使用。本工程主要是基于 _dubbo_ 之上，对其进行部分扩展。
+
+_cxf_ ::
+_cxf_ 是一个优秀的 _webservice_ 框架。本工程将基于它发布 _webservice_ 服务。
+
+_axis_ ::
+_axis_ 同样也是一个 _webservice_ 框架。由于公安部使用的是 _axis1.4_ 发布的 _webservice_ 服务，为了支持这类 _webservice_ 服务，所以同样也引入了 _axis1.4_ 来完成对该类服务的调用。
+
+=== 实现概览
+本工程在第三方 _webservice_ 服务与 _dubbo_ 提供的 _webservice_ 服务之间充当了一个代理。
+
+实际上可以理解为， *消费者* 调用 *_dubbo_* 提供的 *_webservice_* 服务，而 *_dubbo_* 则调用第三方的 *_webservice_* 服务。如下图：
+
+image::flow.png[]

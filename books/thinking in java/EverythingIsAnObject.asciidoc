@@ -1,0 +1,289 @@
+= Everything Is an Object
+:imagesdir: images
+
+Although it is based on C++, Java is more of a “pure” object-oriented
+language.
+
+== You manipulate objects with references
+_objects_ 的操作都是以引用进行操作的。
+
+== You must create all the objects
+
+[source,java]
+----
+String s = new String("asdf");
+----
+
+=== Where storage lives
+. *Registers*. 寄存器。存储读写速度快，因为它在处理器中。但是数量极其有限，所以这里的空间也是按需分配。你不能直接控制这里的空间分配，而且在程序中也感觉不到这片空间的存在。
+
+. *The Stack*. 栈空间。这片区域在 *_RAM_* (_Random Access Memory_) 中，它可以从处理器中直接通过 _stack pointer_ 进行控制。栈指针向下移动则分配空间，向上移动则释放那些已分配的空间。这是一个快速有效的分配存储方法，仅次于 *Registers* 。在创建程序时， _JAVA_ 系统必须准确地知道存储在 _Stack_ 中的每一项内容的生命周期，这会限制你的程序的扩展性。所以 _JAVA_ 程序在 _Stack_ 中存储的是对象的引用，而对象的存储则是在 _Heap_ 中。
+
+. *The Heap*. 堆空间。这是一个通用的内存池（也在 _RAM_ 中），这里存储了所有的 _Java Objects_ 。不像 _Stack_ ，编译器不需要知道 _Heap_ 中的对象需要在 _Heap_ 中生存多久。因此，在 _Heap_ 上存储将会很有扩展性。在 _Heap_ 上分配空间，只需要 _new_ 一下就 _Ok_ 了。当然，这种很好的扩展性也是有代价的，比 _stack_ 在分配和清理空间时需要更多的时间。
+
+. *Constant storage*. 常量存储(常量池)。常量值通常直接存放在程序代码中，因为它的值永远不会改变所以这是安全的。有时在嵌入式系统中，也会单独把常量值放在 http://baike.baidu.com/link?url=QAK3xw_Sh0jPOVMyJ3xQh-my_XBYIgRHZ_CRf0Ex99DxvypzwzZMr4Yn9-9QqxNPHSnR4yeyUxfsGY1fbASTua[ _ROM_ ] 中。
+
+. *Non-RAM storage*. 非 _RAM_ 存储。如果数据可以独立于程序存储，那么它就可以在程序没有运行时存在。这其中主要的两个例子是 *流对象* 和 *持久化对象* 。 _Stream Objects_ 通常被转换为 _bytes_ 然后传输给其它的机器。 _persistent objects_ 通常是将对象及其状态存储到硬盘上。
+
+=== Special case: primitive types
+基类型是存储在 _stack_ 上的，它直接指向了其值。而 _new_ 出来的对象是在 _heap_ 上的，由 _stack_ 上的 _reference_ 指向 _heap_ 上的 _object_ 。
+
+_Java_ 明确定义了每一种基类型的 _size_ ，而且在不同的机器架构上，这个 _size_ 都不会变。其它语言可能不是这样的哦。
+
+image::types.png[]
+
+*boolean* 类型是没有明确指定 _size_ 的，因为它只会有 _true_ 和 _false_ 两个字面量值。
+
+*包装类型* 是存储在 _heap_ 上的对象，它是对应的 *基类型* 的对象表现形式。
+
+[source,java]
+----
+char c = ‘x’;
+Character ch = new Character(c);
+
+Character ch = new Character(‘x’);
+----
+
+JavaSE~5~ 的自动装箱能自动将 *基类型* 转为 *包装类型*，也能自动将 *包装类型* 转为 *基类型* 。
+
+=== High-precision numbers
+_Java_ 提供了高精确的两种类型。 *_BigInteger_* 和 *_BigDecimal_*
+
+*_BigInteger_* 支持任意精度的整数
+
+*_BigDecimal_* 可以支持货币运算
+
+=== Arrays in Java
+_Java_ 中的数组是不能越界访问的，相对于 _C_ 和 _C++_ 是非常安全的。为了确保这种数组的范围检查，这需要在每一个数组上有一点额外的内存开销用于在运行时验证 _position_ 。
+
+[source,java]
+----
+Integer[] arr = new Integer[5]; // <1>
+int [] arr2 = new int[5]; // <2>
+----
+<1> 初始化数组后，其中存储的全是空引用。即引用指向了 _null_ 。
+<2> 将使用 _int_ 的默认值进行初始化。
+
+== You never need to destroy an object
+_Java_ 简化了对象销毁操作，不再需要手动释放。
+
+=== Scoping
+大多数程序语言都有一个 _scope_ 的概念。 _scope_ 也就决定了定义在 _scope_ 中的变量的可见性与有效期。_Java_ 中 _scope_ 使用 `{}` 来定义。
+
+[source,java]
+----
+{
+  int x = 12;
+  // Only x available
+  {
+    int q = 96;
+    // Both x & q available
+  }
+  // Only x available
+  // q is "out of scope"
+}
+----
+
+=== Scope of objects
+_Java Objects_ 的生命周期并不同于普通的基类型。
+
+.example
+[source,java]
+----
+{
+  String s = new String("a string");
+} // End Of Scope
+----
+
+引用 _s_ 会在这个 _scope_ 结束后消失。然后这个 _String_ 对象却不会立即消失，它将存放在  _memory_ 中。
+
+_Java_ 使用 _garbage collector_ 来回收 _Object_ 。
+
+== Creating new data types: class
+使用 _class_ 关键字来创建一个类。
+
+[source,java]
+----
+class ATypeName { /* Class body goes here */ }
+----
+
+创建了类后，可以使用 _new_ 创建该类的对象
+
+[source,java]
+----
+ATypeName a = new ATypeName();
+----
+
+=== Fields and methods
+定义了一个 _class_ 后，你可以添加 _fileds_ 与 _methods_ 到 _class_ 中。
+
+每一个 _object_ 都单独存储它的 _fields_ ，而且普通的 _fileds_ 是不会在各个 _objects_ 之间进行共享的。
+
+[source,java]
+----
+class DataOnly {
+  int i;
+  double d;
+  boolean b;
+}
+----
+
+.引用成员变量
+[source,java]
+----
+DataOnly data = new DataOnly();
+data.i = 47;
+data.d = 1.1;
+data.b = false;
+----
+
+
+== Methods, arguments, and return values
+
+[source,java]
+----
+ReturnType methodName( /* Argument list */ ) {
+  /* Method body */
+}
+----
+
+除静态方法外， _method_ 只能被 _object_ 调用。_static method_ 可以被 _class_ 调用。
+
+=== The argument list
+
+[source,java]
+----
+int storage(String s) { // <1>
+  return s.length() * 2; // <2>
+}
+----
+<1> 传入的参数列表
+<2> 返回值，为表达式则为计算后的值。
+
+== Building a Java program
+在构建一个 _java program_ 之前需要理解一些概念。
+
+=== Name Visibility
+为了避免命令重复， _java_ 使用完全限定名： `packagename + class name` 。 _package name_ 通常为域名的倒写。例如 `com.dameng.core` ，且包名只能小写。
+
+=== Using other components
+使用 _import_ 关键字可以引用其它的包。
+
+[source,java]
+----
+import java.util.ArrayList; // <1>
+
+import java.util.*; // <2>
+----
+<1> 完全限定名引用一个类
+<2> 引用 _java.util.*_ 下的所有类
+
+=== The *static* keyword
+一般情况下，使用 _new_ 来创建一个对象，此时就会分配一个单独的空间给该对象。有时并不需要说非得要 _new_ 一个对象才能使用某一个特定的 _filed_ 或者 _method_ 。此时就需要使用 _static_ 关键字了。
+
+[source,java]
+----
+class StaticTest {
+  static int i = 47;
+}
+
+StaticTest st1 = new StaticTest(); // <1>
+StaticTest st2 = new StaticTest();
+----
+<1> 哪怕创建多个 _StaticTest_ 的对象，也只会为静态的 _field_ _i_ 分配一份内存空间。
+
+== Your first Java program
+
+.first java program
+[source,java]
+----
+// HelloDate.java
+import java.util.*;
+public class HelloDate {
+  public static void main(String[] args) {
+    System.out.println("Hello, it’s: ");
+    System.out.println(new Date()); //<1>
+  }
+}
+----
+<1> 将 _new_ 出的 _date_ 对象转换为 _String_ 再输出。
+
+[CAUTION]
+====
+默认情况下，所有的 _java_ 文件，都会自动导入 _java.lang_ 包，哪怕你没有显示地指定。所以你可以不导 _java.lang_ 包就能使用 _System_ 类了。
+====
+
+.main 方法说明
+****
+.main method
+[source,java]
+----
+public static void main(String[] args) {
+  // method body
+}
+----
+
+[horizontal]
+public:: 访问修饰符，必须为 *public* 。
+static:: 静态修饰符，必须为 *static* 。
+void:: 返回类型
+main:: 方法名称，必须为 *main* 。
+args:: 参数列表，这里指接受的 _command line_ 的参数。
+****
+
+
+== Compiling and running
+
+[source,java]
+----
+javac HelloDate.java
+java HelloDate
+----
+
+== Comments and embedded documentation
+
+[source,java]
+----
+/* This is a comment
+* that continues
+* across lines
+*/   // <1>
+
+// This is a one-line comment // <2>
+----
+<1> 多行注释
+<2> 单行注释
+
+=== Comment documentation
+使用 _javadoc_ 命令可以提取出文档注释。
+
+=== Some example tags
+
+@See
+
+[source,java]
+----
+@see classname
+@see fully-qualified-classname
+@see fully-qualified-classname#method-name
+----
+
+{@link package.class#member label}
+
+{@docRoot}
+
+{@inheritDoc}
+
+@version
+
+@author
+
+@since
+
+@param
+
+@return
+
+@throws
+
+@deprecated

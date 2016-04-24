@@ -1,0 +1,50 @@
+= SOA布署文档
+张雄彪 <zxb@dameng.com>
+version 1.0, 2016-02-21
+:stem: latexmath
+:title: SOA布署文档
+:description: SOA布署安装手册
+:toc: right
+:toclevels: 2
+:doctype: book
+:compat-mode:
+:page-layout!:
+:sectanchors:
+:sectlinks:
+:sectnums:
+:linkattrs:
+:icons: font
+:source-highlighter: coderay
+:source-language: asciidoc
+:experimental:
+:stem:
+:idprefix:
+:idseparator: -
+:ast: &ast;
+:dagger: pass:normal[^&dagger;^]
+:y: icon:check[role="green"]
+:n: icon:times[role="red"]
+:c: icon:file-text-o[role="blue"]
+:table-caption!:
+:example-caption!:
+:figure-caption!:
+:imagesdir: ./images
+:iconsdir: ./images/icons
+:underscore: _
+
+include::env.asciidoc[]
+
+include::zookeeper.asciidoc[]
+
+include::dmga-dubbo-admin.asciidoc[]
+
+include::dmga-dubbo-logger.asciidoc[]
+
+include::dmga-dubbo-wsdl.asciidoc[]
+
+'''
+
+[quote,张雄彪]
+____
+不详尽或有误之处，欢迎大家及时提出!
+____

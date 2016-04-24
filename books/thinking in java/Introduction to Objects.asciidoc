@@ -1,0 +1,91 @@
+= Introduction to Objects
+:imagesdir: images
+
+本章为背景和补充资料，因为很多人并不了解 _OOP_ 。本章主要讲解面对对象编程的一些基本概念，以及为什么需要面向对象编程及其重要性。你可以跳过本章节，但是还是建议补充一下 _OOP_ 的基本知识。
+
+== The progress of abstraction
+
+所有的编程语言都提供了抽象。汇编语言是底层计算机器指令的抽象，而 _C_ 等语言则是汇编语言的抽象。虽然 _C_ 语言极大地抽象了汇编语言的复杂操作，但是它还是需要你思考计算机的结构而不是思考真正要解决的问题的结构。编程者往往需要在计算机模型与问题模型间建立联系。
+
+面向对象在问题领域提供了进一步的工具来表示这些问题。将问题领域中的元素理解为对象。所以出现了新的问题元素时只是需要添加新的类型的对象即可。
+
+*_Alan Kay_* 总结了面向对象的五个特性。
+
+. *Everything is an object* .你可以将对象视为一个奇特的变量，它不仅可以存储数据，还可以请求它来执行方法。理论上，在你所解决的问题中，所有组件你都可以抽象为对象。
+
+. *A program is a bunch of objects telling each other what to do by
+sending messages* .即一个程序可以理解为一组互相彼此通讯的对象。
+
+. *Each object has its own memory made up of other objects* .换句话说，就是通过组织现的一些对象，来构建新的对象。这样，可以把复杂的程序对象隐藏在一引简单的对象后面，用户只需要知道这个简单的对象即可。
+
+. *Every object has a type* . 每一个对象都是一个类的实例，类又可以说是 _type_ 的同义词。区别一个类的最重要的特征是"`What messages can you send to it?`"
+
+. *All objects of a particular type can receive the same messages* .例如，圆这个类的对象同时也是 _Shape_ 这个类的对象，圆可以接受 _Shape_ 的消息。大致就是子类继承父类的行为和特性吧。
+
+*_Booch_* 提出了对 *对象* 更简洁的描述
+====
+_An object has state, behavior and identity._
+====
+这就是说，每一个对象有其内部数据（描述对象的状态）和方法（即对象的行为），并且每一个对象都有别于其它对象，因为每个对象的内存地址是唯一的。
+
+== An object has an interface
+
+_Aristotle_ 可能是第一个开始学习研究 _type_ 这个概念的人了。他提出，所有的 _class_ 是一个唯一的类型，也是其它拥有通用特征与行为的 _class_ 的子类型。
+
+在面向对象中，创建基础的数据类型 _class_ 是一个基本概念。
+
+== An object provides services
+如果你想开发或理解一个程序设计，最好的方式是将 _objects_ 想象成 "`service providers`" 。你的程序通过调用提供服务的 _object_ 来为用户提供服务。所以编程者只需要编写一系统提供服务的 _object_ 即可。
+
+== The hidden implementation
+隐藏具体实现可以减少程序bug。通过访问控制来达到这个目标。
+_Java_ 使用了3个明确的访问修饰符 *_public_* *_private_* *_protected_* 来做访问控制。
+
+[cols="1,<3"]
+|===
+|public|所有人可以访问
+|private|只自己可以访问
+|protected|子类可以访问
+|default|同一包内可以访问
+|===
+
+== Reusing the implementation
+优先使用组合来达到复用的目的，其次再考虑继承。组合更能弹性扩展。
+
+== Inheritance
+继承好处，父类中的成员或方法改变，子类使用时也会改变。子类可以添加自己独特的方法或者重写父类已有的方法。
+
+== Is-a vs. is-like-a relationships
+Is-a 通常指的是继承关系， is-like-a 则指继承后在子类添加了新的方法。
+
+image::is_a.png[]
+
+== Interchangeable objects with polymorphism
+编码时，依赖于抽象类型，而非具体类型。多态时，会发生向上转换 _upcast_ ，编译器编译时是以基类型进行编译的，而在运行时以具体子类型 _upcast_ 再调用的。
+
+== The singly rooted hierarchy
+单根继承。所有的 _objects_ 继承自基类 *_Object_* . 所有对象都是 _Object_ 的好处就是，可以为所有的对象添加一些基本操作，也方便传参。
+
+单根继承，可以让垃圾收集器实现起来更容易些。而且你从来都不会无法确定一个对象的类型，在异常处理等方面很有帮助。
+
+== Containers
+容器，即Array，List,Map之类的。
+
+=== Parameterized types (generics)
+Java SE~5~ 以前，容器只存储一个类型，即 _Object_ 类型。因为所有类型都是 _Object_ 类型的子类，所以容器就可以存储所有类型的对象。 这种情况就会出现 _upcast_ 和 _downcasting_ 的情况，即装箱和拆箱。
+
+此时如果 _downcasting_ 错误后，就会出现运行时异常。
+
+JavaSE~5~ 中出现了参数化类型，称为泛型。容器在编译时即知道它所装的对象的类型。
+[source,java]
+----
+List<Shape> shapeList = new ArrayList<Shape>();
+----
+
+== Object creation & lifetime
+使用 _gc_ 来完成垃圾收集。而 _C++_ 则需要手动释放。
+
+== Exception handling: dealing with errors
+尽管异常处理中通常把异常表示为一个对象，但是异常处理并不是一个 _OOP_ 的特征。异常处理出现地比 _OOP_ 早。
+
+== Concurrent programming

@@ -1,0 +1,1164 @@
+= Asciidoctor User Manual
+zxb <zxb@dameng.com>
+version 1.0, 2016-02-21
+:author: zxb123
+:email: zxb@dameng.com
+:stem: latexmath
+:title: 用户手册
+:description: aaaaaaaaaaaaaaaaaaaaa
+:toc: right
+:toclevels: 2
+:url-issue: http://www.baidu.com
+:mail-list: http://www.baidu.com
+:IRC: http://www.baidu.com
+:url-issues: https://github.com/asciidoctor/asciidoctor.org/issues
+:url-tilt: https://github.com/rtomayko/tilt
+:doctype: book
+:compat-mode:
+:page-layout!:
+:sectanchors:
+:sectlinks:
+:sectnums:
+:linkattrs:
+:icons: font
+:source-highlighter: coderay
+:source-language: asciidoc
+:experimental:
+:stem:
+:idprefix:
+:idseparator: -
+:ast: &ast;
+:dagger: pass:normal[^&dagger;^]
+:y: icon:check[role="green"]
+:n: icon:times[role="red"]
+:c: icon:file-text-o[role="blue"]
+:table-caption!:
+:example-caption!:
+:figure-caption!:
+:imagesdir: ./images
+:iconsdir: ./images/icons
+:includedir: _includes
+:underscore: _
+// Refs
+:uri-home: http://asciidoctor.org
+:uri-gem: http://rubygems.org/gems/asciidoctor
+:uri-org: https://github.com/asciidoctor
+:uri-repo: {uri-org}/asciidoctor
+:uri-tilt: https://github.com/rtomayko/tilt
+:uri-jruby: http://jruby.org
+:uri-man: {uri-home}/man/asciidoctor
+:uri-rewrite: https://github.com/ocpsoft/rewrite/tree/master/transform-markup
+:markup-ref: http://en.wikipedia.org/wiki/Lightweight_markup_language
+:markdown-ref: http://daringfireball.net/projects/markdown
+:fedora-docs: http://docs.fedoraproject.org
+:java: http://asciidoctor.org/docs/install-and-use-asciidoctor-java-integration
+:tests: https://github.com/asciidoctor/asciidoctor/tree/master/test
+:asciidoc-edit-ref: http://asciidoc.org/#_editor_support
+:docref: link:/docs
+:editing-ref: {docref}/editing-asciidoc-with-live-preview
+:asciidoclet-ref: {docref}/install-and-use-asciidoclet/
+:docbook-info-ref: http://www.docbook.org/tdg5/en/html/info.html
+:richfaces-docinfo: https://github.com/richfaces/richfaces-docs/blob/master/Developer_Guide/src/main/docbook/en-US/Developer_Guide-docinfo.xml
+:air-ref: http://en.wikipedia.org/wiki/Air_quotes
+:uri-xml: http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references
+:uri-unicode: http://en.wikipedia.org/wiki/List_of_Unicode_characters
+:fontawesome-ref: http://fortawesome.github.io/Font-Awesome/
+:factory-ref: http://github.com/asciidoctor/asciidoctor-stylesheet-factory
+:uri-http: http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html
+:pygments-org: http://pygments.org
+:pygments-gem: https://rubygems.org/gems/pygments.rb
+:pygments-lang: {pygments-org}/languages/
+:coderay-uri: http://coderay.rubychan.de/
+:coderay-gem: https://rubygems.org/gems/coderay
+:highlightjs-org: https://highlightjs.org/
+:highlightjs-lang: https://highlightjs.org/download/
+:showcase-ref: http://themes.asciidoctor.org/preview/
+:uri-docbook5: http://www.docbook.org/tdg5/en/html/ch01.html#introduction-whats-new
+:uri-yelp: https://wiki.gnome.org/action/show/Apps/Yelp
+:publican: http://fedorahosted.org/publican
+:uri-a2x-manpage: http://asciidoc.org/a2x.1.html
+:man-raw: https://raw.githubusercontent.com/asciidoctor/asciidoctor/master/man/asciidoctor.adoc
+:man-backend-git: https://github.com/asciidoctor/asciidoctor-backends/tree/master/erb/manpage
+:fopub-ref: https://github.com/asciidoctor/asciidoctor-fopub
+:fopub-doc-ref: https://github.com/asciidoctor/asciidoctor-fopub/blob/master/README.adoc
+:guard-doc-ref: https://github.com/asciidoctor/guard-asciidoc/blob/master/README.adoc
+:backend-git: http://github.com/asciidoctor/asciidoctor-backends
+:deckjs-org: http://imakewebthings.com/deck.js
+:deckjs-git: https://github.com/imakewebthings/deck.js
+:deckjs-zip: {deckjs-git}/archive/latest.zip
+:decksplitjs-git: https://github.com/houqp/deck.split.js
+:compass-ref: http://compass-style.org
+:sass-ref: http://sass-lang.com
+:uri-foundation: http://foundation.zurb.com
+:get-ruby-ref: http://www.ruby-lang.org/en/downloads
+:bundler-ref: http://rubygems.org/gems/bundler
+:issue-ref: https://github.com/asciidoctor/asciidoctor/issues
+:license: https://github.com/asciidoctor/asciidoctor/blob/master/LICENSE.adoc
+:mojavelinux: https://github.com/mojavelinux
+:erebor: https://github.com/erebor
+:lightguard: https://github.com/lightguard
+:nickh: http://github.com/nickh
+:contributors: https://github.com/asciidoctor/asciidoctor/graphs/contributors
+:gitscm-next: https://github.com/github/gitscm-next
+:seed-contribution: https://github.com/github/gitscm-next/commits/master/lib/asciidoc.rb
+:uri-asciimath: http://docs.mathjax.org/en/latest/asciimath.html
+:uri-latexmath: http://docs.mathjax.org/en/latest/tex.html
+:uri-mathjax: http://www.mathjax.org
+:uri-mathjax-docs: http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference
+:uri-mailinglist: http://discuss.asciidoctor.org
+:uri-ad-org-issues: https://github.com/asciidoctor/asciidoctor.org/issues
+:uri-asciidoctorj: {uri-org}/asciidoctorj
+:uri-asciidoctorjs: {uri-org}/asciidoctor.js
+:uri-irc: irc://irc.freenode.org/#asciidoctor
+:uri-asciidoc-leveloffset: http://asciidoc.org/userguide.html#X90
+:uri-asciidoctor-pdf: https://github.com/asciidoctor/asciidoctor-pdf
+:uri-asciidoctor-pdf-readme: https://github.com/asciidoctor/asciidoctor-pdf/blob/master/README.adoc
+:uri-asciidoctor-pdf-theming-guide: http://gist.asciidoctor.org/?github-asciidoctor%2Fasciidoctor-pdf%2F%2Fdocs%2Ftheming-guide.adoc
+
+:compat-mode!:
+
+
+[NOTE]
+.This document is under active development and discussion!
+====
+If you find errors or omissions in this document, please don’t hesitate to
+{url-issue}[submit an issue or open a pull request]with a fix.
+We also encourage you to ask questions and discuss any aspects of the project on the
+{mail-list}[mailing list] or {IRC}[IRC]. New contributors are always welcome!
+====
+
+This manual assumes you are using Asciidoctor to produce and render your document.
+Asciidoctor implements more syntax, attributes and functions than the legacy AsciiDoc.py processor.
+<<asciidoctor-vs-asciidoc,Appendix A>> lists which features are available to the Asciidoctor and AsciiDoc processors.
+
+
+= Introduction to Asciidoctor
+[TIP]
+.Discuss and Contribute
+Use {url-issues}/433[Issue 433] to drive development of this section. Your contributions make a difference. No contribution is too small.
+
+Asciidoctor reads and parses text written in the AsciiDoc syntax,
+then feeds the parse tree into a set of built-in templates to produce HTML5, PDF, DocBook 5, etc.
+You have the option of writing your own converter or providing {url-tilt}[Tilt]-supported
+templates to customize the generated output or produce alternative formats.
+
+== What is Asciidoctor?
+
+[NOTE]
+Asciidoctor is a drop-in replacement for the original AsciiDoc Python processor (`asciidoc.py`). The Asciidoctor test suite has > 1,500 tests to ensure compatibility with the AsciiDoc syntax.
+In addition to the standard AsciiDoc syntax, Asciidoctor recognizes additional markup and formatting options, such as font-based icons (e.g., [x-]`icon:fire[]`) and UI elements (e.g., [x-]`button:[Save]`).
+
+=== Compared to AsciiDoc
+[TIP]
+.Discuss and Contribute
+Use {url-issues}/434[Issue 434] to drive development of this section. Your contributions make a difference. No contribution is too small.
+
+= Quick Starts
+== Installation Quick Start
+[TIP]
+.Discuss and Contribute
+Use {url-issues}/436[Issue 436] to drive development of this section.
+Your contributions make a difference. No contribution is too small.
+
+== Usage Quick Start
+[TIP]
+.Discuss and Contribute
+Use {url-issues}/436[Issue 437] to drive development of this section. Your contributions make a difference. No
+contribution is too small.
+
+===  Using the Command Line Interface
+Asciidoctor’s command line interface (CLI) is a drop-in replacement for the asciidoc.py command from the
+Python implementation.
+
+If the Asciidoctor gem installed successfully, the asciidoctor command line interface (CLI) will be available on
+your PATH. To confirm that Asciidoctor is available, execute:
+
+ $ asciidoctor -version
+
+The following information should be output in your terminal:
+
+ Asciidoctor 0.1.4 [http://asciidoctor.org]
+
+To invoke Asciidoctor from the CLI and render an .adoc file, execute:
+----
+$ asciidoctor <asciidoc_file>
+----
+
+This will use the built-in defaults for options and create a new file in the same directory as the input file, with the same base name, but with the .html extension.
+
+There are many other options available and full help is provided via:
+
+ $ asciidoctor -help
+
+or in the {uri-man}[man page].
+There is also an asciidoctor-safe command, which turns on safe mode by default, preventing access to files
+outside the parent directory of the source file. This mode is very similar to the safe mode of asciidoc.py .
+
+=== Using the Ruby API
+In addition to the command line interface, Asciidoctor provides a Ruby API. The API is intended for integration with
+other software projects and is suitable for server-side applications, such as Rails, Sinatra and GitHub.
+[TIP]
+Asciidoctor also has a Java AIP that mirrors the Ruby API. The Java API class through to the Ruby API using an embedded
+JRuby runtime.See the {uri-jruby}[Asciidcotor Java integration project] for more information.
+
+To use Asciidoctor in your application, you first need to require the gem:
+[source,ruby]
+ require `asciidoctor`
+
+With that in place, you can start processing AsciiDoc documents. To parse a file into an Asciidoctor::Document
+object:
+[source,ruby]
+ doc = Asciidoctor.load_file 'sample.adoc'
+
+
+= Getting Started
+[NOTE]
+Some Pending
+
+== System Requirements
+Asciidoctor works on Linux, Mac and Windows. +
+
+Asciidoctor requires one of the following implementations of Ruby:
+
+* Ruby 1.8.7
+* Ruby 1.9.3
+* Ruby 2.0 (or better)
+* JRuby 1.7.5 (Ruby 1.8 and 1.9 modes)
+* JRuby 9000
+* Rubinius 2.0 (Ruby 1.8 and 1.9 modes)
+* Opal (Javascript)
+
+We expect Asciidoctor to work with other versions of Ruby as well. We welcome your help testing those versions if
+you are interested in seeing them supported.
+
+== Installing the Asciidoctor Ruby Gem
+Asciidoctor can be installed via the `gem` command, bundler, or popular Linux package managers.
+
+To install Asciidoctor using the `gem` command:
+
+. Open a terminal.
+. Type the `gem` command.
+
+ $ gem install asciidoctor
+
+
+If the Asciidoctor gem installed successfully, the `asciidoctor` command line interface (CLI) will be available on
+your PATH. To confirm that Asciidoctor is available, execute:
+
+ $ asciidoctor --version
+
+
+.Two API Flavors
+****
+In addition to the CLI, Asciidoctor provides a Ruby API. The API is intended for integration with other software
+projects and is suitable for server-side applications, such as Rails, Sinatra and GitHub.
+Asciidoctor also has a Java API that mirrors the Ruby API. The Java API calls through to the Ruby API using an
+embedded JRuby runtime. See the Asciidoctor Java integration project for more information.
+****
+
+===  Install with Bundler
+
+===  Install with `yum`
+. Open the terminal
+. Run the installation command
+
+Fedora 21 or earlier::
++
+$ sudo yum install asciidoctor
+
+Fedora 22 or later::
++
+$ sudo dnf install asciidoctor
+
+=== Install with +apt-get+
+
+= Terms and Concepts
+All of the content in an Asciidoctor document, including lines of text, predefined styles, and processing commands,
+is classified as either a block or an inline element. Within each of these elements are an array of styles, options, and
+functions that can be applied to your content.
+
+This section will provide you with an overview of what each of these elements and sub-elements are and the basic
+syntax and rules for using them.
+
+== Elements
+One or more lines of text in a document are defined as a block element. Block elements can be nested within block
+elements.
+
+A document can include the following block elements:
+
+* Header
+* Title
+* Author Info
+* First Name
+* Middle Name
+* Last Name
+* Email Address
+* Revision Info
+* Attribute Entry
+* Title
+* Second Body
+
+== Macros
+[TIP]
+.Discuss and Contribute
+Use {url-issue}/443[Issue 443] to drive development of this section. Your contributions make a difference. No
+contribution is too small.
+
+== Formatting marks
+
+=== Constrained quotes
+.When the word stand alone
+ That is *strong* stuff
+
+That is *strong* stuff
+
+.When there are multiple words
+ That is *really strong* stuff!
+
+That is *really strong* stuff!
+
+.When the word is adjacent to punctuation
+ This stuff sure is *strong*!
+
+This stuff sure is *strong*!
+
+=== Unconstrained quotes
+In short, "`unconstrained`" means anywhere, including *within* a word.
+
+.Unconstrained formatting
+She spells her name with an "`h`", as in Sara**h**.
+
+"```endpoints```"
+"`endpoints`"
+
+"```张三```"
+
+== Attributes
+
+:name: zxb
+{name}
+
+:name!: // unset attribute
+{name}
+
+[quote,zxb,eheeggggewewew]
+____
+abcfewgewgewgwgwegw
+____
+
+[example]
+gggggggggggggggggggggg
+
+.Anatomy of an attribute entry
+----
+:atribute name: value
+----
+
+[#abcfewfw]
+hehehhehe
+
+[#free_the_world]*free the world*
+
+[.summary]
+* Review 1
+* Review 2
+
+[role="ggg"]
+* Review 1
+
+[.summary.incremental]
+* Review 1
+* Review 2
+[role="summary,incremental"]
+* Review 1
+* Review 2
+
+[big goal]*free the world*
+
+[.big.goal]*free the world*
+
+[rolename]`escaped monospace text`
+
+[quote#think, Donald Trump]
+____
+As long as you're going to be thinking anyway, think big.
+____
+
+
+:app-name: pass:q[MyApp^(C)^]
+
+{docdir}
+
+{docfile}
+
+{doctitle}
+
+{doctype}
+
+[%hardbreaks]
+aaaggg
+
+[%header%footer%autowidth]
+|===
+| Cell A | Cell B
+|张三
+|25
+
+|李四
+|26
+|===
+
+:abc: def
+
+
+[%header%footer%autowidth]
+|===
+| Cell A | Cell B
+| def | {abc}
+
+|===
+
+
+[opts="header,footer,autowidth"]
+|===
+| Cell A | Cell B
+|===
+
+[horizontal.properties%step]
+property 1:: does stuff
+property 2:: does different stuff
+
+
+
+{abc}
+
+{set:abc:ggg}
+
+{abc}
+
+:attribute-missing: skip
+
+Hello, {name}!
+
+:attribute-undefined: drop
+
+{set:name!}ggg
+
+
+[TIP]
+张雄彪
+
+[NOTE]
+李小路
+
+[呵呵]
+
+[NOTE]
+你是个逗b
+
+真是逗！呵呵。
+
+
+
+
+= The Dangerous and Thrilling Documentation Chronicles
+
+{doctitle} begins on a bleary Monday morning.
+
+= The Dangerous and Thrilling Documentation Chronicles
+Kismet Rainbow Chameleon <kismet@asciidoctor.org>
+
+This journey begins...
+
+== About the Author
+
+You can contact {author} at {email}.
+{firstname} loves to hear from other chroniclers.
+
+P.S. And yes, my middle name really is {middlename}.
+What else would you expect from a member of the Rocky Mountain {lastname} Clan?
+
+{authorinitials}
+
+== Main Title: Subtitle
+
+ggg
+
+[separator=::]
+= Main Title:: Subtitle
+
+.TODO list
+- Learn the AsciiDoc syntax
+- Install Asciidoctor
+- Write my document
+
+
+.Gettysburg Address
+[[gettysburg]]
+[quote, Abraham Lincoln, Address delivered at the dedication of the Cemetery at Gettysburg]
+____
+Four score and seven years ago our fathers brought forth
+on this continent a new nation...
+
+Now we are engaged in a great civil war, testing whether
+that nation, or any nation so conceived and so dedicated,
+can long endure. ...
+____
+
+****
+sidebar block
+****
+
+----
+sidebar block
+----
+
+.side bar
+********
+invalid sidebar block
+********
+
+.side bar
+====
+invalid sidebar block
+====
+
+.eample 1
+[example]
+哈哈，我是一个小行家
+
+[quote]
+Never do today what you can put off  `'til tomorrow.
+
+[NOTE]
+heheheh
+
+
+[literal]
+ggggggggg
+
+[pass]
+eeeeeeee
+
+[quote]
+eeeeeeeeeeeeee
+
+.love
+[sidebar]
+[source,java]
+public static void main(){
+  System.out.println("gggg");
+}
+
+
+++++
+bbbb
+++++
+
+[verse]
+ggggg
+
+[quote]
+____
+eeee
+____
+
+
+====
+This journey begins one late Monday afternoon in Antwerp.
+Our team desperately needs coffee, but none of us dare open the office door.
+
+To leave means code dismemberment and certain death.
+====
+
+====
+Rubies are red, +
+Topazes are blue.
+
+[%hardbreaks]
+Ruby is red.
+Java is black.
+====
+
+
+****
+Hello everyone,
+I like you.
+Thank You!
+
+. abc
+. def
+
+* like
+* love
+* go
+* watch
+** watch you
+*** 3
+
+****
+
+[.lead]
+This is the ultimate paragraph.
+
+
+- [x] checked
+- [*] also checked
+- [ ] don't check
+- [x] like yo**u**
+
+[.lead]
+我是卖报的小行家
+
+"`What kind of charm?`" Lazarus asked. "`An odoriferous one or a mineral one?`"
+
+Kizmet shrugged. "`The note from Olaf's desk says '`wormwood and licorice,`' but these could be normal groceries for werewolves.`"
+
+"`我喜欢你啊，小朋友`"，你'`喜欢我吗`'
+
+Olaf's desk ...
+
+张三`'s desk
+
+H~2~o  H^2^o
+
+`*I like you a!*`
+
+= Text Formating
+
+Werewolves are #allergic to cinnamon#.
+
+Do werewolves believe in [small]#small print#?
+
+[big]##O##nce upon an infinite loop.
+
+[small]#Once# *[red big]#张雄彪#*
+
+
+= List
+
+* abc
+* def
+* ggg
+
+
+.列表1
+* Edgar Allen Poe
+* Sheri S. Tepper
+* Bill Bryson
+
+.Separating Lists
+****
+If you have adjacent lists, they have the tendency to want to fuse together. To force the lists apart, place a line comment between them (//), offset on either side by a blank line (i.e., an end of list marker). Here’s an example, where the ^ is dummy text that indicates this line serves as an "end of list" marker:
+
+====
+* Apples
+* Oranges
+
+//^
+
+* Walnuts
+* Almonds
+
+.Possible DefOps manual locations
+* West wood maze
+** Maze heart
+*** Reflection pool
+** Secret exit
+* Untracked file in git repository
+====
+****
+
+== Complex Paragraph
+
+====
+* The header in AsciiDoc is optional, but if
+it is used it must start with a document title.
+
+* Optional Author and Revision information
+immediately follows the header title.
+
+* The document header must be separated from
+  the remainder of the document by one or more
+  blank lines and cannot contain blank lines.
+====
+
+
+====
+[circle]
+* abcdeft
++
+ggg
+
+* ggg
++
+----
+abcfew
+----
+** defgg
+*** ewfwgwe
+====
+
+[options=interactive]
+- [*] checked
+- [x] also checked
+- [ ] not checked
+-     normal list item
+
+====
+. one
+. two
+. three
+
+
+
+
+====
+
+.Parts of an atom
+====
+[start=10]
+. abc
+. def
+. ggg
+====
+
+. Step 1
+. Step 2
+.. Step 2a
+.. Step 2b
+. Step 3
+
+[%hardbreaks]
+. Linux
+* Fedora
+* Ubuntu
+* Slackware
+. BSD
+* FreeBSD
+* NetBSD
+. CD
+.. def
+* abc
+* def
+.. ggg
+. EF
+
+[%hardbreaks]
+[arabic]
+. Linux
+
+  * Fedora
+  * Ubuntu
+  * Slackware
+
+. BSD
+
+  * FreeBSD
+  * NetBSD
+
+<<threeList,GOGO>>
+
+[%hardbreaks]
+Operating Systems::
+    Linux:::
+      . Fedora
+        * Desktop
+      . Ubuntu
+        * Desktop
+        * Server
+    BSD:::
+      . FreeBSD
+      . NetBSD
+
+Cloud Providers::
+    PaaS:::
+      . OpenShift
+      . CloudBees
+    IaaS:::
+      . Amazon EC2
+      . Rackspace
+
+[%hardbreaks]
+[upperroman]
+. 1234
+. 243252
+
+====
+["lowerroman", start=5]
+. Five
+. Six
+[upperalpha]
+.. a
+.. b
+.. c
+. Seven
+====
+
+'''
+[big red]#SB#
+
+'''
+
+====
+[horizontal]
+CPU:: The brain of the computer.
+Hard drive:: Permanent storage for operating system and/or user files.
+RAM:: Temporarily stores information the CPU uses during operation.
+Keyboard:: Used to enter text or control items on the screen.
+Mouse:: Used to point to and select items on your computer screen.
+Monitor:: Displays information in visual form using text and graphics.
+====
+
+[[threeList]]
+====
+Dairy::
+[source,java]
+----
+ public static void main(){
+   System.out.println("bbb");
+ }
+----
+Bakery::
+* Bread
+Produce::
+* Bananas
+====
+
+====
+[qanda]
+你是谁？:: SB
+而你又是谁？::
+逗B
+====
+
+= Table
+
+[%header%footer%autowidth]
+|===
+| header1 | header2
+
+| Cell in column 1, row 1 | Cell in column 2, row 1
+
+| Cell in column 1, row 2 | Cell in column 2, row 2
+
+| Cell in column 1, row 3 | Cell in column 2, row 3
+
+|===
+
+
+[.rolename]
+|===
+|header1
+|Cell in column 1, row 1
+|Cell in column 2, row 1
+|Cell in column 3, row 1
+|Cell in column 1, row 2
+|Cell in column 2, row 2
+|Cell in column 3, row 2
+|===
+
+|===
+
+|Cell in column 1, row 1|Cell in column 2, row 1
+
+|===
+
+|===
+
+| Cell in column 1, row 1        |          Cell in column 2, row 1
+
+|===
+
+[cols="3"]
+|===
+|Cell in column 1, row 1
+|Cell in column 2, row 1
+|Cell in column 3, row 1
+
+|Cell in column 1, row 2
+|Cell in column 2, row 2
+|Cell in column 3, row 2
+|===
+
+[cols="3*"]
+|===
+|Cell in column 1, row 1 |Cell in column 2, row 1
+|Cell in column 3, row 1
+
+|Cell in column 1, row 2
+|Cell in column 2, row 2 |Cell in column 3, row 2
+|===
+
+
+stem:[sqrt(4) = 2]
+
+Water (stem:[H_2O]) is a critical component.
+
+[stem]
+++++
+sqrt(4) = 2
+++++
+
+NOTE: Asciidoctor supports font-based admonition icons, powered by Font Awesome!
+
+IMPORTANT: HEHHE
+
+
+icon:tags[] ruby, asciidoctor
+
+[appendix]
+== Copyright and License
+
+[appendix]
+== Copyright and License
+
+
+[preface]
+== Documentation Preface
+
+The basis for this documentation germinated when I awoke one morning and was confronted by the dark and stormy eyes of the chinchilla.
+She had conquered the mountain of government reports that, over the course of six months, had eroded into several minor foothills and a creeping alluvial plain of loose papers.
+
+=== Acknowledgments
+
+I would like to thank the Big Bang and String Theory.
+
+
+[cols=".>,.^"]
+|===
+
+|Cell in column 1, row 1
+|Cell in column 2, row 1
+
+|Cell in column 1, row 2
+|Cell in column 2, row 2
+
+|===
+
+[cols="3*.^"]
+|===
+|Cell in column 1, row 1
+|Cell in column 2, row 1
+|Cell in column 3, row 1
+
+|Cell in column 1, row 2
+|Cell in column 2, row 2
+|Cell in column 3, row 2
+|===
+
+[cols=".<,.^,^.>"]
+|===
+|Cell in column 1, row 1
+|Cell in column 2, row 1
+|Cell in column 3, row 1
+
+|Cell in column 1, row 2
+|Cell in column 2, row 2
+|Cell in column 3, row 2
+|===
+
+[cols="1,1,3"]
+|===
+|Cell in column 1, row 1
+|Cell in column 2, row 1
+|Cell in column 3, row 1
+
+|Cell in column 1, row 2
+|Cell in column 2, row 2
+|Cell in column 3, row 2
+|===
+
+[cols=".<2,.^5,^.>3a"]
+[%header%footer%autowidth]
+|===
+|header1|header2|header3
+|Cell in column 1, row 1 with lots and lots and lots and lots of content
+|Cell in column 2, row 1
+|Cell in column 3, row 1
+
+|Cell in column 1, row 2
+|Cell in column 2, row 2
+|Cell in column 3, row 2 and another bucket of content, and then a jelly roll of content
+|===
+
+[width="50"]
+|===
+|Name of Column 1 |Name of Column 2 |Name of Column 3
+
+|Cell in column 1, row 1
+|Cell in column 2, row 1
+|Cell in column 3, row 1
+
+|Cell in column 1, row 2
+|Cell in column 2, row 2
+|Cell in column 3, row 2
+|===
+
+[frame="topbot"]
+|===
+|Name of Column 1 |Name of Column 2 |Name of Column 3
+
+|Cell in column 1, row 1
+|Cell in column 2, row 1
+|Cell in column 3, row 1
+
+|Cell in column 1, row 2
+|Cell in column 2, row 2
+|Cell in column 3, row 2
+|===
+
+[frame="sides"]
+|===
+|Name of Column 1 |Name of Column 2 |Name of Column 3
+
+|Cell in column 1, row 1
+|Cell in column 2, row 1
+|Cell in column 3, row 1
+
+|Cell in column 1, row 2
+|Cell in column 2, row 2
+|Cell in column 3, row 2
+|===
+
+[frame="none"]
+|===
+|Name of Column 1 |Name of Column 2 |Name of Column 3
+
+|Cell in column 1, row 1
+|Cell in column 2, row 1
+|Cell in column 3, row 1
+
+|Cell in column 1, row 2
+|Cell in column 2, row 2
+|Cell in column 3, row 2
+|===
+
+//:hide-uri-scheme:
+http://asciidoctor.org
+
+link:http://www.baidu.com[百度一下]
+
+= Document Title
+:link-with-underscores: http://www.asciidoctor.org/now_this__link_works.html
+
+This URL has repeating underscores {link-with-underscores}.
+
+
+This URL has repeating underscores pass:macros[http://www.asciidoctor.org/now_this__link_works.html].
+
+Let's view the raw HTML of the link:http://asciidoctor.org[Asciidoctor homepage, window="_blank"].
+
+http://www.asciidoctor.org/now_this__link_works.html
+
+
+[[highlighter]]
+.highlighter
+image::highlighter.png[highlighter,200,200,link="http://www.baidu.com"]
+
+click image:icons/home.png[Home,title="Home",alt="home2",link="http://www.baidu.com"] to get Home Page.
+
+image::http://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg[Tux,250,350]
+
+You can find image:http://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg[Linux,25,35] everywhere these days.
+
+
+image::tiger.png[Tiger,200,200,float="left"]
+You can find Linux everywhere these days!
+
+
+ppppppppppppppppppppppppppppppp
+ppppppppppppppppppppppppppppppp
+ppppppppppppppppppppppppppppppp
+ppppppppppppppppppppppppppppppp
+ppppppppppppppppppppppppppppppp
+
+
+ppppppppppppppppppppppppppppppp
+
+ppppppppppppppppppppppppppppppp
+ppppppppppppppppppppppppppppppp
+
+ppppppppppppppppppppppppppppppp
+
+ppppppppppppppppppppppppppppppp
+
+image:tiger.png[role="related thumb right"] Here's text that will wrap around the image to the left.
+I'like you too.
+
+
+[.float-group]
+--
+[.left]
+.Image A
+image::tiger.png[A,240,180]
+
+[.right]
+.Image B
+image::tiger.png[B,240,180]
+--
+
+video::id_XMTQ4MDAxODM3Mg[youku]
+
+.Result: Admonition paragraph
+====
+[IMPORTANT]
+.abfewfewf
+Wolpertingers are known to nest in server racks. Enter at your own risk.
+====
+Text below images.
+
+
+[IMPORTANT]
+.Feeding the Werewolves
+====
+While werewolves are hardy community members, keep in mind the following dietary concerns:
+
+. They are allergic to cinnamon.
+. More than two glasses of orange juice in 24 hours makes them howl in harmony with alarms and sirens.
+. Celery makes them sad.
+====
+
+[quote, attribution, citation title and information]
+Quote or excerpt text
+
+.After landing the cloaked Klingon bird of prey in Golden Gate park:
+[quote, Captain James T. Kirk, Star Trek IV: The Voyage Home]
+Everybody remember where we parked.
+
+
+====
+[verse, Carl Sandburg, Fog]
+____
+The fog comes
+on little cat feet.
+
+It sits looking
+over harbor and city
+on silent haunches
+and then moves on.
+____
+====
+
+////
+A multi-line comment.
+
+Notice it's a delimited block.
+////
+
+[source,java,subs="verbatim,quotes"]
+----
+System.out.println("Hello *bold* text"). // <1> <2>
+----
+
+[source,xml,subs="attributes+"]
+----
+<version>{version}</version>
+----
+
+stem:[sqrt(4) = 2]
+
+Water (stem:[H_2O]) is a critical component.
+
+[[asciidoctor-vs-asciidoc]]
+administrator

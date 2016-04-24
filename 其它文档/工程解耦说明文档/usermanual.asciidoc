@@ -1,0 +1,195 @@
+= 解耦方法说明
+张雄彪 <zxb@dameng.com>
+version 1.0, 2016-04-20
+
+:imagesdir: images
+
+== 需求说明
+一体化数据管理平台包括平台管理、数据资源管理、资源目录管理、数据质量管理、数据服务平台、请求服务引擎等等。
+
+目前，系统与系统之间的耦合性强，特别是数据资源管理在各个项目中提出了各种需求，使得代码特别臃肿，不适合产品化管理。为了解决这些问题，必须对这些系统进行解耦，各个系统可以独立运行，系统与系统之间的调用不在通过代码依赖，而是改成通过dubbo服务调用的方式，使得系统可以在独立成长，逐步走向产品化发展。
+
+== 主要思路
+使用 http://dubbo.io/[dubbo] 提供的 _rpc_ 服务方式作为解决各子系统之间的 _jar_ 包依赖，以服务依赖的方式代替传统的 _jar_ 包依赖。
+
+.包图
+image::package.png[]
+
+dmga-entity:: 其中包含接口中通常会使用到的 _PageList_ 等常用对象，由 _dmga-core_ 中抽取出来。
+
+dmga-dubbo-service:: 此工程中存放所有提取出来的服务接口，及接口依赖的实体类。
+
+dmga-core:: 核心框架
+
+
+== 主要问题
+
+在抽取如 _metadata_ 中的 _service_ 接口服务至 _dmga-dubbo-service_ 中时，主要出现了 _service_ 接口严重依赖 _dmga-core_ 的问题。
+
+.如：
+[source,java]
+----
+public interface ColumnService extends BeanService<Column> { // <1>
+
+}
+----
+<1> _BeanService_ 为 _dmga-core_ 的框架包中的内容
+
+当然，整个提取过程中，不仅仅只有 _BeanService_ 在 _dmga-core_ 包中，还有很多其它更头疼的类。
+
+由此可见，抽取 _service_ 接口主要难处在于 *_service_ 接口均严重依赖于 _dmga-core_ 包* 。
+
+'''
+
+在 _Figure 1. 包图_ 中可以看出， _dmga-core_ 是不应该与 _dmga-dubbo-service_ 包产生依赖的。更不可能让 _dmga-dubbo-service_ 包去依赖 _dmga-core_ 包，此操作在设计上极不合理，而且极大程度耦合了 _dmga-core_ 包。
+
+== 解决方法及操作说明
+
+.问题
+image::wmf_jo.png[]
+
+[TIP]
+====
+问题存在的原因，在于抽取的接口耦合了 _dmga-core_
+====
+
+.解决方法
+image::wmf_jo2.png[]
+[TIP]
+====
+解决办法，不再直接抽取 _service_ 接口。而是手动创建一个新的 _wrapper_ 适配接口，适配接口实现类则直接调用原 _service_ 实现类的服务。
+====
+
+
+=== 示例，抽取datasetService
+. 新建 _DatasetServiceWrapper_ 接口类，用于适配 _DatasetService_ 接口
++
+[source,java]
+----
+package com.dm.metadata.servicewrapper;
+
+import com.dm.baseservice.BeanServiceWrapper;
+import com.dm.metadata.domain.Dataset;
+
+/**
+ * @author zxb
+ * @version 1.0.0
+ * @date 2016年04月20日 16:19
+ * @since Jdk1.6
+ */
+public interface DatasetServiceWrapper extends BeanServiceWrapper<Dataset> { // <1>
+}
+----
+<1> 类似于继承 _BeanService_ 一样，这里需要继承自 _BeanServiceWrapper_ ，同样需要提供泛型参数，如 _Dataset_
+
+. 拷贝原接口 _DatasetService_ 中的方法至 _DatasetServiceWrapper_ 中。
++
+image::sync.png[]
++
+[TIP]
+====
+此处 _Datasource_ 实体类，需要拷贝至 _dmga-dubbo-service_ 中，并从 _metadata_ 中删除。
+====
+
+. 拷贝接口相关的实体类
++
+.拷贝实体类
+image::service_datasource.png[]
++
+.删除原 _metadata_ 中的 _Datasource_ 实体类
+image::deleteDatasource.png[]
+
+. 编写 _DatasourceServiceWrapper_ 的实现类
++
+[source,java]
+----
+@Service
+public class DatasetServiceWrapperImpl extends BeanServiceWrapperImpl<Dataset, DatasetService> implements DatasetServiceWrapper { // <1>
+
+    @Autowired
+    private DatasetService datasetService;  //<2>
+
+    @Override
+    public List<Dataset> listByDatasourceId(String datasource_id) {
+        return datasetService.listByDatasourceId(datasource_id); // <3>
+    }
+}
+----
+<1> 需要实现 _DatasetServiceWrapper_ 接口，需要继承 _BeanServiceWrapperImpl_ 并提供两个泛型参数， _Dataset_ 为实体对象， _DatasetService_ 为原 _service_ 服务。
+<2> 此处注入原 _DatasetService_
+<3> 通过调用原 _DatasetService_ 完成方法的调用。
+
+. 编写 _beans-provider.xml_ ，将服务暴露出去
++
+[source,xml]
+----
+<dubbo:service interface="com.dm.metadata.servicewrapper.DatasetServiceWrapper" ref="datasetServiceWrapperImpl"/> // <1>
+----
+<1> 接口填写具体的 _Wrapper_ 接口，实现则引用具体 _wrapper_ 实现的 _beanId_
+
+. 消费方，编写 _beans-consumer.xml_ 引用暴露的服务
++
+[source,xml]
+----
+<dubbo:reference interface="com.dm.metadata.servicewrapper.DatasetServiceWrapper" id="datasetServiceWrapper" check="false"/> // <1>
+----
+<1> 同暴露的服务引用相同的接口，指定该引用的 _beanId_
+
+== 注解配置
+=== 提供方
+. 在 _beans-provider.xml_ 中添加如下配置。
++
+[source,xml]
+----
+    <dubbo:annotation package="com.dm" />
+----
+
+. 在需要发布的 _ServiceWrapperImpl_ 实现上使用注解配置。如
++
+[source,java]
+----
+import com.alibaba.dubbo.config.annotation.Service; // <1>
+
+@Service
+public class ColumnServiceWrapperImpl extends BeanServiceWrapperImpl<Column, ColumnService> implements ColumnServiceWrapper{
+
+}
+----
+<1> 注意，是导入dubbo包中的 _Service_ 注解。
+
+=== 消费方
+. 在 _beans-consumer.xml_ 中添加如下配置。
++
+[source,xml]
+----
+    <dubbo:annotation package="com.dm" />
+----
+
+. 在需要引用服务方提供的服务处，使用注解进入引用。
++
+[source,java]
+----
+import com.alibaba.dubbo.config.annotation.Reference; // <1>
+
+@Controller("catalogCatalogController")
+public class CatalogController {
+	private Logger logger = Logger.getLogger(getClass());
+	@Autowired
+	private CodeDictService codeDictService;
+	@Autowired
+	private CataService cataService;
+	@Autowired
+	private CatalogService catalogService;
+	@Reference // <2>
+	private ColumnServiceWrapper columnService;
+}
+----
+<1> 注意，引入 _dubbo_ 包的注解 _Reference_
+<2> _Reference_ 注解
+
+'''
+
+[, 张雄彪]
+""
+如有问题，请及时沟通联系。
+""

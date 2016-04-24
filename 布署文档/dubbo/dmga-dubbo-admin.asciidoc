@@ -1,0 +1,63 @@
+= dmga-dubbo-admin部署
+:imagesdir: ./images
+:iconsdir: ./images/icons
+
+_admin_ 是 _dubbo_ 的一个管理平台，可以直观地查看已有的服务及服务运行情况。
+
+== 获取安装包
+. 从开发人员处获取程序包
+. 从 http://svn.dameng.com:2688/code/DM-GAHYB-CODE/product/dmga-dubbo-admin[svn]下载源代码编译出程序包
+
+== 布署安装包
+. 解压安装包到服务器上，记住解压后的目录路径。例如： `/opt/gaCloudHome2/dmga-dubbo-admin`
+. 修改 `tomcat根目录/conf/server.xml` 添加如下内容:
++
+[source,xml]
+----
+<Context path="/admin" docBase="/opt/gaCloudHome2/dmga-dubbo-admin"  />
+----
+
+== 修改配置文件
+在启动tomcat之前，需要修改admin中连接的注册中心地址。
+
+. `WEB-INF/dubbo.properties`
++
+.dubbo.properties位置
+image::admin_webinfo.png[]
+
+. 修改如下位置
++
+.dubbo.properties内容
+image::admin_properties.png[]
+
+. 将zookeeper连接地址修改为先前安装的zookeeper的地址，例如：
+
+[source,c++]
+----
+dubbo.registry.address=zookeeper://10.72.38.50:2181
+----
+
+== 启动界面
+进入tomcat根目录，启动tomcat。
+----
+./bin/startup.sh && tail -f logs/catalina.out
+----
+
+. 输入 `http://ip:port/admin` 进入访问界面
++
+image::admin_init.png[]
+
+. 输入用户名 `root` 密码 `root`
+
+. 进入管理界面
++
+image::admin.png[]
+
+. 点击 `服务治理 > 服务` 可查看现有的服务
++
+image::admin_service.png[]
+
+[IMPORTANT]
+====
+所有的 _soa_ 组件安装完成后，这里应该是可以看到服务信息的。
+====

@@ -1,0 +1,42 @@
+= 工程实现文档
+张雄彪 <zxb@dameng.com>
+version 1.0, 2016-03-19
+:author: 张雄彪
+:email: zxb@dameng.com
+:stem: latexmath
+:title: 工程实现文档
+:description: 简述各工程的实现
+:toc: right
+:toclevels: 2
+:doctype: book
+:compat-mode:
+:page-layout!:
+:sectanchors:
+:sectlinks:
+:sectnums:
+:linkattrs:
+:icons: font
+:source-highlighter: coderay
+:source-language: asciidoc
+:experimental:
+:stem:
+:idprefix:
+:idseparator: -
+:ast: &ast;
+:dagger: pass:normal[^&dagger;^]
+:y: icon:check[role="green"]
+:n: icon:times[role="red"]
+:c: icon:file-text-o[role="blue"]
+:table-caption!:
+:example-caption!:
+:figure-caption!:
+:imagesdir: ./images
+:iconsdir: ./images/icons
+:includedir: _includes
+:underscore: _
+
+include::sso.asciidoc[]
+
+include::portal.asciidoc[]
+
+include::wsdl.asciidoc[]

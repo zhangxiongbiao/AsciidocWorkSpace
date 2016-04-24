@@ -1,0 +1,96 @@
+////
+Included in:
+
+- user-manual: Source Code Syntax Highlighting
+////
+
+Listing blocks and paragraphs are commonly used to display source code.
+For this reason, Asciidoctor has enabled several syntax highlighting libraries, including CodeRay, highlight.js, Prettify, and Pygments, that you can use to style source code.
+
+To enable syntax highlighting in a document, set the `source-highlighter` attribute in the <<user-manual#doc-header,document header>>.
+If you set the attribute in the document, it _must_ be defined in the document header.
+
+----
+= Document Title
+:source-highlighter: <value>
+----
+
+For example:
+
+----
+= Document Title
+:source-highlighter: coderay
+----
+
+See the following table for possible values of the `source-highlighter` attribute.
+
+.Possible values for the `source-highlighter` attribute
+[cols="1,1m,2"]
+|===
+|Library Name |Attribute Value |Supported Environments
+
+|http://coderay.rubychan.de[CodeRay]
+|coderay
+|Asciidoctor, AsciidoctorJ
+
+|https://highlightjs.org[highlight.js]
+|highlightjs
+|Asciidoctor, AsciidoctorJ, Asciidoctor.js
+
+|https://code.google.com/p/google-code-prettify[Prettify]
+|prettify
+|Asciidoctor, AsciidoctorJ, Asciidoctor.js
+
+|http://pygments.org[Pygments]
+|pygments
+|Asciidoctor
+|===
+
+To apply highlighting to source code, you must assign the `source` name and a source language to a paragraph or delimited block.
+You can also set the source language globally using the `source-language` attribute.
+
+[listing]
+.Code block with title and syntax highlighting
+....
+include::ex-src.adoc[tags=src-base-co]
+....
+<1> An optional ID can be added to the block. See <<anchordef>>.
+<2> Assign the block name `source` to the first position in the attribute list.
+<3> Assign a source language to the second position.
+<4> An optional title can be added to the block.
+<5> The source block name is typically assigned to listing and literal blocks.
+
+.Result: Source block with title and syntax highlighting
+====
+include::ex-src.adoc[tags=src-base]
+====
+
+.Source paragraph
+----
+include::ex-src.adoc[tags=src-para-co]
+----
+<1> Place the attribute list directly on the paragraph
+<2> Once an empty line is encountered the syntax highlighting is unset.
+
+.Result: Source paragraph
+====
+include::ex-src.adoc[tags=src-para]
+====
+
+If the majority of your source blocks use the same source language, you can set the `source-language` attribute in the document header and assign a language to it.
+
+[listing]
+.Source language attribute
+....
+include::ex-src.adoc[tags=src-lang]
+....
+
+Additionally, you can use an <<user-manual#include-directive,include directive>> to insert source code into an AsciiDoc document directly from a file.
+
+[listing]
+.Code block inserted from another file
+....
+include::ex-src.adoc[tags=src-inc]
+....
+
+TIP: Syntax highlighting is not disabled if an explicit `subs` attribute is used on a source listing as long as `specialcharacters` is in the subs list.

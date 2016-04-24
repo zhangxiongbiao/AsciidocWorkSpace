@@ -1,0 +1,137 @@
+= 接口用户手册
+
+== Webservice服务接口访问说明
+
+=== 开发框架
+本Webservice服务接口采用axis2框架进行开发。
+
+=== 访问接口
+
+[source,java]
+----
+package com.dm.dubbo.wsdl.registry.service;
+
+public interface GenericService {
+
+	/**
+	 * 通过此接口请求代理方，然后调用提供方的ws服务
+	 * @param methodName 请求方法名称
+	 * @param condition 请求参数，参数格式为  参数名称：参数值，参数名称：参数值
+	 * @return 响应结果
+	 * @throws Exception
+	 */
+	public Object query(String methodName, String condition) throws Exception;
+}
+----
+
+=== 访问参数
+
+|===
+|访问地址|http://ip:port/com.dm.dubbo.wsdl.registry.service.Server?wsdl|IP、PORT、Server会随实际部署环境变化
+|命名空间|http://service.registry.wsdl.dubbo.dm.com/|
+|请求参数|methodName|请求的方法名称，由接口方提供
+|请求参数|condition|请求条件，由接口方提供
+|响应结果|String|系统返回接口，由具体的接口决定
+|===
+
+== 服务接口信息列表
+
+|===
+|编号|服务名称|服务资源编码|请求类编码|服务描述
+|1|全国常住人口信息查询|GABVIEW_000001|GabQueryRequestHandler|通过身份证号查询常住人口信息
+|===
+
+[TIP]
+====
+编写接口文档时，需要替换 `GABVIEW_000001` 及 `GabQueryRequestHandler`
+
+GABVIEW_000001::
+来源于 `DSP2_GAB_VIEW` 这个表的 `VIEW_ID` 列
+
+GabQueryRequestHandler::
+接口处理器，可选项
++
+. GabQueryRequestHandler 对应公安部接口查询
+. DataQueryRequestHandler 对应普通单表查询接口
+====
+
+== 服务接口参数
+
+=== 请求报文
+[source,xml]
+----
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+    <soap:Body>
+        <ns1:query xmlns:ns1="http://service.registry.wsdl.dubbo.dm.com/">
+            <ns1:arg0>request</ns1:arg0>    // <1>
+            <ns1:arg1>requestXml:<![CDATA[<?xml version="1.0" encoding="UTF-8"?>    // <2>
+<request>
+  <head>
+    <request_id>22B6A9D1BAEF3C32C106A0A41A4AC2EE</request_id>   // <3>
+    <system_code/>
+    <service_code>GabQueryRequestHandler</service_code>     // <4>
+    <user_name>zxb_test</user_name>     // <5>
+    <user_password>aaaaaaaaaaaaaaaaaaa</user_password>  // <6>
+    <encrypt_flag>0</encrypt_flag>  // <7>
+    <resource_id>GABVIEW_000001</resource_id> // <8>
+    <request_type/>
+    <request_interface/>
+    <request_time/>
+    <remote_ip/>
+    <remote_mac/>
+    <notify_url/>
+    <memo1/>
+    <memo2/>
+  </head>
+  <parameter><![CDATA[<SFZH>420921199111105711</SFZH>]]]]><![CDATA[></parameter>  // <9>
+
+  <!--<parameter>&lt;SFZH&gt;420921199111105711&lt;/SFZH&gt;</parameter> -->  // <10>
+</request>]]></ns1:arg1>
+        </ns1:query>
+    </soap:Body>
+</soap:Envelope>
+----
+<1> 请求方法名称，对应接口方法名 _methodName_ 。对于 _GabQueryRequestHandler_ 与 _DataQueryRequestHandler_ 此处填写 _request_。
+<2> 请求参数 _condition_ ，参数形式为 `参数名称:参数值,参数名称2:参数值2`。对于 _GabQueryRequestHandler_ 与 _DataQueryRequestHandler_ ，此处填写 requestXml:具体内容
+<3> 请求ID，可能通过系统自动生成
+<4> 请求类编码，系统分配
+<5> 用户名，平台为访问访问终端分配的用户名， *必填项*
+<6> 用户密码（通过MD5加密），平台为访问终端分配的校验密码， *必填项*
+<7> 数据加密标志,0-不加密；1-DES加密，如果填写‘1’，需要对parameter节点的信息进行DES加密，系统未不同的终端分配不同的密钥，密钥需要妥善保管， *必填项*
+<8> 请求资源ID，系统分配
+<9> 对于 _GabQueryRequestHandler_ 与 _DataQueryRequestHandler_ ， 此处直接填写请求查询参数。
+<10> 如果不使用双 _CDATA_ 进行嵌套，可以这样写请求参数。
+
+== 响应报文
+由于总线可以提供所有的接口代理服务，所以具体的响应报文由具体的接口提供。
+
+对于 _GabQueryRequestHandler_ 与 _DataQueryRequestHandler_ ，此处填写：
+
+
+[source,xml]
+----
+<response>
+	<head>
+        <version>1.0</version>//接口版本号，必填项
+		<request_id>FDFC6C5435E67A9BAC87C37DDD4ECCE0</request_id>//请求ID，UUID，与请求参数中的请求ID对应，必填项
+		<status_code></status_code>//响应状态编码，见“4.响应编码规范”，必填项
+		<status_message></status_message>//异常原因，非必填项
+		<encrypt_flag>0</encrypt_flag>//数据加密标志,0-不加密；1-DES加密，必填项
+	</head>
+	<result>
+	<![CDATA[
+            // 此处是各接口具体服务的响应参数描述，如果需要加密，此信息按照encrypt_flag标签加密
+        <row>
+
+        <CARNO>车牌号</CARNO>
+        <CARTYPE>车辆类型</CARTYPE>
+        <DEVICE_NAME>收费站名称</DEVICE_NAME>
+        <PLATECOLOR>车牌颜色</PLATECOLOR>
+        <WATCHTIME>入口时间</WATCHTIME>
+        <WATCHTIME1>出口时间</WATCHTIME1>
+
+        </row>
+	]]>
+	</result>
+</response>
+----

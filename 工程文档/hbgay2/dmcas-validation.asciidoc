@@ -1,0 +1,391 @@
+= dmcas-validation
+:imagesdir: ./images
+:iconsdir: ./images/icons
+
+在 _dmcas_ 升级后，原先所有放在 _dmcas_ 中的用户信息校验逻辑及其它一些业务逻辑将全部从 _dmcas_ 中剥离。因为这些逻辑不属于 _dmcas_ 处理，应该是各子系统自己独有的一些逻辑，即应该子系统自己独立处理。
+
+当这些校验逻辑被剥离出来后，就形成了 _dmcas-validation_ 。它作为一个默认的校验实现（仅限于达梦公安团队的项目使用）。当然，各子系统也完全可以实现自己的校验逻辑，只需要遵循 _dmcas_ 中指定的那些接口规范即可。
+
+== 接口
+在 _dmcas_ 独立出来以后，暴露了如下一些接口，子系统实现这些接口后， _dmcas_ 将通过 _rpc_ 的方式调用子系统的具体实现来完成校验及其它业务逻辑。
+
+.interfaces
+image::dmcas-validation-interface.png[]
+
+AuthService::
+校验服务接口，根据用户登录请求的用户名密码，子系统提供校验服务即可。注意，在子系统自己的登陆页面登陆时才会调用该接口。 `必须实现`
++
+.AuthService
+[source,java]
+----
+/**
+ * 检验用户信息服务
+ *
+ * @author zxb
+ * @version 1.0.1
+ */
+public interface AuthService {
+
+	/**
+	 * 校验用户名密码是否正确
+	 *
+	 * @param username 用户名
+	 * @param password 用户明文密码
+	 * @return AuthResult 校验结果
+	 * @see com.dm.cas.server.domain.AuthResult
+	 */
+	public AuthResult validate(String username, String password);
+
+}
+----
+
+LoginPostProcessService::
+登录成功后的处理接口，子系统实现该接口以便完成一些登陆成功后的处理逻辑。例如，记录登陆日志等。 `可选实现`
++
+.LoginPostProcessService
+[source,java]
+----
+
+/**
+ * 用户登录成功后，子系统的处理服务。
+ * <p/>
+ * 子系统可以实现该接口，以便在用户登录成功后，计入登录日志等信息。
+ * @author zxb
+ * @version 1.0.1
+ * Created by zxb on 2016/3/13.
+ */
+public interface LoginPostProcessService {
+
+    /**
+     * cas验证用户登录成功后，会调用该接口。子类实现该接口后可加入自己的一些处理逻辑。
+     * @param params 参数列表
+     *               <ul>
+     *                  <li>user 登录用户信息</li>
+     *                  <li>ip 登录用户客户端ip地址</li>
+     *               </ul>
+     * @throws Exception
+     * @return ReturnMessage 返回的消息，子类如果不返回消息及状态码。cas将使用默认消息及状态码。
+     */
+    ReturnMessage process(Map<String, Object> params) throws Exception;
+
+}
+----
+
+LoginFailProcessService::
+登陆失败后的处理逻辑，子系统实现该接口后可在用户登陆失败后加入自己的一些处理逻辑。 `可选实现`
++
+.LoginFailProcessService
+[source,java]
+----
+/**
+ * @author zxb
+ * @version 1.0.1
+ * Created by zxb on 2016/3/14.
+ */
+public interface LoginFailProcessService {
+
+    /**
+     * cas验证用户登录失败后，会调用该接口。子类实现该接口后可加入自己的一些处理逻辑。
+     * @param params 参数列表
+     *               <ul>
+     *                  <li>user 登录用户信息</li>
+     *                  <li>ip 登录用户客户端ip地址</li>
+     *               </ul>
+     * @throws Exception
+     * @return ReturnMessage 返回的消息，子类如果不返回消息及状态码。cas将使用默认消息及状态码。
+     */
+    ReturnMessage process(Map<String, Object> params) throws Exception;
+}
+----
+
+UserMapperService::
+用户映射接口，用户在登陆本系统或第三方系统后，再去访问其它第三方系统时，需要提供一个用户映射的服务。子系统必须实现该接口，且提供用户的匹配映射。 `必须实现`
++
+.UserMapperService
+[source,java]
+----
+/**
+ * 用户接口
+ * @author zxb
+ * @version 1.0.1
+ * Created by zxb on 2016/3/16.
+ */
+public interface UserMapperService {
+
+    /**
+     * 根据用户账号获取该用户的信息，子系统实现该接口，便于各系统之间完成用户映射。此处只会被 dmcas 调用，且只会用于各系统间匹配校验。
+     * @param userCode 用户账号
+     * @return user 用户信息
+     * @throws Exception
+     */
+    public User getUser(String userCode) throws Exception;
+
+    /**
+     * 根据其它系统提供的用户信息，返回本系统对应的用户信息。
+     * @param user
+     * @return
+     * @throws Exception
+     */
+    public User getUser(User user) throws Exception;
+}
+----
+
+
+== 默认实现
+在 _dmcas-validtion_ 中完成的，只是对上述的几个接口的一个实现而已。
+
+=== AuthService
+默认的用户名密码校验，采用的是对密码 _md5_ 后进行一个比较的校验。实现逻辑很简单，把密码 _md5_ 一把后和库中的 _md5_ 后的密码进行一个等值比较。
+
+.MD5AuthService
+[source,java]
+----
+public AuthResult validate(String username, String password) {
+logger.info("begin validate user login info! username:" + username);
+AuthResult authResult = new AuthResult();
+if (!StringUtils.hasText(username) || !StringUtils.hasText(password)) {
+    authResult.setValid(false);
+    authResult.setMessage("用户名或密码不能为空！");
+    return authResult;
+}
+
+Connection conn = null;
+PreparedStatement ps = null;
+ResultSet rs = null;
+try {
+    // TODO 此处应使用连接池实现，并发登录情况下此实现会有问题。
+    conn = dataSource.getConnection();
+    ps = conn.prepareStatement(sql);
+    ps.setString(1, username);
+    rs = ps.executeQuery();
+    String dbPassword = null;
+    String flag = null;
+    while (rs.next()) {
+        dbPassword = rs.getString(1);
+        flag = rs.getString(2);
+    }
+    if (!StringUtils.hasText(dbPassword)) {
+        authResult.setValid(false);
+        authResult.setMessage("用户不存在！");
+        return authResult;
+    }
+    if (!dbPassword.equalsIgnoreCase(EncryptUtil.md5Degest(password))) {
+        authResult.setValid(false);
+        authResult.setMessage("用户或密码不正确！");
+        return authResult;
+    }
+    if (!("1".equals(flag))) {
+        authResult.setValid(false);
+        authResult.setMessage("帐号已被禁用！");
+        return authResult;
+    }
+    //获取登录用户信息
+    User user = userService.queryByCodePassword(username, password);
+    authResult.setUser(user);
+    //验证是否成功
+    authResult.setValid(true);
+    return authResult;
+} catch (Exception e) {
+    logger.error("validate user:" + username + " error!", e);
+    // 返回信息
+    authResult.setValid(false);
+    authResult.setMessage("验证失败！");
+    return authResult;
+} finally {
+    this.release(rs, ps, conn);
+    logger.info("begin validate user login info! username:" + username + ", validate:" + authResult.isValid() + ",msg:" + authResult.getMessage());
+}
+}
+----
+
+=== LoginPostProcessService
+在用户登陆成功后，往往需要记录用户登陆行为的日志，刷新用户访问量等等。
+
+_LoginPostProcessServiceImpl_ 实现了该接口，这里则是添加了一些子系统独有的一些逻辑。
+
+[TIP]
+====
+接口方法返回的 _ReturnMessage_ 可以决定登陆成功后最终返回给客户端的信息，如 _ReturnCode_ 和 _ReturnMessage_
+====
+
+.LoginPostProcessServiceImpl
+[source,java]
+----
+public class LoginPostProcessServiceImpl implements LoginPostProcessService {
+
+    private Logger logger = Logger.getLogger(this.getClass());
+
+    /**
+     * 登录日志类型
+     */
+    private final String LOGIN_LOG_TYPE = "1001";
+
+    /**
+     * 日志服务接口
+     */
+    private LogService logService;
+
+    /**
+     * 参数列表
+     */
+    private ParamCache paramCache;
+
+    public void setLogService(LogService logService) {
+        this.logService = logService;
+    }
+
+    public void setParamCache(ParamCache paramCache) {
+        this.paramCache = paramCache;
+    }
+
+    @Override
+    public ReturnMessage process(Map<String, Object> params) throws Exception {
+        logger.info("begin login success process!");
+        ReturnMessage returnMessage = null;
+        if (params != null && params.size() > 0) {
+            // 记录用户登录日志
+            User user = (User) params.get("user");
+            String ip = params.get("ip").toString();
+
+            logger.debug("create login log, user:" + user.getUser_code() + ", ip:" + ip);
+            this.logService.createLog(user, ip, LOGIN_LOG_TYPE);
+
+            // 更新门户登陆统计信息
+            this.logService.update();
+
+            // 验证用户密码是否为初始化密码
+            String username = params.get("username").toString();
+            String password = params.get("password").toString();
+            String initial_password = paramCache.getValue("INITIAL_PASSWORD");
+            if (!StringUtils.hasText(initial_password)) {
+                logger.error("initial_password is empty,verify password will not effect!please check the table wmf_param!");
+            } else {
+                if (EncryptUtil.md5Degest(initial_password).equalsIgnoreCase(password)) {
+                    returnMessage = new ReturnMessage();
+                    returnMessage.setReturnCode("1");
+                    returnMessage.setReturnMsg("您的密码还是初始化密码，请及时修改！");
+                    logger.info("verify success!warn, the user " + username + "'s password is initial_password!");
+                }
+            }
+        }
+        logger.info("end login success process!");
+        return returnMessage;
+    }
+}
+----
+
+=== LoginFailProcessService
+_LoginFailProcessService_ 同 _LoginPostProcessService_ 接口类似，它在用户登陆失败时会调用。
+
+_LoginFailProcessServiceImpl_ 实现了该接口，添加了一些日志记录的逻辑。
+
+.LoginFailProcessServiceImpl
+[source,java]
+----
+/**
+ * 登录失败后的处理逻辑
+ * Created by zxb on 2016/3/14.
+ */
+public class LoginFailProcessServiceImpl implements LoginFailProcessService {
+
+    private Logger logger = Logger.getLogger(this.getClass());
+
+    private MistakeLogService mistakeLogService;
+
+    /**
+     * 登录日志类型
+     */
+    private final String LOGIN_LOG_TYPE = "1001";
+
+    public void setMistakeLogService(MistakeLogService mistakeLogService) {
+        this.mistakeLogService = mistakeLogService;
+    }
+
+    @Override
+    public ReturnMessage process(Map<String, Object> params) throws Exception {
+        logger.info("begin login fail process!");
+        if (params != null && params.size() > 0) {
+            // 创建登录失败日志
+            User user = (User) params.get("user");
+            String ip = params.get("ip").toString();
+
+            logger.debug("login fail user:" + (user == null ? "" : user.getUser_code()) + ", ip:" + ip);
+            mistakeLogService.createLog(user, ip, LOGIN_LOG_TYPE);
+        }
+        logger.info("end login fail process!");
+        return null;
+    }
+}
+----
+
+=== UserMapperService
+_UserMapperService_ 作为各子系统间互相访问时最关键的一个服务接口。它要求子系统实现它时，需要提供用户映射的服务。
+
+_UserMapperServiceImpl_ 实现了该接口的两个方法。
+
+.UserMapperServiceImpl
+[source,java]
+----
+/**
+ * 用户映射服务实现
+ *
+ * @author zxb
+ * @version 1.0.1
+ *          Created by zxb on 2016/3/17.
+ */
+public class UserMapperServiceImpl implements UserMapperService {
+
+    private Logger logger = Logger.getLogger(this.getClass());
+
+    /**
+     * 用户操作接口
+     */
+    private UserService userService;
+
+    /**
+     * 设置用户操作接口
+     */
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    @Override
+    public User getUser(String userCode) throws Exception {
+        if (StringUtils.hasText(userCode)) {
+            User user = this.userService.queryByCode(userCode);
+            return user;
+        }
+        return null;
+    }
+
+    @Override
+    public User getUser(User user) throws Exception {
+        if (user == null || !StringUtils.hasText(user.getUser_code())) {
+            logger.error("user is null or user_code is empty!");
+            return null; // <1>
+        }
+
+        String userCode = user.getUser_code();
+        String idCardNo = user.getUser_sfzh();
+        logger.debug("other system's user, user_code " + userCode + ", idCardNo " + idCardNo);
+
+        // 非普通用户，如一般的管理用户
+        if (!StringUtils.hasText(idCardNo)) {
+            logger.error("current user " + userCode + " does'nt has idCardNo!");
+            // TODO 后期再看如何处理，或者抛出一个接口，让各个我们做的系统提供实现。
+            return null; // 阻止无身份证号的用户进行访问
+            //return user; 测试使用
+        }
+
+        // 本系统中映射用户不存在时，则创建用户
+        User mappingUser = this.userService.queryByNameSfzh(userCode, idCardNo);
+        if (mappingUser == null) {
+            mappingUser = this.userService.createPkiUser(userCode, userCode, idCardNo, "PKI001");
+        }
+
+        return mappingUser; // <2>
+    }
+}
+----
+<1> 没有匹配用户时，直接返回 _null_ 则可以。
+<2> 存在用户，则返回匹配的用户即可。

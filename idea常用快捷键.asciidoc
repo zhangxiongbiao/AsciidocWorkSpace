@@ -1,0 +1,127 @@
+= Idea常用快捷键
+:author: zxb123
+:email: zxb@dameng.com
+:stem: latexmath
+:title: 用户手册
+:description: aaaaaaaaaaaaaaaaaaaaa
+:toc: right
+:toclevels: 2
+:url-issue: http://www.baidu.com
+:mail-list: http://www.baidu.com
+:IRC: http://www.baidu.com
+:url-issues: https://github.com/asciidoctor/asciidoctor.org/issues
+:url-tilt: https://github.com/rtomayko/tilt
+:doctype: book
+:compat-mode:
+:page-layout!:
+:sectanchors:
+:sectlinks:
+:sectnums:
+:linkattrs:
+:icons: font
+:source-highlighter: coderay
+:source-language: asciidoc
+:experimental:
+:stem:
+:idprefix:
+:idseparator: -
+:ast: &ast;
+:dagger: pass:normal[^&dagger;^]
+:y: icon:check[role="green"]
+:n: icon:times[role="red"]
+:c: icon:file-text-o[role="blue"]
+:table-caption!:
+:example-caption!:
+:figure-caption!:
+:imagesdir: ./images
+:iconsdir: ./images/icons
+:includedir: _includes
+:underscore: _
+
+== 编辑
+
+.快捷键
+[%header]
+|===
+|快捷键|说明
+|kbd:[Shift+Space]|代码自动补全提示
+|kbd:[Ctrl+Shift+Space]|智能代码自动补全提示
+|kbd:[Ctrl+Shift+Enter]|语句快速补全，如if，for等
+|kbd:[Ctrl+P]|显示该方法要填的参数信息
+|kbd:[Ctrl+Q]|显示该方法的说明文档
+|kbd:[Shift+F1]|显示外部文档链接
+|kbd:[Alt+Insert]|生成`getter/setter`等，需要选中字段。
+|kbd:[Ctrl+O]|快速Override方法
+|kbd:[Ctrl+I]|快速实现接口方法
+|kbd:[Ctrl+Alt+T]|Surround with，如生成try-catch等
+|kbd:[Ctrl+/]|注释行
+|kbd:[Ctrl+Shift+/]|注释段，*需要选中内容*
+|kbd:[Ctrl+W]|增量选择代码块
+|kbd:[Ctrl+Shift+W]|取消选择代码块
+|kbd:[Alt+Q]|上下文信息
+|kbd:[Alt+Enter]|快速修复
+|kbd:[Ctrl+Alt+L]|格式化代码
+|kbd:[Ctrl+Alt+O]|优化导包（类似eclipse的自动导包），*不好用*，可以这么设置自动导包。menu:Settings[Editor>General>Auto Import>Add unambiguous import on the fly]
+|kbd:[Ctrl+Alt+I]|快速缩进行
+|kbd:[Tab] / kbd:[Shift+Tab]|缩进或取消缩进行
+|kbd:[Ctrl+D]|复制当前行
+|kbd:[Ctrl+Y]|删除当前行
+|kbd:[Ctrl+Shift+J]|智能环绕行
+|kbd:[Ctrl+Enter]|智能split行
+|kbd:[Shift+Enter]|开始新行
+|kbd:[Ctrl+Shift+U]|切换选中语句的大小写
+|kbd:[Ctrl+Shift+[/\]]|选中直到该块首或尾
+|kbd:[Ctrl+Delete]|删除到词尾
+|kbd:[Ctrl+BackSpace]|删除到词首
+|kbd:[Ctrl+ `+/-`]|折叠或展开当前代码块
+|kbd:[Ctrl+F4]|关闭当前打开的editor tab页
+|===
+
+== 搜索与替换
+
+=== 搜索
+[%header]
+|===
+|操作键|说明
+|kbd:[Double Shift]|搜索所有
+|===
+
+=== 查找
+[%header]
+|===
+|操作键|说明
+|kbd:[Ctrl + F]|在当前文件查找
+|kbd:[F3]|继续向下查找
+|kbd:[Shift+F3]|向上查找
+|kbd:[Ctrl+R]|查找及替换（Replace）
+|kbd:[Ctrl+Shift+F]|在指定工程、文件夹下所有的文件中查找
+|kbd:[Ctrl+Shift+R]|同上先查找，然后再替换
+|暂无|Search  structurally（比较吊的搜索）
+|暂无|Replace structurally
+|kbd:[Alt+F7]|查找某方法的使用示例
+|kbd:[Ctrl+Alt+F7]|弹窗显示该方法的使用示例
+|kbd:[Ctrl+Shift+F7]|在当前文件中高亮选中内容（没什么用）
+|===
+
+== 编译与运行
+
+[%header]
+|===
+|操作键|说明
+|kbd:[Ctrl+F9]|Make Project，即编译修改过的文件与依赖
+|kbd:[Ctrl+Shift+F9]|编译选中的文件，包或模块
+|kbd:[Alt+Shift+F10]|先选择启动配置，然后运行
+|kbd:[Alt+Shift+F9]|先选择启动配置，然后以debug方式运行
+|kbd:[Shift+F10]|以当前默认选择的启动项运行
+|kbd:[Shift+F9]|以当前默认选择的启动项debug方式运行
+|kbd:[Ctrl+Shift+F10]|运行当前文件所属于的启动配置，类似于在当前文件右键Run As的感觉
+|===
+
+== 调试Debug
+
+[%header]
+|===
+|操作键|说明
+|kbd:[F8]|单步跳过
+|kbd:[F7]|单步跳入
+|===

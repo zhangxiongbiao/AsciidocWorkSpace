@@ -1,0 +1,1315 @@
+= Operators
+:experimental:
+:imagesdir: ./images
+
+== Simpler print statements
+
+[source,java]
+----
+System.out.println("Rather a lot to type");
+----
+
+== Using Java operators
+
+几乎所有的操作符只适用于基本类型，只有 `=` `==` `!=` 是适用于 _objects_ 的。另外 _String_ 支持 `+` 和 `+=` 。
+
+
+== Precedence
+操作符优先级定义了当多个操作符出现在同一表达式中时运行的先后顺序。 _Java_ 有特殊的规则来定义操作符计算顺序，这其中最简单的一个规则就是 `*` 和 `/` 比 `+` 和 `-` 的优先级高。所以通常使用 `()` 来保证优先级。
+
+[source,java]
+----
+//: operators/Precedence.java
+public class Precedence {
+  public static void main(String[] args) {
+    int x = 1, y = 2, z = 3;
+    int a = x + y - 2/2 + z; // (1)
+    int b = x + (y - 2)/(2 + z); // (2)
+    System.out.println("a = " + a + " b = " + b); // <1>
+  }
+} /* Output:
+a = 5 b = 1
+*///:~
+----
+<1> 将 `int` 类型的 _a_ 和 _b_ 转换为了 `String` 类型，再进行字符串拼接。
+
+[NOTE]
+====
+`System.out.println();` 中使用了 `+` ，这里在字符串中 `+` 就是追加的意思。另外，当编译器看到一个 *String* 后面和一个 *非String* 使用 `+` 进行连接的时候，它会把 *非String* 转换为 *String* 再进行字符串拼接操作。
+====
+
+== Assignment
+赋值操作是使用 `=` 操作符完成的，它的意思就是把 `=` 右边的值 _copy_ 给左侧的变量。右边的值可以是 _constant_ , _variable_ , _expression_ ，如果为静态式或变量均是计算后的值。
+
+.分配常量值给变量
+[source,java]
+----
+a = 4;
+----
+
+为变量赋基本类型的值是相当容易的，因为基本类型是持有其真实的值而非一个 *对象的引用* 。
+
+[source,java]
+----
+a = 4;
+b = a; // <1>
+
+b = 5; // <2>
+----
+<1> 就是直接把基本类型值 `4` _copy_ 给变量 _b_ 。
+<2> 当改变变量 _b_ 的值的时候不会影响变量 _a_ 的值。
+
+.引用复制
+[source,java]
+----
+//: operators/Assignment.java
+// Assignment with objects is a bit tricky.
+import static net.mindview.util.Print.*;
+class Tank {
+	int level;
+}
+public class Assignment {
+	public static void main(String[] args) {
+		Tank t1 = new Tank();
+		Tank t2 = new Tank();
+		t1.level = 9;
+		t2.level = 47;
+		print("1: t1.level: " + t1.level +
+			", t2.level: " + t2.level);
+		t1 = t2;
+		print("2: t1.level: " + t1.level +
+			", t2.level: " + t2.level);
+		t1.level = 27;
+		print("3: t1.level: " + t1.level +
+			", t2.level: " + t2.level);
+	}
+} /* Output:
+1: t1.level: 9, t2.level: 47  // <1>
+2: t1.level: 47, t2.level: 47 // <2>
+3: t1.level: 27, t2.level: 27 // <3>
+*///:~
+----
+<1> 直接为基本类型 _field_ 赋值
+<2> 引用赋值 `t1 = t2;` ，两个引用指向同一个 _object_ ，所以输出结果一样。
+<3> 使用任一引用 `t1` 改变 _field_ 值，此时改变的就是具体的 _object_ 的 _field_ 值。而 `t2` 也引用了同一个 _object_ ，所以输出结果相同。
+
+[TIP]
+====
+上述这种引用复制也称为 *_aliasing_*
+====
+
+== Aliasing during method calls
+将一个 _object_ 作为 _parameter_ 传递入一个 _method_ 时也会发生 *_aliasing_* 。
+
+.Aliasing during method calls
+[source,java]
+----
+//: operators/PassObject.java
+// Passing objects to methods may not be
+// what you’re used to.
+import static net.mindview.util.Print.*;
+class Letter {
+	char c;
+}
+public class PassObject {
+	static void f(Letter y) {
+		y.c = 'z';
+	}
+	public static void main(String[] args) {
+		Letter x = new Letter();
+		x.c = 'a';
+		print("1: x.c: " + x.c);
+		f(x); // <1>
+		print("2: x.c: " + x.c);
+	}
+} /* Output:
+1: x.c: a
+2: x.c: z
+*///:~
+----
+<1> 在调用方法 `f(x)` 时，实际上是把引用 _x_ 作为参数传递给了方法 _f()_ 的形参 _y_ 。此时就是一个引用复制，即 `y=x` 。
+
+== Mathematical operators
+
+基本的数学操作符就是。
+
+|===
+|operator|description
+|kbd:[+]|加号
+|kbd:[-]|减号
+|kbd:[*]|乘号
+|kbd:[/]|除号
+|kbd:[%]|取模
+|===
+
+.基本操作示例
+[source,java]
+----
+//: operators/MathOps.java
+// Demonstrates the mathematical operators.
+import java.util.*;
+import static net.mindview.util.Print.*;
+public class MathOps {
+	public static void main(String[] args) {
+		// Create a seeded random number generator:
+		Random rand = new Random(47);
+		int i, j, k;
+		// Choose value from 1 to 100:
+		j = rand.nextInt(100) + 1;
+		print("j : " + j);
+		k = rand.nextInt(100) + 1;
+		print("k : " + k);
+		i = j + k;
+		print("j + k : " + i);
+		i = j - k;
+		print("j - k : " + i);
+		i = k / j;
+		print("k / j : " + i);
+		i = k * j;
+		print("k * j : " + i);
+		i = k % j;
+		print("k % j : " + i);
+		j %= k;
+		print("j %= k : " + j);
+		// Floating-point number tests:
+		float u, v, w; // Applies to doubles, too
+		v = rand.nextFloat();
+		print("v : " + v);
+		w = rand.nextFloat();
+		print("w : " + w);
+		u = v + w;
+		print("v + w : " + u);
+		u = v - w;
+		print("v - w : " + u);
+		u = v * w;
+		print("v * w : " + u);
+		u = v / w;
+		print("v / w : " + u);
+		// The following also works for char,
+		// byte, short, int, long, and double:
+		Operators 67
+		68 Thinking in Java Bruce Eckel
+		u += v;
+		print("u += v : " + u);
+		u -= v;
+		print("u -= v : " + u);
+		u *= v;
+		print("u *= v : " + u);
+		u /= v;
+		print("u /= v : " + u);
+	}
+} /* Output:
+j : 59
+k : 56
+j + k : 115
+j - k : 3
+k / j : 0
+k * j : 3304
+k % j : 56
+j %= k : 3
+v : 0.5309454
+w : 0.0534122
+v + w : 0.5843576
+v - w : 0.47753322
+v * w : 0.028358962
+v / w : 9.940527
+u += v : 10.471473
+u -= v : 9.940527
+u *= v : 5.2778773
+u /= v : 9.940527
+*///:~
+----
+
+== Unary minus and plus operators
+一元操作符， `+` 和 `-` 。其实一元的 `+` 和 `-` 同二元的在运算上没有什么区别。编译器根据你填写的表达式认定你的是一元的还是二元的。
+
+.minus and plus operators
+[source,java]
+----
+x = -a; // <1>
+
+x = a * -b; // <2>
+
+x = a * (-b); // <3>
+----
+<1> 很明显的一元操作符。
+<2> 这种写法会让人困惑，所以通常是第3种写法。
+
+[TIP]
+====
+一元的 `+` 没什么用，这里只是为了与一元的 `-` 对称引进来的。
+====
+
+== Auto increment and decrement
+自加自减操作符。
+
+. `++` 自加1
+. `--` 自减1
+
+|===
+|operator|desc|解释
+|++a|pre-increment|先自加1，再进行运算
+|a++|post-increment|先运算，再自加1
+|--a|pre-decrement|先自减1，再运算
+|a--|post-decrement|先运算，再自减1
+|===
+
+.auto increment and decrement example
+[source,java]
+----
+//: operators/AutoInc.java
+// Demonstrates the ++ and -- operators.
+import static net.mindview.util.Print.*;
+public class AutoInc {
+	public static void main(String[] args) {
+		int i = 1;
+		print("i : " + i);
+		print("++i : " + ++i); // Pre-increment
+		print("i++ : " + i++); // Post-increment
+		print("i : " + i);
+		print("--i : " + --i); // Pre-decrement
+		print("i-- : " + i--); // Post-decrement
+		print("i : " + i);
+	}
+} /* Output:
+i : 1
+++i : 2
+i++ : 2
+i : 3
+--i : 2
+i-- : 2
+i : 1
+*///:~
+----
+
+.小段子
+****
+Bill Joy (one of the Java creators) 曾经说 `java=C`+`+--`，意思是 _java_ 是 C++ 减去一部分不必要且复杂的东西。
+****
+
+== Relational operators
+比较操作符都会产生一个 _boolean_ 类型的结果值。比较操作符都有
+
+* <   小于
+* >   大于
+* \<= 小于等于
+* >=  大于等于
+* ==  等于
+* !=  不等于
+
+`==` 和 `!=` 适用于所有的基本类型，但是其它几个操作符除了 _boolean_ 类型的不适用外其它基本类型都适用。因为 `true >= false` 这种是没有任何意义的。
+
+=== Testing object equivalence
+`==` 和 `!=` 适用于所有的 _objects_ ，但是其意义是不一样的。
+
+|===
+|operator|所有对象|基本类型
+|`==`和`!=`|适用，只比较引用|适用，比较值
+|equals|适用，默认比较引用，覆写该方法后才能比较具体值。默认String及其它包装类覆写了equals方法|不适用
+|===
+
+.compare object with == !=
+[source,java]
+----
+//: operators/Equivalence.java
+public class Equivalence {
+	public static void main(String[] args) {
+		Integer n1 = new Integer(47);
+		Integer n2 = new Integer(47);
+		System.out.println(n1 == n2); // <1>
+		System.out.println(n1 != n2);
+	}
+} /* Output:
+false
+true
+*///:~
+----
+<1> 只比较栈中的对象引用的值（真实对象的内存地址）是否相等。
+
+
+.compare object with equals
+[source,java]
+----
+//: operators/EqualsMethod.java
+public class EqualsMethod {
+	public static void main(String[] args) {
+		Integer n1 = new Integer(47);
+		Integer n2 = new Integer(47);
+		System.out.println(n1.equals(n2));
+		70 Thinking in Java Bruce Eckel
+	}
+} /* Output:
+true
+*///:~
+----
+
+.compare object with equals 2
+[source,java]
+----
+//: operators/EqualsMethod2.java
+// Default equals() does not compare contents.
+class Value {
+	int i;
+}
+public class EqualsMethod2 {
+	public static void main(String[] args) {
+		Value v1 = new Value();
+		Value v2 = new Value();
+		v1.i = v2.i = 100;
+		System.out.println(v1.equals(v2)); // <1>
+	}
+} /* Output:
+false
+*///:~
+----
+<1> 类 _Value_ 需要自己 _override_ *_equals()_* 方法，否则类 *_Object_* 中的 _equals_ 方法默认是直接使用 `==` 比较引用。
+
+== Logical operators
+每一个逻辑关系符 _AND_ (&&) _OR_ (||) _NOT_ (!) 都会基于其参数产生一个 _boolean_ 值。
+
+[source,java]
+----
+//: operators/Bool.java
+// Relational and logical operators.
+import java.util.*;
+import static net.mindview.util.Print.*;
+public class Bool {
+public static void main(String[] args) {
+        Random rand = new Random(47);
+        int i = rand.nextInt(100);
+        int j = rand.nextInt(100);
+        print("i = " + i);
+        print("j = " + j);
+        print("i > j is " + (i > j));
+        print("i < j is " + (i < j));
+        print("i >= j is " + (i >= j));
+        print("i <= j is " + (i <= j));
+        print("i == j is " + (i == j));
+        print("i != j is " + (i != j));
+// Treating an int as a boolean is not legal Java:
+//! print("i && j is " + (i && j));
+//! print("i || j is " + (i || j));
+//! print("!i is " + !i);
+        print("(i < 10) && (j < 10) is "
+              + ((i < 10) && (j < 10)) );
+        print("(i < 10) || (j < 10) is "
+              + ((i < 10) || (j < 10)) );
+}
+} /* Output:
+     i = 58
+     j = 55
+     i > j is true
+     i < j is false
+     i >= j is true
+     i <= j is false
+     i == j is false
+     i != j is true
+     (i < 10) && (j < 10) is false
+     (i < 10) || (j < 10) is false
+   *///:~
+----
+[NOTE]
+====
+_boolean_ 值在与 _String_ 拼接时会转换为对应的字符串。
+====
+
+=== Short-circuiting
+使用逻辑操作符时，可能会遇到 _Short-circuiting_ （短路）的情况。
+
+.Short-circuiting example
+[source,java]
+----
+//: operators/ShortCircuit.java
+// Demonstrates short-circuiting behavior
+// with logical operators.
+import static net.mindview.util.Print.*;
+72 Thinking in Java Bruce Eckel
+public class ShortCircuit {
+static boolean test1(int val) {
+        print("test1(" + val + ")");
+        print("result: " + (val < 1));
+        return val < 1;
+}
+static boolean test2(int val) {
+        print("test2(" + val + ")");
+        print("result: " + (val < 2));
+        return val < 2;
+}
+static boolean test3(int val) {
+        print("test3(" + val + ")");
+        print("result: " + (val < 3));
+        return val < 3;
+}
+public static void main(String[] args) {
+        boolean b = test1(0) && test2(2) && test3(2); // <1>
+        print("expression is " + b);
+}
+} /* Output:
+     test1(0)
+     result: true
+     test2(2)
+     result: false
+     expression is false
+   *///:~
+----
+<1> 出现了短路现象， `_test3(2)_` 是没有被计算的。
+
+`_test1(0)_` 是 _true_ ， `_test2(2)_` 是 _false_ ， `true&&false` 那么整个表达式也就是 _false_ ，所以就没必要计算 `_test3(2)_` 了。
+
+== Literals
+通常情况下，在程序中指定了一个常量值时，编译器是明确知道它的类型的。但是有时还是含糊不清的，这时就需要通过在常量值后面添加后缀来明确地告诉编译器该常量的类型。
+
+.example of Literals
+[source,java]
+----
+//: operators/Literals.java
+import static net.mindview.util.Print.*;
+public class Literals {
+public static void main(String[] args) {
+        int i1 = 0x2f; // Hexadecimal (lowercase)
+        print("i1: " + Integer.toBinaryString(i1));
+        int i2 = 0X2F; // Hexadecimal (uppercase)
+        print("i2: " + Integer.toBinaryString(i2));
+        int i3 = 0177; // Octal (leading zero)
+        print("i3: " + Integer.toBinaryString(i3));
+        char c = 0xffff; // max char hex value
+        Operators 73
+        print("c: " + Integer.toBinaryString(c));
+        byte b = 0x7f; // max byte hex value
+        print("b: " + Integer.toBinaryString(b));
+        short s = 0x7fff; // max short hex value
+        print("s: " + Integer.toBinaryString(s));
+        long n1 = 200L; // long suffix
+        long n2 = 200l; // long suffix (but can be confusing)
+        long n3 = 200;
+        float f1 = 1;
+        float f2 = 1F; // float suffix
+        float f3 = 1f; // float suffix
+        double d1 = 1d; // double suffix
+        double d2 = 1D; // double suffix
+// (Hex and Octal also work with long)
+}
+} /* Output:
+     i1: 101111
+     i2: 101111
+     i3: 1111111
+     c: 1111111111111111
+     b: 1111111
+     s: 111111111111111
+   *///:~
+----
+
+Long:: Long类型的后缀为 `l` 或者 `L`
+Float:: Float类型的后缀为 `f` 或者 `F`
+Double:: Double类型的后缀为 `d` 或者 `D`
+
+16 进制以 `0x` 开头， 8 进制以 `0` 开头。
+
+`Integer` 和 `Long` 类型分别有转换为二进制、十六进制、八进制形式字符串输出的方法：
+
+image::toBinaryString.png[]
+
+=== Exponential notation
+指数
+
+.Exponents
+[source,java]
+----
+package operators;//: operators/Exponents.java
+// "e" means "10 to the power."
+
+public class Exponents {
+    public static void main(String[] args) {
+        // Uppercase and lowercase 'e' are the same:
+        float expFloat = 1.39e-43f; // <1>
+        expFloat = 1.39E-43f;
+        System.out.println(expFloat);
+        double expDouble = 47e47d; // 'd' is optional
+        double expDouble2 = 47e47; // Automatically double
+        System.out.println(expDouble);
+        double expDouble3 = 2e2; // <2>
+        System.out.println(expDouble3);
+    }
+} /* Output:
+1.39E-43
+4.7E48
+200.0
+*///:~
+
+----
+<1> 1.39e-43f 即 1.39 * 10^-43^
+<2> 2e2 即 2 * 10^2^ ，所以是 200.0 . 指数默认为 _double_ 类型
+
+== Bitwise operators
+按位操作符。 _Java_ 最初设计这种语法是因为要嵌入电视机顶盒考虑的，所以这个还是尽量少用吧。
+
+[cols="1,4"]
+|===
+|操作符|说明
+|And(&) | 与，当两数的位都是1时，则输出1，否则输出0；
+|OR(\|) | 或，当两数的位中有一个是1时，则输出1。只有两数都是0时，才输出0；
+|XOR(^)|异或，两个操作数的位中，相同则结果为0，不同则结果为1。
+|NOT(~)|非，只对一个操作数有效。如果位为0，结果是1，如果位为1，结果是0；
+|===
+
+位操作符，可以与 `=` 在一起，完成位运算及赋值操作。由于 NOT(~) 是一元操作符，所以它玩不了。
+
+* &=
+* |=
+* ^=
+
+*boolean*是以一位来对待的，所以它会有些不同。可以对 *boolean* 执行位与、或、异或，但是不能执行位非（可能是考虑会与逻辑非混淆）。
+[IMPORTANT]
+====
+位与、或、异或会产生与逻辑操作符相同的效果，但是它不会出现 _short circuit_ （短路）现象。
+
+.example
+[source,java]
+----
+boolean flag = test1(0) & test2(2) & test3(2); // <1>
+print("expression is " + flag);
+
+System.out.println(true^false^true); // <2>
+/* output
+test1(0)
+result: true
+test2(2)
+result: false
+test3(2)
+result: true
+expression is false
+false
+*/
+----
+<1> 三个表达式都将会被计算
+<2> _XOR_ 并没有逻辑操作符与之对象，不建议对 _boolean_ 使用。
+====
+
+[CAUTION]
+====
+不能对 _boolean_ 使用位移操作符。
+====
+
+== Shift operators
+位移操作符。位移操作符也可以操作位。它只能被用于基本类型，整形。
+
+[cols="1,4"]
+|===
+|操作符|说明
+|<<|将操作数左移指定位数，移出的位将被抛弃，右侧差的位则用0补齐。
+|>>|将操作数右移指定位数，为正高位补0，为负数高位补1
+|>>>|无符号右移，无论正负，高位都补0
+|===
+
+详细操作见 http://blog.sina.com.cn/s/blog_439f80c40100n0hc.html[链接]
+
+[TIP]
+====
+一.int的是32位。long的是64位。
+  如int i = 1;
+  i的二进制原码表示为：
+  00000000000000000000000000000001
+  long l = 1;
+  l的二进制原码表示为：   0000000000000000000000000000000000000000000000000000000000000001
+
+二.原码——符号位为0表示正数，为1表示负数；
+        其余各位等同于真值的绝对值。
+ 如：0000000000000010B=2，1000000000000010B=-2
+反码——符号位的用法及正数的表示与“原码”一样；
+ 负数的表示是在“原码”表示的基础上通过将符号位以外
+ 的各位取反来获得的。
+ 如：0000000000000010B=2，1111111111111101B=-2
+补码——符号位的用法及正数的表示与“原码”一样；
+ 负数的表示是在“反码”的基础上通过加1来获得的。
+ 如：00000010B=2，11111110B=-2
+
+三。常用的操作
+    & 与。    全1为1， 有0为0。　　任何数与0与都等于0。　　
+    | 或。      有1为1， 全0为0。　　任何数与0或都等于原值。
+    ~ 非。     逐位取反
+    ^ 异或。  相同为0，相异为1。      任何数与0异或都等于原值。
+
+正数在计算机中是用二进制表示的，负数在计算机中使用补码表示的。
+====
+
+.example
+[source,java]
+----
+package operators;
+
+/**
+ * 位移操作。
+ * <pre>
+ *     System.out.println(1<<1); //结果2，1左移1位，相当于乘以2
+ * </pre>
+ * @author zxb
+ * @version 1.0.0
+ * @date 2016年04月10日 13:44
+ * @since Jdk1.6
+ */
+public class ShiftBit {
+    public static void main(String[] args) throws Exception {
+        int b1 = 1;
+        int b2 = -4;
+        System.out.println("b1:" + Integer.toBinaryString(b1));
+        System.out.println("b2:" + Integer.toBinaryString(b2));
+        int b3 = b1 << 1;
+        System.out.println("b3:" + b3);
+        System.out.println("b1 << 1:" + Integer.toBinaryString(b3));
+        int b4 = b1 >> 2;
+        System.out.println("b4:" + b4);
+        System.out.println("b1 >> 2:" + Integer.toBinaryString(b4));
+        int b6 = b2 >> 2;
+        System.out.println("b6:" + b6);
+        System.out.println("b2 >> 2:" + Integer.toBinaryString(b6));
+
+        int b5 = b2 >>> 2;
+        System.out.println("b5:" + b5);
+        System.out.println("b2 >> 2:" + Integer.toBinaryString(b5));
+
+        System.out.println("2^5:" + (1<<5));
+
+        int a = 1;
+        a <<= 5; // <1>
+        System.out.println("2^5:" + a);
+        a >>= 3;
+        System.out.println("a>>=3:" + a);
+    }
+}
+----
+<1> 移位操作符可以与赋值操作符一起使用。即移位后就赋值。（`<\<=、>>=、>>>=`）
+
+.example2
+[source,java]
+----
+package operators;//: operators/URShift.java
+// Test of unsigned right shift.
+
+import static net.mindview.util.Print.*;
+
+public class URShift {
+    public static void main(String[] args) {
+        int i = -1;
+        print(Integer.toBinaryString(i));
+        i >>>= 10;
+        print(Integer.toBinaryString(i));
+        long l = -1;
+        print(Long.toBinaryString(l));
+        l >>>= 10;
+        print(Long.toBinaryString(l));
+        short s = -1;
+        print(Integer.toBinaryString(s));
+        s >>>= 10;
+        print(Integer.toBinaryString(s));
+        byte b = -1;
+        print(Integer.toBinaryString(b));
+        b >>>= 10;
+        print(Integer.toBinaryString(b));
+        b = -1;
+        print(Integer.toBinaryString(b));
+        print(Integer.toBinaryString(b >>> 10));
+    }
+} /* Output:
+11111111111111111111111111111111
+1111111111111111111111
+1111111111111111111111111111111111111111111111111111111111111111
+111111111111111111111111111111111111111111111111111111
+11111111111111111111111111111111
+11111111111111111111111111111111
+11111111111111111111111111111111
+11111111111111111111111111111111
+11111111111111111111111111111111
+1111111111111111111111
+*///:~
+----
+
+[IMPORTANT]
+====
+最高位表示符号位。0表示正数，1表示负数。
+如正数1，为0000 0000 0000 0000 0000 0000 0000 0001，负数-1为11111111111111111111111111111111
+====
+
+=== Ternary if-else operator
+.三元运算符
+[source,java]
+----
+boolean-exp ? value0 : value1
+----
+
+.compare to if/else
+[source,java]
+----
+package operators;//: operators/TernaryIfElse.java
+
+import static net.mindview.util.Print.*;
+
+public class TernaryIfElse {
+    static int ternary(int i) {
+        return i < 10 ? i * 100 : i * 10; // <1>
+    }
+
+    static int standardIfElse(int i) {
+        if (i < 10)
+            return i * 100;
+        else
+            return i * 10;
+    }
+
+    public static void main(String[] args) {
+        print(ternary(9));
+        print(ternary(10));
+        print(standardIfElse(9));
+        print(standardIfElse(10));
+    }
+} /* Output:
+900
+100
+900
+100
+*///:~
+----
+<1> 三元运算符，虽然简洁，但是可读性差。还是建议使用if/else
+
+== String operator + and +=
+`+` 与 `+=` 可以用来追加字符串。
+
+[TIP]
+在 `C#` 与 `C++` 中，使用 *运算符重载* 来实现这种特性。
+
+
+在一个表达式中，如果有一个字符串，其它使用 `+` 拼接的表达式都会最终被计算为字符串并进行字符串拼接。
+
+.example of String operator
+[source,java]
+----
+package operators;//: operators/StringOperators.java
+import static net.mindview.util.Print.*;
+
+public class StringOperators {
+  public static void main(String[] args) {
+    int x = 0, y = 1, z = 2;
+    String s = "x, y, z ";
+    print(s + x + y + z);
+    print(x + " " + s); // Converts x to a String
+    s += "(summed) = "; // Concatenation operator
+    print(s + (x + y + z));
+    print("" + x); // Shorthand for Integer.toString()
+  }
+} /* Output:
+x, y, z 012
+0 x, y, z
+x, y, z (summed) = 3
+0
+*///:~
+----
+
+== Common pitfalls when using operators
+
+== Casting operators
+类型转换操作符，类型转换分为隐式转换和显式转换。
+
+.example of cast
+[source,java]
+----
+package operators;//: operators/Casting.java
+
+public class Casting {
+  public static void main(String[] args) {
+    int i = 200;
+    long lng = (long)i;
+    lng = i; // "Widening," so cast not really required //<1>
+    long lng2 = (long)200;
+    lng2 = 200;
+    // A "narrowing conversion":
+    i = (int)lng2; // Cast required // <2>
+  }
+} ///:~
+----
+<1> 隐式转换，大类型引用指向小类型值。
+<2> 显式转换，小类型引用指向大类型值。
+
+除了 _boolean_ 外，其它所有基本类型都可以进行类型转换。
+
+=== Truncation and rounding
+当执行一个缩小的转换 _narrowing conversions_ ，是可能会损失精度的。
+
+.example of truncation and rounding
+[source,java]
+----
+package operators;//: operators/CastingNumbers.java
+// What happens when you cast a float
+// or double to an integral value?
+import static net.mindview.util.Print.*;
+
+public class CastingNumbers {
+  public static void main(String[] args) {
+    double above = 0.7, below = 0.4;
+    float fabove = 0.7f, fbelow = 0.4f;
+    print("(int)above: " + (int)above);
+    print("(int)below: " + (int)below);
+    print("(int)fabove: " + (int)fabove);
+    print("(int)fbelow: " + (int)fbelow);
+  }
+} /* Output:  //<1>
+(int)above: 0
+(int)below: 0
+(int)fabove: 0
+(int)fbelow: 0
+*///:~
+----
+<1> 大类型强制转成小类型，丢失了精度。
+
+通常， _double_ 和 _float_ 转成 _int_ 是直接被截断的。如果你希望四舍五入，可以采用 _java.lang.Math.round()_ 而非 _强制转换_ 。
+
+.example of rounding numbers
+[source,java]
+----
+package operators;//: operators/RoundingNumbers.java
+// Rounding floats and doubles.
+import static net.mindview.util.Print.*;
+//<1>
+public class RoundingNumbers {
+  public static void main(String[] args) {
+    double above = 0.7, below = 0.4;
+    float fabove = 0.7f, fbelow = 0.4f;
+    print("Math.round(above): " + Math.round(above));
+    print("Math.round(below): " + Math.round(below));
+    print("Math.round(fabove): " + Math.round(fabove));
+    print("Math.round(fbelow): " + Math.round(fbelow));
+  }
+} /* Output:
+Math.round(above): 1
+Math.round(below): 0
+Math.round(fabove): 1
+Math.round(fbelow): 0
+*///:~
+----
+<1> 因为 _java.lang.Math_ 类属于 _java.lang_ 包，所以你不需要额外地去导该类了。因为默认会导 _java.lang.*_ 。
+
+=== Promotion
+类型提升::
+你可能会发现，当你对那些比 *int* 小的基本类型（ *char* , *byte* , *short* ）执行算术或位操作时，这些类型会被转为 _int_ 类型进行操作，而你要得到对应类型时，需要强转（损失精度）。
++
+通常，两个操作数一起计算时，大类型与小类型在一起时，结果就是大类型。
+
+== Java has no “sizeof”
+在 *C* 或 *C++* 中存在 _sizeof_ 方法，这个方法用来得到某一类型所占的字节数。如 *int* 在 *A操作系统* 中占 _16bit_ ，在 *B操作系统* 中占 _32bit_ ，那么程序员要考虑何时是 *int* 是 _16bit_ 之类的问题。
+
+在 *java* 中没有这种问题，所以也就不需要 _sizeof_ 方法。因为 *java* 中所有的类型在不同的操作系统中都是相同的固定长度。
+
+== A compendium of operators
+
+.all operators
+[source,java]
+----
+package operators;//: operators/AllOps.java
+// Tests all the operators on all the primitive data types
+// to show which ones are accepted by the Java compiler.
+
+public class AllOps {
+  // To accept the results of a boolean test:
+  void f(boolean b) {}
+  void boolTest(boolean x, boolean y) {
+    // Arithmetic operators:
+    //! x = x * y;
+    //! x = x / y;
+    //! x = x % y;
+    //! x = x + y;
+    //! x = x - y;
+    //! x++;
+    //! x--;
+    //! x = +y;
+    //! x = -y;
+    // Relational and logical:
+    //! f(x > y);
+    //! f(x >= y);
+    //! f(x < y);
+    //! f(x <= y);
+    f(x == y);
+    f(x != y);
+    f(!y);
+    x = x && y;
+    x = x || y;
+    // Bitwise operators:
+    //! x = ~y;
+    x = x & y;
+    x = x | y;
+    x = x ^ y;
+    //! x = x << 1;
+    //! x = x >> 1;
+    //! x = x >>> 1;
+    // Compound assignment:
+    //! x += y;
+    //! x -= y;
+    //! x *= y;
+    //! x /= y;
+    //! x %= y;
+    //! x <<= 1;
+    //! x >>= 1;
+    //! x >>>= 1;
+    x &= y;
+    x ^= y;
+    x |= y;
+    // Casting:
+    //! char c = (char)x;
+    //! byte b = (byte)x;
+    //! short s = (short)x;
+    //! int i = (int)x;
+    //! long l = (long)x;
+    //! float f = (float)x;
+    //! double d = (double)x;
+  }
+  void charTest(char x, char y) {
+    // Arithmetic operators:
+    x = (char)(x * y);
+    x = (char)(x / y);
+    x = (char)(x % y);
+    x = (char)(x + y);
+    x = (char)(x - y);
+    x++;
+    x--;
+    x = (char)+y;
+    x = (char)-y;
+    // Relational and logical:
+    f(x > y);
+    f(x >= y);
+    f(x < y);
+    f(x <= y);
+    f(x == y);
+    f(x != y);
+    //! f(!x);
+    //! f(x && y);
+    //! f(x || y);
+    // Bitwise operators:
+    x= (char)~y;
+    x = (char)(x & y);
+    x  = (char)(x | y);
+    x = (char)(x ^ y);
+    x = (char)(x << 1);
+    x = (char)(x >> 1);
+    x = (char)(x >>> 1);
+    // Compound assignment:
+    x += y;
+    x -= y;
+    x *= y;
+    x /= y;
+    x %= y;
+    x <<= 1;
+    x >>= 1;
+    x >>>= 1;
+    x &= y;
+    x ^= y;
+    x |= y;
+    // Casting:
+    //! boolean bl = (boolean)x;
+    byte b = (byte)x;
+    short s = (short)x;
+    int i = (int)x;
+    long l = (long)x;
+    float f = (float)x;
+    double d = (double)x;
+  }
+  void byteTest(byte x, byte y) {
+    // Arithmetic operators:
+    x = (byte)(x* y);
+    x = (byte)(x / y);
+    x = (byte)(x % y);
+    x = (byte)(x + y);
+    x = (byte)(x - y);
+    x++;
+    x--;
+    x = (byte)+ y;
+    x = (byte)- y;
+    // Relational and logical:
+    f(x > y);
+    f(x >= y);
+    f(x < y);
+    f(x <= y);
+    f(x == y);
+    f(x != y);
+    //! f(!x);
+    //! f(x && y);
+    //! f(x || y);
+    // Bitwise operators:
+    x = (byte)~y;
+    x = (byte)(x & y);
+    x = (byte)(x | y);
+    x = (byte)(x ^ y);
+    x = (byte)(x << 1);
+    x = (byte)(x >> 1);
+    x = (byte)(x >>> 1);
+    // Compound assignment:
+    x += y;
+    x -= y;
+    x *= y;
+    x /= y;
+    x %= y;
+    x <<= 1;
+    x >>= 1;
+    x >>>= 1;
+    x &= y;
+    x ^= y;
+    x |= y;
+    // Casting:
+    //! boolean bl = (boolean)x;
+    char c = (char)x;
+    short s = (short)x;
+    int i = (int)x;
+    long l = (long)x;
+    float f = (float)x;
+    double d = (double)x;
+  }
+  void shortTest(short x, short y) {
+    // Arithmetic operators:
+    x = (short)(x * y);
+    x = (short)(x / y);
+    x = (short)(x % y);
+    x = (short)(x + y);
+    x = (short)(x - y);
+    x++;
+    x--;
+    x = (short)+y;
+    x = (short)-y;
+    // Relational and logical:
+    f(x > y);
+    f(x >= y);
+    f(x < y);
+    f(x <= y);
+    f(x == y);
+    f(x != y);
+    //! f(!x);
+    //! f(x && y);
+    //! f(x || y);
+    // Bitwise operators:
+    x = (short)~y;
+    x = (short)(x & y);
+    x = (short)(x | y);
+    x = (short)(x ^ y);
+    x = (short)(x << 1);
+    x = (short)(x >> 1);
+    x = (short)(x >>> 1);
+    // Compound assignment:
+    x += y;
+    x -= y;
+    x *= y;
+    x /= y;
+    x %= y;
+    x <<= 1;
+    x >>= 1;
+    x >>>= 1;
+    x &= y;
+    x ^= y;
+    x |= y;
+    // Casting:
+    //! boolean bl = (boolean)x;
+    char c = (char)x;
+    byte b = (byte)x;
+    int i = (int)x;
+    long l = (long)x;
+    float f = (float)x;
+    double d = (double)x;
+  }
+  void intTest(int x, int y) {
+    // Arithmetic operators:
+    x = x * y;
+    x = x / y;
+    x = x % y;
+    x = x + y;
+    x = x - y;
+    x++;
+    x--;
+    x = +y;
+    x = -y;
+    // Relational and logical:
+    f(x > y);
+    f(x >= y);
+    f(x < y);
+    f(x <= y);
+    f(x == y);
+    f(x != y);
+    //! f(!x);
+    //! f(x && y);
+    //! f(x || y);
+    // Bitwise operators:
+    x = ~y;
+    x = x & y;
+    x = x | y;
+    x = x ^ y;
+    x = x << 1;
+    x = x >> 1;
+    x = x >>> 1;
+    // Compound assignment:
+    x += y;
+    x -= y;
+    x *= y;
+    x /= y;
+    x %= y;
+    x <<= 1;
+    x >>= 1;
+    x >>>= 1;
+    x &= y;
+    x ^= y;
+    x |= y;
+    // Casting:
+    //! boolean bl = (boolean)x;
+    char c = (char)x;
+    byte b = (byte)x;
+    short s = (short)x;
+    long l = (long)x;
+    float f = (float)x;
+    double d = (double)x;
+  }
+  void longTest(long x, long y) {
+    // Arithmetic operators:
+    x = x * y;
+    x = x / y;
+    x = x % y;
+    x = x + y;
+    x = x - y;
+    x++;
+    x--;
+    x = +y;
+    x = -y;
+    // Relational and logical:
+    f(x > y);
+    f(x >= y);
+    f(x < y);
+    f(x <= y);
+    f(x == y);
+    f(x != y);
+    //! f(!x);
+    //! f(x && y);
+    //! f(x || y);
+    // Bitwise operators:
+    x = ~y;
+    x = x & y;
+    x = x | y;
+    x = x ^ y;
+    x = x << 1;
+    x = x >> 1;
+    x = x >>> 1;
+    // Compound assignment:
+    x += y;
+    x -= y;
+    x *= y;
+    x /= y;
+    x %= y;
+    x <<= 1;
+    x >>= 1;
+    x >>>= 1;
+    x &= y;
+    x ^= y;
+    x |= y;
+    // Casting:
+    //! boolean bl = (boolean)x;
+    char c = (char)x;
+    byte b = (byte)x;
+    short s = (short)x;
+    int i = (int)x;
+    float f = (float)x;
+    double d = (double)x;
+  }
+  void floatTest(float x, float y) {
+    // Arithmetic operators:
+    x = x * y;
+    x = x / y;
+    x = x % y;
+    x = x + y;
+    x = x - y;
+    x++;
+    x--;
+    x = +y;
+    x = -y;
+    // Relational and logical:
+    f(x > y);
+    f(x >= y);
+    f(x < y);
+    f(x <= y);
+    f(x == y);
+    f(x != y);
+    //! f(!x);
+    //! f(x && y);
+    //! f(x || y);
+    // Bitwise operators:
+    //! x = ~y;
+    //! x = x & y;
+    //! x = x | y;
+    //! x = x ^ y;
+    //! x = x << 1;
+    //! x = x >> 1;
+    //! x = x >>> 1;
+    // Compound assignment:
+    x += y;
+    x -= y;
+    x *= y;
+    x /= y;
+    x %= y;
+    //! x <<= 1;
+    //! x >>= 1;
+    //! x >>>= 1;
+    //! x &= y;
+    //! x ^= y;
+    //! x |= y;
+    // Casting:
+    //! boolean bl = (boolean)x;
+    char c = (char)x;
+    byte b = (byte)x;
+    short s = (short)x;
+    int i = (int)x;
+    long l = (long)x;
+    double d = (double)x;
+  }
+  void doubleTest(double x, double y) {
+    // Arithmetic operators:
+    x = x * y;
+    x = x / y;
+    x = x % y;
+    x = x + y;
+    x = x - y;
+    x++;
+    x--;
+    x = +y;
+    x = -y;
+    // Relational and logical:
+    f(x > y);
+    f(x >= y);
+    f(x < y);
+    f(x <= y);
+    f(x == y);
+    f(x != y);
+    //! f(!x);
+    //! f(x && y);
+    //! f(x || y);
+    // Bitwise operators:
+    //! x = ~y;
+    //! x = x & y;
+    //! x = x | y;
+    //! x = x ^ y;
+    //! x = x << 1;
+    //! x = x >> 1;
+    //! x = x >>> 1;
+    // Compound assignment:
+    x += y;
+    x -= y;
+    x *= y;
+    x /= y;
+    x %= y;
+    //! x <<= 1;
+    //! x >>= 1;
+    //! x >>>= 1;
+    //! x &= y;
+    //! x ^= y;
+    //! x |= y;
+    // Casting:
+    //! boolean bl = (boolean)x;
+    char c = (char)x;
+    byte b = (byte)x;
+    short s = (short)x;
+    int i = (int)x;
+    long l = (long)x;
+    float f = (float)x;
+  }
+} ///:~
+----
+
+== Summary

@@ -1,0 +1,168 @@
+= Check.sh使用说明
+:imagesdir: images
+:experimental:
+
+_Check.sh_ 是一个 _shell script_ ，主要功能是实现对现有应用服务的检测。
+通过 _ping ip_ ， _curl_ 模拟 _http_ 请求等来实现。
+
+== 功能特色
+. 支持 ping 指定机器 ip 进行测试
+. 支持 测试指定机器的端口进行测试
+. 支持 模拟登录，模拟 _http_ 请求访问指定的 _url_ 地址
+. 支持 模拟登录，并模拟调用异步请求进行测试
+
+== 目录说明
+
+.directory
+image::checkdir.png[]
+
+check.sh::
+主要的命令执行脚本，所有的模拟请求全由该脚本完成。
+*.list::
+所有需要待检测的 _ip_ 及请求地址等。
+logs::
+即检查日志。如果脚本检测后出现问题，则会将错误信息写入日志文件，无错误则不会写日志也不会生成日志文件。
+
+== 详细说明
+
+=== check.sh
+_check.sh_ 在使用前需要手动配置一些参数。
+
+image::check_config.png[]
+
+|===
+|key|解释
+|memcached_ip|memached所在的机器ip
+|memcached_port|memached的端口号
+|login_user|模拟用户的账号
+|login_key|模拟用户的票据ID,即CASAuthID。这里可随意指定
+|ajax_regx|异步请求中，判断响应内容出错的正则表达式。
+|===
+
+=== ip.list
+_ip.list_ 中配置需要使用 _ping_ 命令来检测的 _ip_ 地址。
+
+.示例
+image::ip.png[]
+
+其中以 _#_ 开头的为注释行。
+[TIP]
+====
+*_#_* 不要和后面的内容之间有空格。
+====
+其它内容均以 `名称|ip地址` 的形式进行配置。
+
+所有的 _ip_ 将会被遍历，然后依次执行
+----
+ping -c 1 -w 1 ip
+----
+
+=== ip_port.list
+*ip_port.list* 中配置的是 _ip_ 加 _port_ 。配置完成后，可以对指定的 _ip_ 及 _port_ 进行连通性测试。如测试数据库端口，tomcat端口，memcached端口等等。
+
+image::ip_port.png[]
+
+image::ip_port2.png[]
+
+上述内容配置完成后，将依次遍历其 _ip_ 及 _port_ 进行连通性测试。
+最终执行的命令为
+----
+&> /dev/null 6<> /dev/tcp/ip/port
+----
+
+=== site.list
+_site.list_中配置的则是模拟 _http_ 请求的请求地址。通常直接将应用的页面访问地址配置进来。例如：
+
+image::site.png[]
+
+配置进来的地址，会使用 _curl_ 发送 _http_ 请求，最终根据响应的 *http_code* 来判断是否正常。
+
+*http_code* 以 _2_ 及 _3_ 开头的认为是正常的，其它的则均认为是有问题的。如 *http_code* 为 _200_ 则是正常的， *http_code* 为 _404_ 则是有问题的。
+
+.config
+image::site_list.png[]
+
+该地址的获取，应直接访问具体的应用，从浏览器地址栏拷贝对应的地址下来即可。
+
+
+=== site_add.list
+*site_add.list* 是湖北特加的一个测试，主要针对婚姻与计生跨网接口的模拟请求。
+
+image::site_add.png[]
+
+婚姻与计生同普通请求接口不同之处在于：
+需要模拟不同的身份证号请求参数（相同的会被缓存）。
+
+=== ajax_request.list
+*ajax_request.list* 主要模拟发送异常请求。
+
+在所有的应用当中，其实应用的访问通常分为两步。
+
+. 加载页面
+. 发送异步请求，获取数据并渲染页面
+
+其中加载页面这一步，我们已经在 _site.list_ 中配置了。异步请求则需要在此配置即可。
+
+==== 获取异步请求地址
+. 访问应用
++
+使用 _chrome_ 访问应用地址
++
+image::site.png[]
+
+. 打开 _chrome_ 开发者工具
++
+按 kbd:[F12] 或者 kbd:[Ctrl+Shift+I]
++
+image::F12.png[]
+
+. 获取异步请求地址
++
+按 kbd:[F5] 或者 kbd:[Ctrl+R] 刷新页面，此时工具就会记录所有的 _XHR_ 请求，即异常请求。
++
+image::xhr.png[]
++
+重点注意这些 _.do_ 请求，其中 _.js_ 请直接忽略。
++
+点击其中一个 _.do_ 请求，注意红色标记的 _Request URL_
++
+image::requesturl.png[]
++
+如果是 _GET_ 请求，则直接 _copy_ 这个 _Request URL_ 下来即可，这就是要的异步请求地址。
++
+image::GET.png[]
++
+如果是 _POST_ 请求，它的请求参数是没有直接跟在请求 _url_ 后面的，此时需要将其手动拼接到 _Request URL_ 后面组成完整的请求 _url_ 。
++
+找到 _Query String Parameters_ ，点击 *view source* 。
++
+image::view_source.png[]
++
+image::viewsource2.png[]
++
+_copy_ 这一串，拼接到 Request URL 后面。例如最终组成
++
+----
+http://localhost:8080/portal/hubei/OnlineStatistic_grid.do?v=0.27565782365887914&sortorder=&page=1&pagesize=10&property=&keyword=
+----
++
+[TIP]
+====
+请求地址的形式为 url?parameter，其中多个parameter以 & 连接。
+例如： http://www.baidu.com?page=1&pagesize=2
+
+不要在请求地址中出现多个?这种情况。
+====
+
+
+
+
+==== 填写地址
+将获取到的请求地址填入 *ajax_request.list* 中即可。
+
+image::ajax_request.png[]
+
+=== 模拟登录
+所有的模拟 _http_ 请求是建立在模拟登录的前提下的。在公安云二期中采用的是 _memached_ 存储，以及基于 _cookie_ 进行验证的。
+
+所以如果要把这种 _http_ 模拟验证实施到公安云一期就会显得行不通了。登录机制不一样。但是弄到吉林与河北还是可以的。

@@ -1,0 +1,48 @@
+pdf生成命令
+----
+asciidoctor-pdf -r asciidoctor-pdf-cjk -d book -a icons=font -a source-highlighter=coderay -a source-language=asciidoc -a experimental -a toc=left -a toclevels=3 -a sectnums -a sectlinks -a sectanchors -a compat-mode -a pdf-style=common/default-theme.yml -a pdf-fontsdir=common/fonts -a data-uri usermanual.asciidoc
+----
+
+Win下
+----
+asciidoctor-pdf -r asciidoctor-pdf-cjk -d book -a icons=font -a source-highlighter=coderay -a source-language=asciidoc -a experimental -a toc=left -a toclevels=3 -a sectnums -a sectlinks -a sectanchors -a compat-mode -a pdf-style=E:/15-AsciiWorkSpace/common/default-theme.yml -a pdf-fontsdir=E:/15-AsciiWorkSpace/common/fonts -a data-uri
+----
+
+
+pdf生成命令，使用fopub
+----
+asciidoctor -d book -b docbook -a icons=font -a source-highlighter=coderay -a source-language=asciidoc -a experimental -a toc=left -a toclevels=3 -a sectnums -a sectlinks -a sectanchors -a compat-mode index.asciidoc
+
+fopub -t /data/asciidoc_workspace/dist/docbook-xsl index.xml
+
+Windows下
+fopub -t E:/15-AsciiWorkSpace/common/dist/docbook-xsl index.xml
+----
+
+
+
+
+html5生成命令，嵌入icons
+----
+asciidoctor -d book -a icons=font -a source-highlighter=coderay -a source-language=asciidoc -a experimental -a toc=left -a toclevels=3 -a sectnums -a sectlinks -a sectanchors -a compat-mode usermanual.asciidoc
+----
+
+html5自定义样式，不嵌入icons，使用图片icons
+----
+asciidoctor -d book -a icons -a source-highlighter=coderay -a source-language=asciidoc -a experimental -a toc=left -a toclevels=3 -a sectnums -a sectlinks -a sectanchors -a compat-mode -a stylesheet=colony.css -a stylesdir=/data/asciidoc_workspace/common/stylesheets book.asciidoc
+
+Win下
+
+asciidoctor -d book -a icons -a source-highlighter=coderay -a source-language=asciidoc -a experimental -a toc=left -a toclevels=3 -a sectnums -a sectlinks -a sectanchors -a compat-mode -a stylesheet=colony.css -a stylesdir=E:/15-AsciiWorkSpace/common/stylesheets
+----
+
+
+html5生成命令，自定义样式
+----
+asciidoctor -d book -a icons=font -a source-highlighter=coderay -a source-language=asciidoc -a experimental -a toc=left -a toclevels=3 -a sectnums -a sectlinks -a sectanchors -a compat-mode -a stylesheet=volnitsky.css -a stylesdir=common/stylesheets asciidoc.txt
+----
+
+html5生成命令，自定义样式。Win下
+----
+asciidoctor -d book -a icons=font -a source-highlighter=coderay -a source-language=asciidoc -a experimental -a toc=left -a toclevels=3 -a sectnums -a sectlinks -a sectanchors -a compat-mode -a stylesheet=colony.css -a stylesdir=E:/15-AsciiWorkSpace/common/stylesheets
+----

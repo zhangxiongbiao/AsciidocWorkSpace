@@ -1,0 +1,41 @@
+= Initialization & Cleanup
+
+关于安全的两个问题就是 _Initialization_ 与 _CleanUp_ 。很多 _C_ 程序的 _Bug_ 是程序员忘记初始化变量了。
+
+_C++_ 引入了构造函数的概念，构造函数会在对象创建时自动执行。 _Java_ 也引入了构造函数，并且还添加了 _Garbage Collector_ 。
+
+== Guaranteed initialization with the constructor
+
+.示例1
+[source,java]
+----
+package initialization;//: initialization/SimpleConstructor.java
+// Demonstration of a simple constructor.
+
+class Rock {
+  Rock() { // This is the constructor
+    System.out.print("Rock ");
+  }
+}
+
+public class SimpleConstructor {
+  public static void main(String[] args) {
+    for(int i = 0; i < 10; i++)
+      new Rock();
+  }
+} /* Output:
+Rock Rock Rock Rock Rock Rock Rock Rock Rock Rock
+*///:~
+----
+
+== Method overloading
+
+== Default constructors
+
+== The *this* keyword
+
+=== Calling constructors from constructors
+
+=== The meaning of static
+
+== Cleanup: finalization and garbage collection

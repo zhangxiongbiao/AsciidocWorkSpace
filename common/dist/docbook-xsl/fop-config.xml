@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fop version="1.0">
+  <strict-configuration>true</strict-configuration>
+  <renderers>
+    <renderer mime="application/pdf">
+      <fonts>      	
+
+          <!--metrics-url:字体矩阵文件,根据ttc文件生成,kerning为是否允许字间矩调整--> 
+        <!-- 楷体 -->     
+        <font metrics-url="file:///data/asciidoc_workspace/common/fonts/simkai-regular.xml" kerning="yes" embed-url="file:///data/asciidoc_workspace/common/fonts/simkai.ttf">        
+           <font-triplet name="simkai" style="normal" weight="normal" />           
+        </font>
+
+        <font metrics-url="file:///data/asciidoc_workspace/common/fonts/Bold-bold.xml" kerning="yes" embed-url="file:///data/asciidoc_workspace/common/fonts/Bold.ttf">                   
+           <font-triplet name="simkai" style="normal" weight="bold" />
+        </font>
+
+        
+        <font metrics-url="file:///data/asciidoc_workspace/common/fonts/italic-regular.xml" kerning="yes" embed-url="file:///data/asciidoc_workspace/common/fonts/italic.ttf">        
+           <font-triplet name="simkai" style="italic" weight="normal" />                              
+        </font>        
+
+        
+        <font metrics-url="file:///data/asciidoc_workspace/common/fonts/Bold_italic-regular.xml" kerning="yes" embed-url="file:///data/asciidoc_workspace/common/fonts/Bold_italic.ttf">        
+           <font-triplet name="simkai" style="italic" weight="bold" />      
+        </font>     
+
+
+        <!--mplus1p字体-->
+        <font metrics-url="file:///data/asciidoc_workspace/common/fonts/mplus1p-regular.xml" kerning="yes" embed-url="file:///data/asciidoc_workspace/common/fonts/mplus1p-regular-fallback.ttf">        
+           <font-triplet name="mplus1p" style="normal" weight="normal" />      
+           <font-triplet name="mplus1p" style="normal" weight="bold" />
+           <font-triplet name="mplus1p" style="italic" weight="normal" />
+           <font-triplet name="mplus1p" style="italic" weight="bold" />
+        </font>    
+
+        <!--notoserif-->
+        <font metrics-url="file:///data/asciidoc_workspace/common/fonts/notoserif-regular.xml" kerning="yes" embed-url="file:///data/asciidoc_workspace/common/fonts/notoserif-regular-subset.ttf">        
+           <font-triplet name="notoserif" style="normal" weight="normal" />      
+        </font>            
+
+        <font metrics-url="file:///data/asciidoc_workspace/common/fonts/notoserif-regular.xml" kerning="yes" embed-url="file:///data/asciidoc_workspace/common/fonts/notoserif-italic-subset.ttf">        
+           <font-triplet name="notoserif" style="italic" weight="normal" />      
+        </font> 
+
+        <font metrics-url="file:///data/asciidoc_workspace/common/fonts/notoserif-regular.xml" kerning="yes" embed-url="file:///data/asciidoc_workspace/common/fonts/notoserif-bold-subset.ttf">        
+           <font-triplet name="notoserif" style="normal" weight="bold" />      
+        </font> 
+
+        <font metrics-url="file:///data/asciidoc_workspace/common/fonts/notoserif-regular.xml" kerning="yes" embed-url="file:///data/asciidoc_workspace/common/fonts/notoserif-bold_italic-subset.ttf">        
+           <font-triplet name="notoserif" style="italic" weight="bold" />      
+        </font> 
+
+
+
+
+        <!--
+        <font metrics-url="file:///data/asciidoc_workspace/common/fonts/Bold-bold.xml" kerning="yes" embed-url="file:///data/asciidoc_workspace/common/fonts/Bold.ttf">        
+            <font-triplet name="Bold-bold" style="normal" weight="normal" />
+           <font-triplet name="Bold-bold" style="normal" weight="bold" />
+           <font-triplet name="Bold-bold" style="italic" weight="normal" />
+           <font-triplet name="Bold-bold" style="italic" weight="bold" />
+        </font>
+
+        
+        <font metrics-url="file:///data/asciidoc_workspace/common/fonts/italic-regular.xml" kerning="yes" embed-url="file:///data/asciidoc_workspace/common/fonts/italic.ttf">        
+           <font-triplet name="italic" style="normal" weight="normal" />
+           <font-triplet name="italic" style="normal" weight="bold" />
+           <font-triplet name="italic" style="italic" weight="normal" />
+           <font-triplet name="italic" style="italic" weight="bold" />                                 
+        </font>        
+
+        
+        <font metrics-url="file:///data/asciidoc_workspace/common/fonts/Bold_italic-regular.xml" kerning="yes" embed-url="file:///data/asciidoc_workspace/common/fonts/Bold_italic.ttf">        
+           <font-triplet name="Bold_italic" style="normal" weight="normal" />
+           <font-triplet name="Bold_italic" style="normal" weight="bold" />
+           <font-triplet name="Bold_italic" style="italic" weight="normal" />
+           <font-triplet name="Bold_italic" style="italic" weight="bold" />      
+        </font>
+        -->
+        
+
+
+
+      
+      	  <!-- register all the fonts found in a directory -->
+		  <!-- <directory>C:\MyFonts1</directory> -->
+
+		  <!-- register all the fonts found in a directory
+		       and all of its sub directories (use with care) -->
+      <directory recursive="true">/data/asciidoc_workspace/common/fonts/</directory>		  
+
+		  <!-- automatically detect operating system installed fonts -->
+        <auto-detect />
+      </fonts>
+    </renderer>
+  </renderers>
+</fop>

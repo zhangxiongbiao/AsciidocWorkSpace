@@ -1,0 +1,61 @@
+= Zookeeper安装
+:imagesdir: ./images
+:iconsdir: ./images/icons
+
+== 获取zookeeper安装包
+安装前需要确定布署环境的操作系统平台，然后获取安装包下载。
+
+安装包的获取：
+
+. 从开发人员获取
+. 从 http://zookeeper.apache.org/[官网] 下载
+
+[NOTE]
+不同的操作系统需要获取对应的安装包。使用版本，建议>=3.x
+
+== 安装
+=== windows下安装
+windows平台下，获取的安装包一般为zip包。直接在安装位置右键解压缩即可。
+
+=== Linux下安装
+Linux平台下，获取的安装包一般为tar.gz包。拷贝到安装位置后，键入下面命令即可完成解压缩。
+
+----
+tar -zxv -f zookeeper.tar.gz
+----
+
+== 配置
+windows与linux下zookeeper的配置类似。
+
+. 进入zookeeper下的conf目录，复制 `zoo_sample.cfg` 一份并重命名为 `zoo.cfg`
++
+image::zookeeper_cfg_sample.png[]
+
+. 编辑 `zoo.cfg` ，修改并设置 `clientPort=2181`，见下图
++
+image::zoo_cfg.png[]
+
+== 启动
+进入zookeeper安装目录下的bin目录。
+
+image::zoo_bin.png[]
+
+Windows::
+执行zkServer.cmd
+Linux::
+执行zkServer.sh
+[NOTE]
+====
+如果zkServer.sh没法执行，使用root账户给该文件添加可执行权限。
+----
+chmod +x zkServer.sh
+----
+====
+
+== 测试
+使用 `telnet` 测试zookeeper的端口。
+----
+telnet 127.0.0.1 2181
+----
+如果能连接并进行控制台，说明该端口是开的，zookeeper已经正常监听了该端口。
+执行 kbd:[ctrl+\]]可退出telnet控制台。

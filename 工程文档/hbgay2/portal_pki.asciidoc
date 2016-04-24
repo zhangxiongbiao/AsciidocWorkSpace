@@ -1,0 +1,123 @@
+== pki登录
+:imagesdir: ./images
+:iconsdir: ./images/icons
+
+*pki*: _Public Key Infrastructure_ 即 *公钥基础设施*
+
+在本系统中，通过 *pki* 进行登录，主要是获取 *pki* 中的用户信息。
+
+所以登录也就是分为两步.
+
+. 获取 *pki* 证书代表的用户信息，警号、身份证号
+. 使用 警号、身份证号 进行登陆
+
+=== 引入类库
+在集成 *pki* 登录前，需要在 *portal* 工程下引入以下类库。
+
+|===
+|Commons-codec-1.3.jar |	字节编码库；
+|Commons-httpclient-3.1.jar |	Http客户端；
+|Commons-logging-1.1.jar |	日志接口；
+|IAS_SDK_2.1_JDK13.jar |（可选）
+|用于兼容2.1及以前版本的支持包，如果使用2.1以上版本，可以不引用。
+|IAS_SDK_2.2.0_JDK13.jar |开发工具包；
+|Log4j-1.2.14.jar |日志包；
+|jit-cinas-saml11-1000-jdk13.jar| SAML 1.1协议支持包；
+|jit-cinas-commons-1000-jdk13.jar| 产品公共类库；
+|Xmlsec-1.3.0.jar |XML签名加密包；
+|log4j-1.2.14.jar| 第三日志包；
+|J2EE_Agent_2_2_2_JDK13.jar| Agent功能包
+|bcprov-jdk13-143.jar| PKI 第三方工具包
+|===
+
+=== pki.jsp编写
+编写 _pki.jsp_ 完成用户信息的获取。
+
+[source,java]
+----
+<%@ page language="java" pageEncoding="utf-8"%>
+<%@ page contentType="text/html; charset=utf-8"%>
+<%@ page import="cn.com.jit.assp.ias.sp.saml11.SPUtil"%>
+<%@ page import="cn.com.jit.assp.ias.sp.saml11.SPConst"%>
+<%@ page import="cn.com.jit.assp.ias.saml.saml11.*"%>
+<%@ page
+	import="cn.com.jit.assp.ias.saml.saml11.SAMLAttributes.SAMLAttributeName"%>
+<%@ page import="cn.com.jit.assp.ias.principal.UserPrincipal"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="java.util.*"%>
+<%@ page import="cn.com.jit.cinas.commons.util.StringUtils"%>
+<%
+	boolean success = false;
+	UserPrincipal p = null;
+	SimpleDateFormat formatter = new SimpleDateFormat(
+			"yyyy��MM��dd�� HH:mm:ss");
+
+	p = SPUtil.getUserPrincipal(request);
+
+	success = (p == null ? false : true);
+	String user_name = "";
+	String user_sfzh = "";
+
+	SAMLAttributes attrs = (SAMLAttributes)p.getAttribute(SPConst.KEY_SAML_ATTR_STATEMENT_ATTRIBUTES);
+	String info = "";
+	if (attrs != null) {
+		List ls = attrs.getAttributeNames();
+		for (int i = 0; i < ls.size(); i++) {
+			SAMLAttributeName name = (SAMLAttributeName) ls.get(i);
+			// ȡ�ø�����ֵ
+			String parentValueName = name.getParentName();
+			List values = null;
+			if (!StringUtils.isBlankOrNull(parentValueName))
+				// ��"���ֵ�"��������ʱ
+				values = attrs.getAttributeValue(name.getName(),name.getNamespace(),parentValueName);
+			else
+				values = attrs.getAttributeValue(name.getName(),name.getNamespace());
+			if(values!= null&&values.size()>0) {
+				info = values.get(0).toString();
+			}
+		}
+	}
+	String pki_info = "";
+	if(info != ""){
+		pki_info = info.split(",")[0].split("=")[1];
+	}
+	if(pki_info.split(" ").length>=2){
+		pki_info = pki_info.split(" ")[0]+"_"+pki_info.split(" ")[1];
+	}
+
+	response.sendRedirect("../information.shtml?status_flag="+success+"&pki_info="+java.net.URLEncoder.encode(pki_info)); // <1>
+%>
+----
+<1> 注意，重定向首页时，此时已经获取到了用户信息，即参数中的 *_pki_info_*
+
+=== 配置过滤器
+上面编写的 _pki.jsp_ 中获取到的用户信息，实际上是在 _filter_ 中完成后再转给 _pki.jsp_ 的。
+
+[source,xml]
+----
+<filter>
+		<filter-name>AccessController</filter-name>
+		<filter-class>
+			cn.com.jit.assp.ias.sp.saml11.AccessController
+		</filter-class>
+		<init-param>
+			<param-name>SPConfig</param-name>
+			<param-value>
+				/WEB-INF/config/JITAgentConfig.xml // <1>
+			</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>AccessController</filter-name>
+		<url-pattern>/html/pki/pki.jsp</url-pattern> // <2>
+	</filter-mapping>
+----
+<1> 指向了对应的 *pki* 的配置文件，里面包含了验证服务器地址等信息。
+<2> 拦截了 *_pki.jsp_* 。这里需要注意的是，如果 *_pki.jsp_* 所在的 _uri_ 如果不在 *吉大正元信任列表* 中。此时访问会报错提示不在信任列表中。
+
+=== 登录请求
+请求流程如下图
+
+image::pki.png[]
+
+由图可以看出， _pki_ 只是为了获取用户信息，然后再发请求完成用户登陆。
