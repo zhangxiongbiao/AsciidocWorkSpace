@@ -39,3 +39,8 @@ Rock Rock Rock Rock Rock Rock Rock Rock Rock Rock
 === The meaning of static
 
 == Cleanup: finalization and garbage collection
+
+
+== Enumerated types
+Enum都有自己的 _oridal()_ 方法，表示序数，从0开始。
+也有 values()方法，也有valueOf()方法。
