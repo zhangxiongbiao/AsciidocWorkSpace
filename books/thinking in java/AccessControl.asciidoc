@@ -1,0 +1,39 @@
+= AccessControl
+
+访问控制最常见的是 _library_ 依赖。如 _client_  依赖于某一 _library_ ，则 _library creator_ 应该保证升级过程中，不对 _client_ 的代码造成影响，如 _client_ 要修改大量代码之类的。
+
+那么 _library creator_ 又如何能知道哪些类或方法或字段被 _client_ 给依赖了呢。为了解决这个问题， _java_ 中使用 *访问修饰符* 来控制哪些可以被 _client_ 访问，哪些不可以。
+
+== package: the library unit
+一个 _package_ 包含一组类，并且这些类使用相同的 _namespace_ ，即包名。
+
+. 导入单个类
+import java.util.ArrayList;
+
+. 导入某包下所有类
+import java.util.*;
+
+[TIP]
+通过包名加类名这种完全限定名来解决类名冲突。
+
+
+[IMPORTANT]
+====
+每一个 _.java_ 文件中，只允许出现一个 _plubic_ 声明的类。
+====
+
+
+=== Code organization
+当你编译一个 _.java_ 文件时，将产生一个相同名称的 _.class_ 文件。一个可运行的程序由一组 _.class_ 文件组成，这些 _.class_ 文件也可以被打包成一个 _jar_ 包。 _java_ 解释器就负责查找、加载与解释执行这些 _.class_ 文件。
+
+
+=== Java Access specfiers
+
+|===
+|public|公共访问权限
+|protected|类继承访问权限，包访问权限
+|friendly|包访问权限， *无关键字*
+|private|私有权限，仅本类可访问
+|===
+
+类只有 _plublic_ 与 _friendly_ （包访问）修饰。

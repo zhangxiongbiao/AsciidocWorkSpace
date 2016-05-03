@@ -1,0 +1,3 @@
+= Reusing Class
+
+选择 _Composition_ 还是 _Inheritance_ 主要取决于你是否需要 _upcasting_ 。
