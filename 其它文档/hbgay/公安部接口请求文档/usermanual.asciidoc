@@ -1,0 +1,238 @@
+= 省厅接口调用方式
+zxb <zxb@dameng.com>
+version 1.0, 2016-05-03
+:stem: latexmath
+:title: 公安部接口调用参考手册
+:toc: left
+:toclevels: 2
+:doctype: book
+:compat-mode:
+:page-layout!:
+:sectanchors:
+:sectlinks:
+:sectnums:
+:linkattrs:
+:icons: font
+:source-highlighter: coderay
+:source-language: asciidoc
+:experimental:
+:stem:
+:idprefix:
+:idseparator: -
+:ast: &ast;
+:dagger: pass:normal[^&dagger;^]
+:y: icon:check[role="green"]
+:n: icon:times[role="red"]
+:c: icon:file-text-o[role="blue"]
+:table-caption!:
+:example-caption!:
+:figure-caption!:
+:imagesdir: ./images
+:iconsdir: ./images/icons
+:includedir: _includes
+:underscore: _
+
+接口调用方式是通过调用省厅的接口，省厅将请求转发并请求公安部接口实现的。
+
+== Webservice服务接口访问说明
+
+=== 开发框架
+本Webservice服务接口采用axis2框架进行开发。
+
+=== 访问接口
+[source,java]
+----
+package com.dm.dsp.webservice.server;
+
+public class GabDataServer {
+    public String request(String requestXml, String receiverId) throws Exception{ // <1>
+    }
+}
+----
+<1> _requestXml_ 为请求参数,  _receiverId_ 为服务方ID
+
+=== 访问参数
+|===
+|参数名称|参数|参数说明
+|访问地址|http://ip:port/dsp/services/GabDataServer?wsdl|IP及Port会随部署机器环境变化
+|命名空间|http://server.webservice.dsp.dm.com|
+|请求方法|request|
+|请求参数1|String _requestXml_|提供的请求参数，详见公安部接口规范
+|请求参数2|String _receiverId_|提供的请求参数，接口服务方ID
+|响应结果|String|响应信息，详见公安部接口规范
+|===
+
+=== 服务接口列表
+详见公安部接口列表
+
+== 服务接口参数
+=== 接口地址
+http://10.72.38.49/dsp/services/GabDataServer?wsdl
+
+=== 示例说明
+示例中的请求信息及响应信息均为完整的 _SOAP_ 消息。
+
+==== 请求信息
+
+.全国常住人口接口请求
+[source,xml]
+----
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+    <soap:Body>
+        <ns2:request xmlns="http://domain.wsclient.dm.com/xsd" xmlns:ns2="http://server.webservice.dsp.dm.com">
+            <ns2:requestXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?><RBSPMessage>
+  <Version>02</Version>
+  <SenderID>C00-10001101</SenderID>
+  <TimeStamp></TimeStamp>
+  <Validity></Validity>
+  <Security>
+    <Signature Algorithm=""/>
+    <CheckCode Algorithm=""/>
+    <Encrypt></Encrypt>
+  </Security>
+  <Method>
+    <EndUser>
+      <UserName>test</UserName>
+      <UserIDCard>430682199004160510</UserIDCard>
+      <UserDept>000000</UserDept>
+      <UserCertID></UserCertID>
+    </EndUser>
+    <Name>Query</Name>
+    <Items>
+      <Item>
+        <Name>DataObjectCode</Name>
+        <Value Type="string">
+          <Data>A001</Data>
+        </Value>
+      </Item>
+      <Item>
+        <Name>Condition</Name>
+        <Value Type="string">
+          <Data>SFZH='421127199211193013'</Data>
+        </Value>
+      </Item>
+      <Item>
+        <Name>RequiredItems</Name>
+        <Value Type="arrayOf_string">
+          <Row>
+            <Data>XM</Data>
+            <Data>SFZH</Data>
+            <Data>CSRQ</Data>
+            <Data>XB</Data>
+            <Data>MZ</Data>
+            <Data>HYZK</Data>
+            <Data>WHCD</Data>
+            <Data>JGSSX</Data>
+            <Data>ZZXZ</Data>
+            <Data>CSD</Data>
+            <Data>CSDXZ</Data>
+            <Data>FWCS</Data>
+            <Data>CYM</Data>
+            <Data>BYQK</Data>
+          </Row>
+        </Value>
+      </Item>
+      <Item>
+        <Name>InfoCodeMode</Name>
+        <Value Type="string">
+          <Data>1</Data>
+        </Value>
+      </Item>
+    </Items>
+  </Method>
+</RBSPMessage>
+]]>
+            </ns2:requestXml>
+            <ns2:receiverId>S10-00000008</ns2:receiverId>
+        </ns2:request>
+    </soap:Body>
+</soap:Envelope>
+----
+
+==== 响应信息
+
+.全国常住人口接口响应
+[source,xml]
+----
+<?xml version='1.0' encoding='UTF-8'?>
+<soapenv:Envelope
+    xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+    <soapenv:Body>
+        <ns:requestResponse
+            xmlns:ns="http://server.webservice.dsp.dm.com">
+            <ns:return>&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;RBSPMessage>
+    &lt;Version/>
+    &lt;ServiceID>S10-00000008&lt;/ServiceID>
+    &lt;TimeStamp/>
+    &lt;Validity/>
+    &lt;Security>
+        &lt;Signature Algorithm=""/>
+        &lt;CheckCode Algorithm=""/>
+        &lt;Encrypt/>
+    &lt;/Security>
+    &lt;Method>
+        &lt;Name>Query&lt;/Name>
+        &lt;Items>
+            &lt;Item>
+                &lt;Value Type="arrayOfArrayOf_string">
+                    &lt;Row>
+                        &lt;Data>000&lt;/Data>
+                        &lt;Data/>
+                        &lt;Data/>
+                        &lt;Data/>
+                        &lt;Data/>
+                        &lt;Data/>
+                        &lt;Data/>
+                        &lt;Data/>
+                        &lt;Data/>
+                        &lt;Data/>
+                        &lt;Data/>
+                        &lt;Data/>
+                        &lt;Data/>
+                        &lt;Data/>
+                    &lt;/Row>
+                    &lt;Row>
+                        &lt;Data>XM&lt;/Data>
+                        &lt;Data>SFZH&lt;/Data>
+                        &lt;Data>CSRQ&lt;/Data>
+                        &lt;Data>XB&lt;/Data>
+                        &lt;Data>MZ&lt;/Data>
+                        &lt;Data>HYZK&lt;/Data>
+                        &lt;Data>WHCD&lt;/Data>
+                        &lt;Data>JGSSX&lt;/Data>
+                        &lt;Data>ZZXZ&lt;/Data>
+                        &lt;Data>CSD&lt;/Data>
+                        &lt;Data>CSDXZ&lt;/Data>
+                        &lt;Data>FWCS&lt;/Data>
+                        &lt;Data>CYM&lt;/Data>
+                        &lt;Data>BYQK&lt;/Data>
+                    &lt;/Row>
+                    &lt;Row>
+                        &lt;Data>张三丰&lt;/Data>
+                        &lt;Data>421127199211193013&lt;/Data>
+                        &lt;Data>19921119&lt;/Data>
+                        &lt;Data>男性&lt;/Data>
+                        &lt;Data>汉族&lt;/Data>
+                        &lt;Data/>
+                        &lt;Data/>
+                        &lt;Data>湖北省黄梅县&lt;/Data>
+                        &lt;Data>湖北省黄梅县下新镇张英楼村二组&lt;/Data>
+                        &lt;Data>421127/湖北省黄梅县&lt;/Data>
+                        &lt;Data/>
+                        &lt;Data/>
+                        &lt;Data>张双锋&lt;/Data>
+                        &lt;Data/>
+                    &lt;/Row>
+                &lt;/Value>
+            &lt;/Item>
+        &lt;/Items>
+    &lt;/Method>
+&lt;/RBSPMessage></ns:return>
+    </ns:requestResponse>
+</soapenv:Body>undefined</soapenv:Envelope>
+----
+
+
+= 直接调用公安部接口
+请参考公安部接口文档，完成接口调用。

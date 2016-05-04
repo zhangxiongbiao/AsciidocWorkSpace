@@ -1,0 +1,68 @@
+= 工具包
+:imagesdir: ./images
+:iconsdir: ./images/icons
+
+工具包为工程运行过程中需要依赖运行的工具。
+
+== memcached
+_Memcached_ 是一个高性能的分布式内存对象缓存系统，用于动态 _Web_ 应用以减轻数据库负载。它通过在内存中缓存数据和对象来减少读取数据库的次数，从而提高动态、数据库驱动网站的速度。 _Memcached_ 基于一个存储键/值对的 _hashmap_ 。
+
+_Memcached_ 在本工程作为分布式内存缓存系统使用，主要用于存储用户登陆票据及部分用户对象缓存信息。
+
+[NOTE]
+====
+使用 _dmcas_ 必须启动 _memcached_ ，因为单点登录使用的用户票据存储在 _memcached_ 中。
+====
+
+=== 启动运行
+从 http://svn.dameng.com:2688/code/DM-GAHYB-CODE/common/tools/memcached[SVN] 下载 _memcached.rar_ 解压至本地目录。
+
+|===
+|32位|memcached-1.2.6-win32-bin.zip
+|64位|memcached-win64-1.4.4-14.zip
+|===
+
+
+双击运行 _memcached_ 即可。
+
+image::memcached.png[]
+
+== zookeeper
+_ZooKeeper_ 是一个分布式的，开放源码的分布式应用程序协调服务。
+
+在本工程中，使用 _zookeeper_ 作为 _dubbo_ 的 *注册中心* 。
+[NOTE]
+====
+涉及到使用 _dubbo_ 服务的工程都需要启动 _zookeeper_ 。
+
+*目前 _3.0.1_ 的所有工程必须启动 _zookeeper_*
+====
+
+=== 启动运行
+下载::
+从 http://svn.dameng.com:2688/code/DM-GAHYB-CODE/common/tools/zookeeper[SVN] 上下载 _zookeeper-3.4.8.zip_ 文件，解压至本机指定目录。
+
+修改端口::
++
+image::zoo-cfg.png[]
++
+image::zoo-cfg-port.png[]
++
+指定端口为 _2181_
+
+运行::
+双击运行 _bin/zkServer.cmd_
++
+[NOTE]
+====
+如果启动时，出现 *_UnsupportedClassVersion_* 错误，请升级你本机使用的 _jdk_ 
+====
+
+
+== elasticsearch
+_ElasticSearch_ 是一个基于 _Lucene_ 的搜索服务器。它提供了一个分布式多用户能力的全文搜索引擎，基于 _RESTful web_ 接口。   _Elasticsearch_ 是用 _Java_ 开发的，并作为 _Apache_ 许可条款下的开放源码发布，是当前流行的企业级搜索引擎。设计用于云计算中，能够达到实时搜索，稳定，可靠，快速，安装使用方便。
+
+[NOTE]
+====
+此插件仅在运行 _dmga-cloudsearch_ 与 _dmga-esearch2_ 时需要运行。
+====

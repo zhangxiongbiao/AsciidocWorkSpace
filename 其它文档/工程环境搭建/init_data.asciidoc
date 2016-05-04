@@ -1,0 +1,139 @@
+= 初始管理库数据
+:imagesdir: ./images
+:iconsdir: ./images/icons
+
+在整个开发库搭建之前，需要开发人员已经安装好了 http://www.dameng.com/[达梦数据库] 。而后，管理库表结构及数据抽取可采用如下两种方式进行。
+
+. 运行各工程 _etc_ 目录下的建表及初始化语句
++
+image::etc.png[]
+. 直接从其它开发人员处使用 _dts_ 工具抽取
++
+image::dts.png[]
+
+== 建立初始用户
+. 进入达梦数据库管理工具
++
+image::dm-manager.png[]
+
+. 使用默认账户登陆
++
+image::dm-login.png[]
++
+初始安装的 _DM_ 库默认账号 _SYSDBA/SYSDBA_ 。登陆时必须保证已经启动 _DM_ 库服务。
++
+image::dm-server.png[]
+
+. 进入用户管理
++
+image::dm-users.png[]
+. 右击->新建用户
++
+image::dm-user-add.png[]
++
+其中账号如：湖北公安云为 _GONGANYUN2_，吉林公安云为 _JLGAY_ ，视所在项目组而定。
+
+. 指定用户角色、权限、资源限制等
++
+.set roles
+image::dm-user-add-role.png[]
++
+.set privilege
+image::dm-user-add-privilege.png[]
++
+.resource limit
+image::user-add-resource-limit.png[]
+
+. 重复上述步骤，建立日志用户
+重复上述步骤，建立日志用户。 _GAYLOG/888888888_
+
+== 运行建表语句及初始化语句
+[WARNING]
+====
+如果非必要原因，建议直接采用下面的 *_dts_ 抽取方式*
+====
+
+找到工程 _etc_ 目录下面的相关sql语句。 *先运行建表语句，再运行相应的初始化语句。*
+
+. 找到工程 _etc_ 目录下的 _sql_ 语句
++
+image::etc-init.png[]
+
+. 拷贝至 _DM_ _manager_ 管理工具下运行，按 _F8_ 执行 _Sql_
++
+image::manager-run.png[]
++
+[IMPORTANT]
+====
+请确保是使用 _GONGANYUN2_footnote:[这里指刚才建立的管理用户，非日志用户] 账户登录并执行的。
+====
+
+== 使用 _dts_ 抽取
+_dts_ 全称 “达梦数据迁移工具”，提供了主流大型数据库迁移到 _DM_、_DM_ 迁移到主流大型数据库、 _DM_ 到 _DM_、文件迁移到 _DM_ 以及 _DM_ 迁移到文件的功能。 _DM_ 数据迁移工具采用向导方式引导用户通过简单的步骤完成需要的操作。
+
+
+.DM数据迁移工具支持：
+* DM数据库之间模式、表、序列、视图、存储过程/函数、包、触发器、对象权限的迁移
+* 主流大型数据库Oracle、SQLServer、MySQL、DB2、PostgreSQL、Informix、Kingbase、Sybase的模式、表、视图、序列、索引迁移到DM
+* DM的模式、表、视图、序列、索引迁移到主流大型数据库Oracle、SQLServer、MySQL
+* ODBC数据源、JDBC数据源的模式、表、视图迁移到DM
+* DM数据库模式、表、序列、视图、存储过程/函数、包、触发器、对象权限迁移到XML文件,SQL脚本文件
+* DM数据库的表、视图数据迁移到文本文件,Excel文件,Word文件
+* 指定格式的文本文件,Excel文件,Word文件,XML文件和SQL脚本文件迁移到DM数据库
+
+=== dts 使用
+. 进入 _dts_
++
+image::dts.png[]
+
+. 进入 _dts help_ ，选择 _help topic_
++
+image::dts_help.png[]
++
+image::hel-topic.png[]
+
+=== 使用 _dts_ 迁移管理库数据
+这里迁移管理库数据指的是从其它开发人员的 _DM_ 中迁移出表及数据。
+
+. 获取其它开发人员的局域网 _ip_
++
+例如 _192.168.0.106_
+
+. 新建 _dts_ 工程
++
+image::dts-project.png[]
+
+. 右键 _迁移_ 选择 “新建迁移”
++
+image::dts-test01.png[]
++
+image::dts-test01-01.png[]
+
+. 选择 _迁移方式_
++
+image::dts-transform-type.png[]
+
+. 输入数据源连接信息，即其它开发人员的 _ip_ 等
++
+image::dts-source.png[]
++
+.此处需要确定所连接的数据源满足以下条件
+[NOTE]
+====
+. ip 可 ping 通
+. 端口 可 ping 通
+. 用户名/密码 正确
+
+建议目的数据源直接关闭机器上的防火墙。
+====
+
+. 输入目的数据源连接信息，即本机 _ip_ 等
++
+image::dts-dest.png[]
+
+. 选择抽取的模式及表
++
+image::dts-select.png[]
++
+image::dts-select-table.png[]
+. 然后一直下一步...

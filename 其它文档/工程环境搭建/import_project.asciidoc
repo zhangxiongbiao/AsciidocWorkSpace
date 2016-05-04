@@ -1,0 +1,43 @@
+= 导入工程
+:imagesdir: ./images
+:iconsdir: ./images/icons
+
+== 导入示例
+
+=== 配置 _maven_
+从 http://svn.dameng.com:2688/code/DM-GAHYB-CODE/common/tools/maven[SVN] 下载 _maven_ 包。
+
+. 修改 _maven_ 的 _settings_ 文件
++
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd" xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<localRepository>d:/java/m2/repository</localRepository> //<1>
+ <servers>
+    <server>
+	     <id>remote-repos</id>
+      <username></username> // <2>
+      <password></password>
+    </server>
+  </servers>
+</settings>
+----
+<1> 指定本机的 _maven_ 库地址
+<2> 指定 _artifactory_ 账号密码。默认为 svn账号/svn账号123
+
+
+
+. _IDE_ 中配置 _maven_
++
+image::wsdl-maven.png[]
++
+[WARNING]
+====
+图示为 _idea_ 中配置，非 _eclipse_ 中配置。
+====
+
+. 导入对应工程
++
+将对应工程导入即可。

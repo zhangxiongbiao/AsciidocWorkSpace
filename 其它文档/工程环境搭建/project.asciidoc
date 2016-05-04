@@ -1,0 +1,126 @@
+= 工程运行包
+:imagesdir: ./images
+:iconsdir: ./images/icons
+
+== dmcas
+_dmcas_ 作为 _SSO_ footnote:[单点登陆] 中的认证服务器，主要用于完成用户登录票据的认证。
+
+[NOTE]
+====
+运行工程时，必须启动 _dmcas_ ，否则将无法进行登录，也就无法进入系统进行操作。
+====
+
+=== 下载运行包
+从 http://svn.dameng.com:2688/code/DM-GAHYB-CODE/common/tools/dmcas/3.0.1[SVN] 下载 _dmcas_ 对应版本的最新包。
+
+image::dmcas-download.png[]
+
+=== 修改配置文件
+将下载后的包，解压至 _tomcat_ 目录下的 _webapps_ 目录下。
+
+.解压dmcas至webapps目录
+image::tomcat-webapps.png[]
+
+.进入dmcas/WEB-INF/config/目录
+image::dmcas-config.png[]
+
+.修改jdbc.properties文件
+image::dmcas-jdbc.png[]
+将其中的配置信息修改为你本地库的信息。
+
+.修改logjdbc.properties文件
+image::dmcas-log-jdbc.png[]
+将其中的配置信息修改为你本地库的信息，账号为日志账号。
+
+=== 运行
+正常启动 _tomcat_ 即可。
+
+
+[TIP]
+====
+必须要运行 _memcached_
+====
+
+== dmui
+_dmui_ 为所有工程使用到的公共资源库，主要存放前端界面展现中常用的 _js_ 及 _img_ 等。
+
+
+从 http://svn.dameng.com:2688/code/DM-GAHYB-CODE/resource/dmga-dmui/3.0.1[SVN] 下载 _dmui_ ，导入 _eclipse_ 中运行即可。context_path 为 _dmui_ 。
+
+== dmga-dubbo-logger
+_dmga-dubbo-logger_ 工程专门用于记录程序操作日志，基于 _dubbo_ 提供服务供其它工程进行调用。
+
+.依赖
+[NOTE]
+====
+. zookeeper需要运行
+====
+
+=== 下载
+从 http://svn.dameng.com:2688/code/DM-GAHYB-CODE/common/tools/dubbo-logger/3.0.1[SVN] 下载最新的 _dmga-dubbo-logger_ 包。
+
+image::dmga-dubbo-logger.png[]
+
+=== 修改配置
+. 将 _dmga-dubbo-logger_ 包下载后解压至本机指定目录。
++
+image::dmga-logger-install.png[]
+
+. 进入 _conf_ 目录，修改 _dubbo.properties_ 配置文件。
++
+image::logger-conf.png[]
+
+. 填写你本机的zookeeper地址
++
+image::logger-dubbo-properties.png[]
+
+. 进入 _conf/res/config/_ 目录，修改 _logjdbc.properties_ 配置文件。
++
+image::logger-logjdbc.png[]
+
+. 填写你本机正确的库及账号信息
++
+image::dmga-logger-logjdbc.png[]
+
+=== 运行
+进入 _bin/_ 目录，双击运行 _start.bat_ 即可。
+
+image::logger-start.png[]
+
+== dmga-dubbo-wsdl
+_dmga-dubbo-wsdl_ 为 _SOA_ 中主要用于 _wsdl_ 反向代理调用存在的。
+
+[TIP]
+====
+_dmga-dsp_ 会依赖于该组件的服务。如果不运行 _dsp_ ，可以不运行该组件。
+
+.依赖
+. zookeeper
+====
+
+=== 下载
+从 http://svn.dameng.com:2688/code/DM-GAHYB-CODE/common/tools/dubbo-wsdl/3.0.1[SVN] 下载对应版本最新的包。
+
+image::dmga-wsdl.png[]
+
+=== 修改配置
+将下载的包解压至本机指定目录。
+
+. 修改 _dubbo.properties_ 文件
++
+image::dmga-wsdl-dubbo-properties.png[]
++
+.指定本机真实的 _zookeeper_ 地址
+image::dmga-wsdl-zookeeper.png[]
+
+. 修改 _beans-config.xml_ 文件
++
+image::dmga-wsdl-beans-config.png[]
++
+.指定为本机真实的 _zookeeper_ 地址
+image::wsdl-beans-config.png[]
+
+=== 运行
+进入 _bin/_ 目录，双击运行 _start.bat_ 即可。
+
+image::wsdl-bin-start.png[]
