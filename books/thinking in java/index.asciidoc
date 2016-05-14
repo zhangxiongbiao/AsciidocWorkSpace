@@ -1,6 +1,7 @@
 = Thinking In Java
 张雄彪 <zxb@dameng.com>
 version 1.0, 2016-04-06
+:toc-title: 目录
 
 
 include::Introduction to Objects.asciidoc[]
@@ -14,3 +15,9 @@ include::ControllingExecution.asciidoc[]
 include::InitializationAndCleanUp.asciidoc[]
 
 include::AccessControl.asciidoc[]
+
+include::ReusingClass.asciidoc[]
+
+include::Polymorphism.asciidoc[]
+
+include::Interfaces.asciidoc[]

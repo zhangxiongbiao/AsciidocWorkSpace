@@ -1,0 +1,117 @@
+= Polymorphism
+
+== Method-call binding
+
+_Java_ 中所有绑定的方法都是 _late binding_ ，除了 _static_ 和 _final_ 修饰的方法（_private_ 修饰的方法是隐式的 _final_ 方法）。
+
+
+== Constructors and polymorphism
+
+构造函数调用顺序。
+
+. 最顶层父类成员变量初始化
+. 最顶层父类构造函数执行
+. 依次各次父类成员变量初始化、构造执行
+. 当前类成员变量初始化，构造函数执行
+
+[TIP]
+====
+如果有静态成员变量，则最先执行的为静态成员变量。静态成员变量的初始化，也是先父类后子类。
+====
+
+构造函数中涉及多态时调用
+
+.示例
+[source,java]
+----
+//: polymorphism/PolyConstructors.java
+// Constructors and polymorphism
+// don’t produce what you might expect.
+import static net.mindview.util.Print.*;
+class Glyph {
+void draw() {
+        print("Glyph.draw()");
+}
+Glyph() {
+        print("Glyph() before draw()");
+        draw();
+        print("Glyph() after draw()");
+}
+}
+class RoundGlyph extends Glyph {
+private int radius = 1;
+RoundGlyph(int r) {
+        radius = r;
+        print("RoundGlyph.RoundGlyph(), radius = " + radius);
+}
+void draw() {
+        print("RoundGlyph.draw(), radius = " + radius);
+}
+}
+public class PolyConstructors {
+public static void main(String[] args) {
+        210 Thinking in Java Bruce Eckel
+        new RoundGlyph(5);
+}
+} /* Output:
+     Glyph() before draw()
+     RoundGlyph.draw(), radius = 0 // <1>
+     Glyph() after draw()
+     RoundGlyph.RoundGlyph(), radius = 5
+   *///:~
+----
+<1> 父类构造调用 _draw()_ 时，由于多态，结果调用了子类的 _draw()_ 方法。
+
+[TIP]
+====
+. 父类构造调用
+. 父类调用 _draw()_ 方法，由于多态，调用了子类的 _draw()_
+. 子类构造调用
+====
+
+
+== 可变的返回类型
+[source,java]
+----
+//: polymorphism/CovariantReturn.java
+Polymorphism 211
+class Grain {
+public String toString() {
+        return "Grain";
+}
+}
+class Wheat extends Grain {
+public String toString() {
+        return "Wheat";
+}
+}
+class Mill {
+Grain process() {
+        return new Grain();
+}
+}
+class WheatMill extends Mill {
+Wheat process() { // <1>
+        return new Wheat();
+}
+}
+public class CovariantReturn {
+public static void main(String[] args) {
+        Mill m = new Mill();
+        Grain g = m.process();
+        System.out.println(g);
+        m = new WheatMill();
+        g = m.process();
+        System.out.println(g);
+}
+} /* Output:
+     Grain
+     Wheat
+   *///:~
+----
+<1> 注意，_override_ 父类的 _process_ 方法时，返回类型是子类型。
+
+[TIP]
+====
+JavaSE~5~ 之前会强制子类 _override_ 时必须返回相同的类型，如Grain，而现在则不会。
+====
