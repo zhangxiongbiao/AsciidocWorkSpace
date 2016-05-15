@@ -1,0 +1,799 @@
+= InnerClasses
+:imagesDir: images
+
+[quote,zxb,]
+____
+It’s possible to place a class definition within another class definition.
+This is called an inner class.
+____
+
+内部类是一个非常重要的特性，因为它允许你把类组合在一起同时还能控制类的可见性。
+[NOTE]
+====
+内部类跟 _composition_ 是有明显区别的。
+====
+
+首先，内部类看起来就像只是简单地把类隐藏在了类中。然而，内部类做了可并不止这些。内部类可以与它所在的外部类之间进行通讯。
+
+== Creating inner classes
+
+.Parcel1
+[source,java]
+----
+package innerclasses;//: innerclasses/Parcel1.java
+// Creating inner classes.
+
+public class Parcel1 {
+    class Contents {
+        private int i = 11;
+
+        public int value() {
+            return i;
+        }
+    }
+
+    class Destination { // <1>
+        private String label;
+
+        Destination(String whereTo) {
+            label = whereTo;
+        }
+
+        String readLabel() {
+            return label;
+        }
+    }
+
+    // Using inner classes looks just like
+    // using any other class, within Parcel1:
+    public void ship(String dest) {
+        Parcel1.Contents c = new Contents();  // <2>
+        Parcel1.Destination d = new Destination(dest);
+
+        Parcel1.Contents e = new Parcel1.Contents();
+        System.out.println(d.readLabel());
+    }
+
+    public static void main(String[] args) {
+        Parcel1 p = new Parcel1();
+        p.ship("Tasmania");
+    }
+} /* Output:
+Tasmania
+*///:~
+----
+<1> 内部类看上去与普通的类没什么区别，只是它放在了外部类里面而已
+<2> 内部类需要使用外部类来访问它
+
+然而，更通常的情况是，外部类会有一个方法来返回内部类的引用出去。
+
+.Parcel2
+[source,java]
+----
+package innerclasses;//: innerclasses/Parcel2.java
+// Returning a reference to an inner class.
+
+public class Parcel2 {
+    class Contents {
+        private int i = 11;
+
+        public int value() {
+            return i;
+        }
+    }
+
+    class Destination {
+        private String label;
+
+        Destination(String whereTo) {
+            label = whereTo;
+        }
+
+        String readLabel() {
+            return label;
+        }
+    }
+
+    public Destination to(String s) { // <1>
+        return new Destination(s);
+    }
+
+    public Contents contents() { // <2>
+        return new Contents();
+    }
+
+    public void ship(String dest) {
+        Contents c = contents();
+        Destination d = to(dest);
+        System.out.println(d.readLabel());
+    }
+
+    public static void main(String[] args) {
+        Parcel2 p = new Parcel2();
+        p.ship("Tasmania");
+        Parcel2 q = new Parcel2();
+        // Defining references to inner classes:
+        Parcel2.Contents c = q.contents(); // <3>
+        Parcel2.Destination d = q.to("Borneo");
+    }
+} /* Output:
+Tasmania
+*///:~
+----
+<1> 通过外部类的 _to_　方法返回一个内部类 _Destination_ 对象
+<2> 通过外部类的 _contents_　方法返回一个内部类 _Contents_ 对象
+<3> 返回的内部类引用，须要使用 _OuterClassName.InnerClassName_ 来引用哦
+
+[NOTE]
+====
+这里的内部类为包访问权限，所以如果出了这个包，你是访问不了这个内部类的，除非内部类声明为 _public_
+====
+
+== The link to the outer class
+至目前为止，内部类好像只是将类隐藏及代码重新组织了，并没有其它吸引人的地方，其它并不是这样的。
+
+当你创建一个内部类的时候，内部类中有一个 _link to the enclosing object that made it_ ，即内部类中持有创建它的外部类的一个引用。
+
+[IMPORTANT]
+====
+内部类中可以访问外部类的所有成员，哪怕是 _private_
+====
+
+.著名的迭代器设计
+[source,java]
+----
+package innerclasses;//: innerclasses/Sequence.java
+// Holds a sequence of Objects.
+
+interface Selector {
+    boolean end();
+
+    Object current();
+
+    void next();
+}
+
+public class Sequence {
+    private Object[] items;
+    private int next = 0;
+
+    public Sequence(int size) {
+        items = new Object[size];
+    }
+
+    public void add(Object x) {
+        if (next < items.length)
+            items[next++] = x;
+    }
+
+    private class SequenceSelector implements Selector { // <1>
+        private int i = 0;
+
+        public boolean end() {
+            return i == items.length; // <2>
+        }
+
+        public Object current() {
+            return items[i];
+        }
+
+        public void next() {
+            if (i < items.length) i++;
+        }
+    }
+
+    public Selector selector() {
+        return new SequenceSelector(); // <3>
+    }
+
+    public static void main(String[] args) {
+        Sequence sequence = new Sequence(10);
+        for (int i = 0; i < 10; i++)
+            sequence.add(Integer.toString(i));
+        Selector selector = sequence.selector(); // <4>
+        while (!selector.end()) {
+            System.out.print(selector.current() + " ");
+            selector.next();
+        }
+    }
+} /* Output:
+0 1 2 3 4 5 6 7 8 9
+*///:~
+----
+<1> _private_ 内部类实现了外部接口
+<2> 内部类可以完全访问外部类的成员
+<3> 外部类定义 _selector_ 方法返回一个内部类
+<4> 通过接口引用指向 _private_ 内部类。这种方法很牛啊。完成隐藏了内部实现。
+
+[TIP]
+====
+参考 _AbstractList_ 代码，迭代器的实现跟这里完成一样。
+
+[source,java]
+----
+private class Itr implements Iterator<E>{
+}
+
+public Iterator<E> iterator() {
+    return new Itr();
+}
+----
+====
+
+.内部类是如何可以自动访问外部类成员的呢
+****
+外部类在创建内部类时，内部类持有了外部类的一个引用。当你访问外部类成员时就是通过这个引用访问的。
+
+幸运地是，编译器把所有细节帮你实现了，你在内部类中只需要直接访问外部类成员即可。
+****
+
+== Using .this and .new
+当需要在内部类中使用外部类的引用时，可以显式地使用 _OuterClassName.this_ 来获取外部类的引用。
+
+=== .this
+.OuterClassName.this
+[source,java]
+----
+package innerclasses;//: innerclasses/DotThis.java
+// Qualifying access to the outer-class object.
+
+public class DotThis {
+    void f() {
+        System.out.println("DotThis.f()");
+    }
+
+    public class Inner {
+        public DotThis outer() {
+            return DotThis.this; // <1>
+            // A plain "this" would be Inner's "this"  // <2>
+        }
+    }
+
+    public Inner inner() {
+        return new Inner();
+    }
+
+    public static void main(String[] args) {
+        DotThis dt = new DotThis();
+        Inner dti = dt.inner();
+        dti.outer().f();
+    }
+} /* Output:
+DotThis.f()
+*///:~
+----
+<1> 通过 _OuterClassName.this_ 获取外部类的引用
+<2> 如果直接在这里使用 _this_ ，那么获取的肯定只是内部类的引用
+
+.直接在 _outer_ 方法中返回 _this_
+image::DotThis.png[]
+
+=== .new
+当需要创建内部类的对象时，即不是通过调用外部类的方法来返回一个内部类对象。此时需要使用 _new_ 关键字来实现。
+
+.DotNew
+[source,java]
+----
+package innerclasses;//: innerclasses/DotNew.java
+// Creating an inner class directly using the .new syntax.
+
+public class DotNew {
+    public class Inner {
+    }
+
+    public static void main(String[] args) {
+        DotNew dn = new DotNew();
+        DotNew.Inner dni = dn.new Inner(); // <1>
+    }
+} ///:~
+----
+<1> 通过外部对象然后继承调用 _.new Inter()_ 来创建内部对象。此处的前提是你所在的类能够访问内部类。
+
+通常情况下，你不可能在不创建外部类对象的情况下直接创建内部类。 *除非内部类是 _static_ 的（静态内部类）* 。
+
+== Inner classes and upcasting
+内部类通常会向上转型， _upcast_　后则一般不会 _downcast_ ，因为内部类通常无法被其它类访问。这种通过 _base type_ 或 _interface_ 的引用访问内部类，可以很好地隐藏内部实现。
+
+[source,java]
+----
+class Parcel4 {
+  private class PContents implements Contents { // <1>
+    private int i = 11;
+
+    public int value() {
+      return i;
+    }
+  }
+
+  protected class PDestination implements Destination { // <2>
+    private String label;
+
+    private PDestination(String whereTo) {
+      label = whereTo;
+    }
+
+    public String readLabel() {
+      return label;
+    }
+  }
+
+  public String destinationLabel(String s){
+    return new PDestination(s).label; // <3>
+  }
+
+  public Destination destination(String s) {
+    return new PDestination(s);
+  }
+
+  public Contents contents() {
+    return new PContents();
+  }
+}
+
+public class TestParcel {
+  public static void main(String[] args) {
+    Parcel4 p = new Parcel4();
+    Contents c = p.contents();
+    Destination d = p.destination("Tasmania"); // <4>
+    // Illegal -- can't access private class:
+    //! Parcel4.PContents pc = p.new PContents(); // <5>
+
+    String label = p.destinationLabel("BeiJing");
+    System.out.println(label);
+  }
+}///:BeiJing
+----
+<1> 内部类为 _private_ 的，所以只有它的外部类能访问它。
+<2> 内部类为 _protected_ ，则有包访问与子类访问它的权限。
+<3> 外部类中可以直接访问内部类的 _private_ 成员。
+<4> 接口引用指向内部类。 *如果接口引用指向的内部类为 _private_ 的，那么就不能 _downcast_ 了* 。
+<5> 不能在其它类中访问被 _private_ 修饰的内部类。
+
+[NOTE]
+====
+*除了内部类可以使用 _private_ 和 _protected_ 修饰外，其它的类只能是 _public_ 或者 _package access_ 。*
+====
+
+== Inner Classes in methods and scopes
+_Inner Classes_ 可以在方法内部或者其它任意的一个 _Scope_ 中创建。
+
+这么做一般有两种原因：
+. 例如写了一个内部类实现一个接口，然后在方法中返回接口引用。
+. 再比如你用内部类帮你解决了一个复杂的问题，但是你不希望内部类被外部访问。
+
+.Nesting a class within a method
+[source,java]
+----
+package innerclasses;//: innerclasses/Parcel5.java
+// Nesting a class within a method.
+
+public class Parcel5 {
+    public Destination destination(String s) {
+        class PDestination implements Destination { // <1>
+            private String label;
+
+            private PDestination(String whereTo) {
+                label = whereTo;
+            }
+
+            public String readLabel() {
+                return label;
+            }
+        }
+        return new PDestination(s); // <2>
+    }
+
+    // private PDestination p; // <3>
+
+    public void visitPDestination(){
+        // PDestination p = new PDestination();
+    }
+
+    public static void main(String[] args) {
+        Parcel5 p = new Parcel5();
+        Destination d = p.destination("Tasmania");
+    }
+} ///:~
+----
+<1> 内部类定义在方法内部，所以这个类的 _scope_　则只有这个方法了。
+<2> _Up Cast_ 为接口引用
+<3> 在方法外部，也就无法访问这个内部类了
+
+.Nesting a class within a scope
+[source,java]
+----
+package innerclasses;//: innerclasses/Parcel6.java
+// Nesting a class within a scope.
+
+public class Parcel6 {
+    private void internalTracking(boolean b) {
+        if (b) {
+            class TrackingSlip { // <1>
+                private String id;
+
+                TrackingSlip(String s) {
+                    id = s;
+                }
+
+                String getSlip() {
+                    return id;
+                }
+            }
+            TrackingSlip ts = new TrackingSlip("slip");
+            String s = ts.getSlip();
+        }
+        // Can't use it here! Out of scope:
+        //! TrackingSlip ts = new TrackingSlip("x");
+    }
+
+    public void track() {
+        internalTracking(true);
+    }
+
+    public static void main(String[] args) {
+        Parcel6 p = new Parcel6();
+        p.track();
+    }
+} ///:~
+----
+<1> 内部类定义在 _if_ 代码块中，所以它的访问 _scope_ 就只在这个 _if_ 块中了。
+
+[IMPORTANT]
+====
+上述定义在 _method_ 或 _if_ 中的内部类，并不是说在每次方法执行或进入 _if_ 中时该类都会编译。
+这个类同其它的普通类没什么区别，都只会在初次访问时被编译一次就够了。它与其它普通类的区别在于它的访问 _scope_ 不一样。
+====
+
+
+== Anonymous inner classes
+
+下面的例子可能看起来让人困惑。
+
+=== 作为返回值返回匿名内部类
+
+[source,java]
+----
+package innerclasses;//: innerclasses/Parcel7.java
+// Returning an instance of an anonymous inner class.
+
+public class Parcel7 {
+    public Contents contents() {
+        return new Contents() { // Insert a class definition // <1>
+            private int i = 11;
+
+            public int value() {
+                return i;
+            }
+        }; // Semicolon required in this case
+    }
+
+    public static void main(String[] args) {
+        Parcel7 p = new Parcel7();
+        Contents c = p.contents();
+    }
+} ///:~
+----
+<1> 定义了一个匿名内部类，没有名字。该实现类直接 _upcast to_  _Contents_ 了。
+
+=== 传入构造函数参数给匿名内部类
+如果父类型不是接口，而是一个普通的类，并且这个类没有默认构造函数，只有带参函数时。
+[source,java]
+----
+package innerclasses;
+
+//: innerclasses/Wrapping.java
+public class Wrapping { // <1>
+  private int i;
+  public Wrapping(int x) { i = x; }
+  public int value() { return i; }
+} ///:~
+
+
+package innerclasses;//: innerclasses/Parcel8.java
+// Calling the base-class constructor.
+
+public class Parcel8 {
+    public Wrapping wrapping(int x) {
+        // Base constructor call:
+        return new Wrapping(x) { // Pass constructor argument.  // <2>
+            @Override
+            public int value() {  // <3>
+                return super.value() * 47;
+            }
+        }; // Semicolon required
+    }
+
+    public static void main(String[] args) {
+        Parcel8 p = new Parcel8();
+        Wrapping w = p.wrapping(10);
+        System.out.println(w.value());
+    }
+} ///:~
+----
+<1> 普通的 _Java_　类
+<2> 返回一个匿名内部类的实现，此处传参 _x_ 给父类的构造函数
+<3> 重写父类的 _value_ 方法
+
+=== 传参初始化匿名内部的成员变量
+
+[source,java]
+----
+package innerclasses;//: innerclasses/Parcel9.java
+// An anonymous inner class that performs
+// initialization. A briefer version of Parcel5.java.
+
+public class Parcel9 {
+    // Argument must be final to use inside
+    // anonymous inner class:
+    public Destination destination(final String dest) { // <1>
+        return new Destination() {
+            private String label = dest; // <2>
+
+            public String readLabel() {
+                return label;
+            }
+        };
+    }
+
+    public static void main(String[] args) {
+        Parcel9 p = new Parcel9();
+        Destination d = p.destination("Tasmania");
+    }
+} ///:~
+----
+<1> 传参用于初始化内部类的成员变量时，传入的参数必须被 _final_ 修饰
+<2> 使用传入的参数初始化内部类的成员变量
+
+=== 匿名内部类的构造函数
+
+[NOTE]
+====
+由于匿名内部类是没有名字的，所以它自然是没有构造函数的。这里使用 *构造代码块* 来实现类似效果。
+====
+
+[source,java]
+----
+package innerclasses;//: innerclasses/AnonymousConstructor.java
+// Creating a constructor for an anonymous inner class.
+
+import static net.mindview.util.Print.*;
+
+abstract class Base {
+
+    {
+        print("Base initial code!");
+    }
+
+    public Base(int i) {
+        print("Base constructor, i = " + i);
+    }
+
+    public abstract void f();
+}
+
+public class AnonymousConstructor {
+    public static Base getBase(int i) {
+        return new Base(i) {
+            {
+                print("Inside instance initializer"); // <1>
+            }
+
+            public void f() {
+                print("In anonymous f()");
+            }
+        };
+    }
+
+    public static void main(String[] args) {
+        Base base = getBase(47);
+        base.f();
+    }
+} /* Output:
+Base initial code!
+Base constructor, i = 47
+Inside instance initializer
+In anonymous f()
+*///:~
+----
+<1> 使用构造代码块执行匿名内部类的构造初始化
+
+=== 匿名内部类构造初始化
+
+上述的例子中参数 _i_ 并没有在匿名内部类中使用，下面的例子将会使用参数并初始化。
+
+[source,java]
+----
+package innerclasses;//: innerclasses/Parcel10.java
+// Using "instance initialization" to perform
+// construction on an anonymous inner class.
+
+public class Parcel10 {
+    public Destination destination(final String dest, final float price) { // <1>
+        return new Destination() {
+            private int cost;
+
+            // Instance initialization for each object:
+            {
+                cost = Math.round(price); // <3>
+                if (cost > 100)
+                    System.out.println("Over budget!");
+            } // <4>
+
+            private String label = dest; // <2>
+
+            public String readLabel() {
+                return label;
+            }
+        };
+    }
+
+    public static void main(String[] args) {
+        Parcel10 p = new Parcel10();
+        Destination d = p.destination("Tasmania", 101.395F);
+    }
+} /* Output:
+Over budget!
+*///:~
+----
+<1> 传入匿名内部类中使用的参数在参数列表中必须声明为 _final_ 的。
+<2> 匿名内部类的成员变量初始化
+<3> 匿名内部类的构造初始化
+<4> 构造代码块初始化也有不方便之外，它不能重载
+
+[NOTE]
+====
+匿名内部类与常规类相比也是有许多限制之处，虽然它可以继承一个类或实现一个接口，但是：
+
+. 它只能继承一个类，不能同时实现接口
+. 它只能实现一个接口，不能继承类，也不能实现多个接口
+====
+
+== Factory Method revisited
+
+[source,java]
+----
+package innerclasses;//: innerclasses/Factories.java
+
+import static net.mindview.util.Print.*;
+
+interface Service {
+    void method1();
+
+    void method2();
+}
+
+interface ServiceFactory {
+    Service getService();
+}
+
+class Implementation1 implements Service {
+    private Implementation1() {
+    }
+
+    public void method1() {
+        print("Implementation1 method1");
+    }
+
+    public void method2() {
+        print("Implementation1 method2");
+    }
+
+    public static ServiceFactory factory =
+            new ServiceFactory() {
+                public Service getService() {
+                    return new Implementation1();
+                }
+            };
+}
+
+class Implementation2 implements Service {
+    private Implementation2() {
+    }
+
+    public void method1() {
+        print("Implementation2 method1");
+    }
+
+    public void method2() {
+        print("Implementation2 method2");
+    }
+
+    public static ServiceFactory factory =
+            new ServiceFactory() {
+                public Service getService() {
+                    return new Implementation2();
+                }
+            };
+}
+
+public class Factories {
+    public static void serviceConsumer(ServiceFactory fact) {
+        Service s = fact.getService();
+        s.method1();
+        s.method2();
+    }
+
+    public static void main(String[] args) {
+        serviceConsumer(Implementation1.factory);
+        // Implementations are completely interchangeable:
+        serviceConsumer(Implementation2.factory);
+    }
+} /* Output:
+Implementation1 method1
+Implementation1 method2
+Implementation2 method1
+Implementation2 method2
+*///:~
+----
+
+== Nested classes（静态内部类）
+如果你不需要 _inner class_ 与 _outer class_ 之间有关联，你可以使用 _static_ 修饰 _inner class_ 。这也通常被称为 _Nested class_ 。
+
+当使用 _static_ 修饰一个内部类时，也就是创建一个 _Nested class_ 时，这也意味着：
+
+. 不需要一个 _outer class_ 对象来创建该 _Nested class_ 的对象
+. *在 _Nested class_ 的对象中，不能访问非静态的外部类对象*
+
+_Nested class_ 与普通的 _inner class_　还有一个区别。普通内部类的字段与方法，只能放在类的外部层次上，所以普通的内部类不能有静态方法、字段及 _Nested class_　，然而上面这些 _Nested class_ 都可以有。
+
+[source,java]
+----
+package innerclasses;//: innerclasses/Parcel11.java
+// Nested classes (static inner classes).
+
+public class Parcel11 {
+    private static class ParcelContents implements Contents { // <1>
+        private int i = 11;
+
+        public int value() {
+            return i;
+        }
+    }
+
+    protected static class ParcelDestination
+            implements Destination { // <2>
+        private String label;
+
+        private ParcelDestination(String whereTo) { // <3>
+            label = whereTo;
+        }
+
+        public String readLabel() {
+            return label;
+        }
+
+        // Nested classes can contain other static elements:
+        public static void f() {
+        }
+
+        static int x = 10;
+
+        static class AnotherLevel { // <4>
+            public static void f() {
+            }
+
+            static int x = 10;
+        }
+    }
+
+    public static Destination destination(String s) {
+        return new ParcelDestination(s);
+    }
+
+    public static Contents contents() {
+        return new ParcelContents();
+    }
+
+    public static void main(String[] args) {
+        Contents c = contents();
+        Destination d = destination("Tasmania");
+    }
+} ///:~
+----
+<1> 静态内部类同样可以使用 _private_ 修饰
+<2> 静态内部类同样可以使用 _protected_ 修饰
+<3> 与普通内部类一样，可以拥有普通的成员变量与方法
+<4> 可以拥有其它静态成员，甚至 _Nested class_
+
+== Classes inside interfaces
+
