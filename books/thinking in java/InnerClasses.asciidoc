@@ -795,5 +795,80 @@ public class Parcel11 {
 <3> 与普通内部类一样，可以拥有普通的成员变量与方法
 <4> 可以拥有其它静态成员，甚至 _Nested class_
 
-== Classes inside interfaces
+=== Classes inside interfaces
+正常情况下，在 _interface_ 中不可以再放其它代码，但是一个 _Nested class_ 可以放在 _interface_ 中。在 _interface_ 中的任何 _class_ 都自动是 _public static_　的。
+
+_Nested class_ 放在 _interface_ 中与 _interface_ 的规则并不冲突，它只是用了 _Interface_ 的名称来调用而已。
+
+[source,java]
+----
+package innerclasses;
+public interface ClassInInterface {
+    void howdy(); // <1>
+
+    class Test implements ClassInInterface { // <2>
+        public void howdy() {
+            System.out.println("Howdy!");
+        }
+
+        public static void doHowdy(){ // <3>
+            new Test().howdy();
+        }
+    }
+} /* Output:
+Howdy!
+*///:~
+
+class TestInterface implements ClassInInterface{
+
+    public void howdy() {
+        ClassInInterface.Test.doHowdy(); // <4>
+
+        System.out.printf("TestInterface's Howdy!");
+    }
+}
+----
+<1> 定义接口的方法
+<2> 定义 _Nested class_ 并且实现当前这个接口。　此时 _Nested class_ 默认为 _public static_ 的
+<3> 定义通用 _code_ 给其它处调用
+<4> 在其它实现类中调用 _Nested class_ 中定义的通用代码
+
+=== Reaching outward from a multiply nested class
+一个内部类内嵌多少层都可以，内嵌越深的层是可以完全访问所有包围它的类的成员。
+
+[source,java]
+----
+package innerclasses;//: innerclasses/MultiNestingAccess.java
+// Nested classes can access all members of all
+// levels of the classes they are nested within.
+
+class MNA {
+    private void f() {
+    }
+
+    class A {
+        private void g() {
+        }
+
+        public class B {
+            void h() {
+                g(); // <1>
+                f();
+            }
+        }
+    }
+}
+
+public class MultiNestingAccess {
+    public static void main(String[] args) {
+        MNA mna = new MNA();
+        MNA.A mnaa = mna.new A();
+        MNA.A.B mnaab = mnaa.new B();
+        mnaab.h();
+    }
+} ///:~
+----
+<1> 完全可以访问上层的class中的成员
+
+== Why inner classes?
 
