@@ -872,3 +872,222 @@ public class MultiNestingAccess {
 
 == Why inner classes?
 
+== Inheriting from inner class
+
+[source,java]
+----
+package innerclasses;//: innerclasses/InheritInner.java
+// Inheriting an inner class.
+
+class WithInner {
+    class Inner {
+    }
+}
+
+public class InheritInner extends WithInner.Inner {
+    //! InheritInner() {} // Won't compile  // <1>
+    InheritInner(WithInner wi) {  // <2>
+        wi.super();
+    }
+
+    public static void main(String[] args) {
+        WithInner wi = new WithInner();
+        InheritInner ii = new InheritInner(wi);
+    }
+} ///:~
+----
+<1>　直接写构造函数是编译不通过的
+<2>  需要这么才能写出构造函数来
+
+== Can inner classes be overridden?
+通过继承外部类，然后覆写内部类是不行的。不过可以通过继承外部类，然后又同时写个内部类继承外部类的内部类来实现。
+
+[source,java]
+----
+package innerclasses;//: innerclasses/BigEgg.java
+// An inner class cannot be overriden like a method.
+
+import static net.mindview.util.Print.*;
+
+class Egg {
+    private Yolk y;
+
+    protected class Yolk {
+        public Yolk() {
+            print("Egg.Yolk()");
+        }
+    }
+
+    public Egg() {
+        print("New Egg()");
+        y = new Yolk();
+    }
+}
+
+public class BigEgg extends Egg {
+    public class Yolk {  // <1>
+        public Yolk() {
+            print("BigEgg.Yolk()");
+        }
+    }
+
+    public static void main(String[] args) {
+        new BigEgg();
+    }
+} /* Output:
+New Egg()
+Egg.Yolk()
+*///:~
+----
+<1> 这里写的 _Yolk_ 类与 _Egg_ 中的 _Yolk_ 类是两个单独的类。这里不存在覆写。
+
+[source,java]
+----
+package innerclasses;//: innerclasses/BigEgg2.java
+// Proper inheritance of an inner class.
+
+import static net.mindview.util.Print.*;
+
+class Egg2 {
+    protected class Yolk {
+        public Yolk() {
+            print("Egg2.Yolk()");
+        }
+
+        public void f() {
+            print("Egg2.Yolk.f()");
+        }
+    }
+
+    private Yolk y = new Yolk();
+
+    public Egg2() {
+        print("New Egg2()");
+    }
+
+    public void insertYolk(Yolk yy) {
+        y = yy;
+    }
+
+    public void g() {
+        y.f();
+    }
+}
+
+public class BigEgg2 extends Egg2 {
+    public class Yolk extends Egg2.Yolk {  // <1>
+        public Yolk() {
+            print("BigEgg2.Yolk()");
+        }
+
+        public void f() {
+            print("BigEgg2.Yolk.f()");
+        }
+    }
+
+    public BigEgg2() {
+        insertYolk(new Yolk());  // <2>
+    }
+
+    public static void main(String[] args) {
+        Egg2 e2 = new BigEgg2();
+        e2.g();  // <3>
+    }
+} /* Output:
+Egg2.Yolk()
+New Egg2()
+Egg2.Yolk()
+BigEgg2.Yolk()
+BigEgg2.Yolk.f()
+*///:~
+----
+<1> 这里继承了 _Egg2.Yolk_　
+<2> 此处构造函数中传入了当前的 _Yolk_ 类的引用
+<3> 出现了多态
+
+
+== Inner-class identifiers
+
+[source,java]
+---
+package innerclasses;//: innerclasses/LocalInnerClass.java
+// Holds a sequence of Objects.
+
+import static net.mindview.util.Print.*;
+
+interface Counter {
+    int next();
+}
+
+public class LocalInnerClass {
+    private int count = 0;
+
+    Counter getCounter(final String name) {
+        // A local inner class:
+        class LocalCounter implements Counter {
+            public LocalCounter() {
+                // Local inner class can have a constructor
+                print("LocalCounter()");
+            }
+
+            public int next() {
+                printnb(name); // Access local final
+                return count++;
+            }
+        }
+        return new LocalCounter();
+    }
+
+    // The same thing with an anonymous inner class:
+    Counter getCounter2(final String name) {
+        return new Counter() {
+            // Anonymous inner class cannot have a named
+            // constructor, only an instance initializer:
+            {
+                print("Counter()");
+            }
+
+            public int next() {
+                printnb(name); // Access local final
+                return count++;
+            }
+        };
+    }
+
+    public static void main(String[] args) {
+        LocalInnerClass lic = new LocalInnerClass();
+        Counter
+                c1 = lic.getCounter("Local inner "),
+                c2 = lic.getCounter2("Anonymous inner ");
+        for (int i = 0; i < 5; i++)
+            print(c1.next());
+        for (int i = 0; i < 5; i++)
+            print(c2.next());
+    }
+} /* Output:
+LocalCounter()
+Counter()
+Local inner 0
+Local inner 1
+Local inner 2
+Local inner 3
+Local inner 4
+Anonymous inner 5
+Anonymous inner 6
+Anonymous inner 7
+Anonymous inner 8
+Anonymous inner 9
+*///:~
+---
+
+.产生出来的类文件如下
+----
+Counter.class
+LocalInnerClass$l.class         // <1>
+LocallnnerClassSlLocalCounter.class  //<2>
+LocallnnerClass.class
+----
+<1> 内部类，则直接在外部类后面加一个 _$_ ，匿名内部类没有名字就自动产生了一个序号1
+<2> 这个是方法内的内部类，和外部类中间多了一个S1。我理解的可能是方法的常量值？
+<3> 嵌套多个内部类的话，则依次加 _$_
+
