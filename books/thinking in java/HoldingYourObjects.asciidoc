@@ -93,4 +93,112 @@ Exception in thread "main" java.lang.UnsupportedOperationException
 ----
 
 == Printing containers
+_Array_ 使用 _Arrays.toString()_ 来输入一个可阅读的数组值。
+而 _Map_ 或 _List_ 则可以直接输出，因为它们的父类重写了 _toString()_ 。
 
+[source,java]
+----
+package holding;//: holding/PrintingContainers.java
+// Containers print themselves automatically.
+
+import java.util.*;
+
+import static net.mindview.util.Print.*;
+
+public class PrintingContainers {
+    static Collection fill(Collection<String> collection) {
+        collection.add("rat");
+        collection.add("cat");
+        collection.add("dog");
+        collection.add("dog");
+        return collection;
+    }
+
+    static Map fill(Map<String, String> map) {
+        map.put("rat", "Fuzzy");
+        map.put("cat", "Rags");
+        map.put("dog", "Bosco");
+        map.put("dog", "Spot");
+        return map;
+    }
+
+    public static void main(String[] args) {
+        print(fill(new ArrayList<String>()));
+        print(fill(new LinkedList<String>()));
+        print(fill(new HashSet<String>()));
+        print(fill(new TreeSet<String>()));
+        print(fill(new LinkedHashSet<String>()));
+        print(fill(new HashMap<String, String>()));
+        print(fill(new TreeMap<String, String>()));
+        print(fill(new LinkedHashMap<String, String>()));
+    }
+} /* Output:
+[rat, cat, dog, dog]
+[rat, cat, dog, dog]
+[dog, cat, rat]
+[cat, dog, rat]
+[rat, cat, dog]
+{dog=Spot, cat=Rags, rat=Fuzzy}
+{cat=Rags, dog=Spot, rat=Fuzzy}
+{rat=Fuzzy, cat=Rags, dog=Spot}
+*///:~
+----
+
+._AbstractMap_ 中重写了 _toString()_
+[source,java]
+----
+    public String toString() {
+	Iterator<Entry<K,V>> i = entrySet().iterator();
+	if (! i.hasNext())
+	    return "{}";
+
+	StringBuilder sb = new StringBuilder();
+	sb.append('{');
+	for (;;) {
+	    Entry<K,V> e = i.next();
+	    K key = e.getKey();
+	    V value = e.getValue();
+	    sb.append(key   == this ? "(this Map)" : key);
+	    sb.append('=');
+	    sb.append(value == this ? "(this Map)" : value);
+	    if (! i.hasNext())  // <1>
+		return sb.append('}').toString();
+	    sb.append(", ");
+	}
+    }
+----
+<1> 通过前面判断来阻止最后追加 `,`
+
+._AbstractCollection_
+[source,java]
+----
+    public String toString() {
+        Iterator<E> i = iterator();
+	if (! i.hasNext())
+	    return "[]";
+
+	StringBuilder sb = new StringBuilder();
+	sb.append('[');
+	for (;;) {
+	    E e = i.next();
+	    sb.append(e == this ? "(this Collection)" : e);
+	    if (! i.hasNext())
+		return sb.append(']').toString();
+	    sb.append(", ");
+	}
+    }
+----
+
+image::Collections.png[]
+
+|===
+|名称|说明|
+|ArrayList|List，按插入顺序输出。List是不去重复的，基于数组实现。|
+|LinkedList|List,按插入顺序输出。保证为插入时的顺序，基于链表实现。|
+|HashSet|Set,去重复的，无序，基于Hash查找速度快|
+|TreeSet|Set,去重复的，按字母顺序排序|
+|LinkedHashSet|Set,去重复的，保证为插入时的顺序，基于链表实现|
+|HashMap|Map,key-value，无序的，基于Hash查找速度快|
+|TreeMap|Map,key-value，按字母顺序排序|
+|LinkedHashMap|Map,key-value，保证为插入时的顺序，基于Hash查找速度快，基于链表实现|
+|===

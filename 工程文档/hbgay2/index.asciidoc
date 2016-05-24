@@ -40,3 +40,5 @@ include::sso.asciidoc[]
 include::portal.asciidoc[]
 
 include::wsdl.asciidoc[]
+
+include::xxtb.asciidoc[]

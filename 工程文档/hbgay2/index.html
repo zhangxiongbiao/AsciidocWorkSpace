@@ -940,6 +940,37 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 </ul>
 </li>
+<li><a href="#信息化通报">信息化通报</a>
+<ul class="sectlevel1">
+<li><a href="#介绍">16. 介绍</a>
+<ul class="sectlevel2">
+<li><a href="#项目背景">16.1. 项目背景</a></li>
+</ul>
+</li>
+<li><a href="#系统概述">17. 系统概述</a>
+<ul class="sectlevel2">
+<li><a href="#系统目标">17.1. 系统目标</a></li>
+<li><a href="#设计原则">17.2. 设计原则</a></li>
+</ul>
+</li>
+<li><a href="#系统总体结构">18. 系统总体结构</a>
+<ul class="sectlevel2">
+<li><a href="#系统流程">18.1. 系统流程</a></li>
+<li><a href="#功能设计">18.2. 功能设计</a>
+<ul class="sectlevel3">
+<li><a href="#系统管理">18.2.1. 系统管理</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#数据库表结构">19. 数据库表结构</a></li>
+<li><a href="#功能块代码说明">20. 功能块代码说明</a>
+<ul class="sectlevel2">
+<li><a href="#数据上报-2">20.1. 数据上报</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -4014,6 +4045,470 @@ applicationContext.start();
 </div>
 </div>
 </div>
+<h1 id="信息化通报" class="sect0"><a class="anchor" href="#信息化通报"></a>信息化通报</h1>
+<div class="sect1">
+<h2 id="介绍"><a class="anchor" href="#介绍"></a>16. 介绍</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="项目背景"><a class="anchor" href="#项目背景"></a>16.1. 项目背景</h3>
+<div class="paragraph">
+<p>信息化通报，是为了帮助考核各地市各警种的每月评分。数据由各警种负责人统计并上报，考核指标由管理员预定义，最终得分将根据上报的分数经考核规则处理后算出。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<img src="./images/icons/note.png" alt="Note">
+</td>
+<td class="content">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>各警种负责人上报各地市的数据</p>
+</li>
+<li>
+<p>考核指标由管理员预定义</p>
+</li>
+<li>
+<p>考核分数则根据对应的指标规则及各地市数据算出</p>
+</li>
+</ol>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="系统概述"><a class="anchor" href="#系统概述"></a>17. 系统概述</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="系统目标"><a class="anchor" href="#系统目标"></a>17.1. 系统目标</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>能够动态设置考核指标项，及指标的权重、分值等。</p>
+</li>
+<li>
+<p>能够让用户直接在系统上报送相关考核数据，报送的表单应是可调整配置的。</p>
+</li>
+<li>
+<p>能够定义考核公式，根据考核指标和报送的数据，自动计算考核结果。</p>
+</li>
+<li>
+<p>能够对考核的数据进行相关统计分析并进行展现。</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="设计原则"><a class="anchor" href="#设计原则"></a>17.2. 设计原则</h3>
+<div class="paragraph">
+<p>保证所有的考核内容都是灵活可配置的，包含考核的部门、指标、指标的算分规则、地市等。保证系统的 <strong>灵活性</strong> 。</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="系统总体结构"><a class="anchor" href="#系统总体结构"></a>18. 系统总体结构</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="系统流程"><a class="anchor" href="#系统流程"></a>18.1. 系统流程</h3>
+<div class="imageblock">
+<div class="content">
+<img src="images/xxtb.gif" alt="xxtb">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="功能设计"><a class="anchor" href="#功能设计"></a>18.2. 功能设计</h3>
+<div class="sect3">
+<h4 id="系统管理"><a class="anchor" href="#系统管理"></a>18.2.1. 系统管理</h4>
+<div class="paragraph">
+<p>此处主要进行一些管理操作</p>
+</div>
+<div class="sect4">
+<h5 id="地市及部门"><a class="anchor" href="#地市及部门"></a>地市及部门</h5>
+<div class="sect5">
+<h6 id="地市管理"><a class="anchor" href="#地市管理"></a>地市管理</h6>
+<div class="paragraph">
+<p>地市管理即配置一些需要考核的地市，如在地市部署本系统，则这里应该为各级区县。数据为手动录入。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/city.png" alt="city">
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="部门管理"><a class="anchor" href="#部门管理"></a>部门管理</h6>
+<div class="paragraph">
+<p>部门管理中维护的是需要参与信息通报考核的部门，数据手动录入。</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="images/org.png" alt="org"></span></p>
+</div>
+<div class="paragraph">
+<p>在各部门下，可以添加对应的用户，添加至此处的用户即为该部门的管理员，可进行之后的 <strong>数据上报</strong> 等操作。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<img src="./images/icons/note.png" alt="Note">
+</td>
+<td class="content">
+<div class="paragraph">
+<p>如果需要进行 <strong>数据上报</strong> ，请先在此处添加你的用户信息。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="指标等管理"><a class="anchor" href="#指标等管理"></a>指标等管理</h5>
+<div class="paragraph">
+<p>指标定义了某项考核指标，配置各指标后，用户上报数据后则根据指标关联的算分规则计算最终得分。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/xxtb.png" alt="xxtb">
+</div>
+</div>
+<div class="sect5">
+<h6 id="运算法则"><a class="anchor" href="#运算法则"></a>运算法则</h6>
+<div class="paragraph">
+<p>运算法则进行管理，包含新增、删除、修改、查找。运算法则是定义一个基本的运算指标分数的逻辑，算分的规则在此逻辑上配置相应的参数，即可变成不同的算分规则。运算法则是指标算分的基础。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/operate.png" alt="operate">
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<img src="./images/icons/important.png" alt="Important">
+</td>
+<td class="content">
+<div class="paragraph">
+<p>此处定义的运算法则，必须后台程序开发出相应的运算法则实现类才行。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/dec.png" alt="dec">
+</div>
+<div class="title">如 <em>Dec</em> 对应的则为 <em>DecServiceImpl</em></div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="指标算分规则"><a class="anchor" href="#指标算分规则"></a>指标算分规则</h6>
+<div class="paragraph">
+<p>指标的算分规则进行管理，包含新增、删除、修改、查找规则。指标的算分规则就是指标被配置后需要配置，用于进行运算分数，是各地市某个指标最后得分的依据。规则信息包含规则名、运算法则、算分的权重、比较结果值、描述等。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/rule.png" alt="rule">
+</div>
+</div>
+<div class="paragraph">
+<p>注：对于一个指标，可以配置多个算分规则的组合算分。</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="考核指标"><a class="anchor" href="#考核指标"></a>考核指标</h6>
+<div class="paragraph">
+<p>用户登录后，在拥有权限的情况下，可以对所在部门的考核指标进行管理，包括增加、删除、修改、查找。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/zb.png" alt="zb">
+</div>
+</div>
+<div class="paragraph">
+<p>指标是部门负责人在部门考核时需要配置的，是部门进行考核的一个项目。</p>
+</div>
+<div class="paragraph">
+<p>考核指标包含指标名称、简称、指标总分、指标描述、所属部门、创建人、创建时间、修改人、修改时间。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<img src="./images/icons/note.png" alt="Note">
+</td>
+<td class="content">
+<div class="paragraph">
+<p>对每个指标，还有相应的算分规则需要进行关联。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<img src="./images/icons/tip.png" alt="Tip">
+</td>
+<td class="content">
+<div class="paragraph">
+<p>一个指标可以对应一到多个算分规则</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="数据上报等管理"><a class="anchor" href="#数据上报等管理"></a>数据上报等管理</h5>
+<div class="sect5">
+<h6 id="考核模板配置"><a class="anchor" href="#考核模板配置"></a>考核模板配置</h6>
+<div class="imageblock">
+<div class="content">
+<img src="images/model.png" alt="model">
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">增加指标</dt>
+<dd>
+<p>即对当前所选的月份模版添加指标，可选的指标由先前在指标管理对部门配置的。</p>
+</dd>
+<dt class="hdlist1">指标总分</dt>
+<dd>
+<p>指定该项指标的总分</p>
+</dd>
+<dt class="hdlist1">指标序列</dt>
+<dd>
+<p>指定该项指标的排序号</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect5">
+<h6 id="数据上报"><a class="anchor" href="#数据上报"></a>数据上报</h6>
+<div class="paragraph">
+<p>数据上报，此处为各级部门的管理员上报数据使用。各部门管理员会将18个地市的数据手动录入或 <em>Excel</em> 导入后，进行上报。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/sb.png" alt="sb">
+</div>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<img src="./images/icons/caution.png" alt="Caution">
+</td>
+<td class="content">
+<div class="paragraph">
+<p>此处数据是手动录入的</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="数据审核"><a class="anchor" href="#数据审核"></a>数据审核</h6>
+<div class="paragraph">
+<p>在用户将数据上报后，需要相关的用户进行数据审核。此页面上显示的为各项考核的最终得分。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/sh.png" alt="sh">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<img src="./images/icons/tip.png" alt="Tip">
+</td>
+<td class="content">
+<div class="paragraph">
+<p>审批人可以进行通过或撤销</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">通过</dt>
+<dd>
+<p>通过后最后将由管理员（吴佳妮）进行部分核算</p>
+</dd>
+<dt class="hdlist1">撤销</dt>
+<dd>
+<p>即将上报的数据打回，由上报人重新上报</p>
+</dd>
+</dl>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="总分核算"><a class="anchor" href="#总分核算"></a>总分核算</h6>
+<div class="imageblock">
+<div class="content">
+<img src="images/tj.png" alt="tj">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<img src="./images/icons/tip.png" alt="Tip">
+</td>
+<td class="content">
+<div class="paragraph">
+<p>总分核算需要所有的部门数据都上报完后才可以进行核算</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="数据发布"><a class="anchor" href="#数据发布"></a>数据发布</h6>
+<div class="paragraph">
+<p>即将核算后的数据直接发布出去。发布后的数据将在公安云首页显示。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/xxtb_fs.png" alt="xxtb fs">
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="数据库表结构"><a class="anchor" href="#数据库表结构"></a>19. 数据库表结构</h2>
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="images/xxtb_table.png" alt="xxtb table">
+</div>
+</div>
+<div class="paragraph">
+<p>详细见 <a href="images/xxtb.html">信息通报表结构</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="功能块代码说明"><a class="anchor" href="#功能块代码说明"></a>20. 功能块代码说明</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="数据上报-2"><a class="anchor" href="#数据上报-2"></a>20.1. 数据上报</h3>
+<div class="paragraph">
+<p>用户导入或填写了数据之后，将会进行数据上报。</p>
+</div>
+<div class="paragraph">
+<p>数据上报后将全部存储至 <strong>XXTB_FSTJ</strong> 表，之后会进行分数计算。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/report.png" alt="report">
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">//把填写的数据添加到数据库中</span>
+xxtbService.createReport(params); <img src="./images/icons/callouts/1.png" alt="1"></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><img src="./images/icons/callouts/1.png" alt="1"></td>
+<td>此方法中会将上报的数据写入 <strong>XXTB_FSTJ</strong> 表，并进行各项分数计算</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<img src="./images/icons/note.png" alt="Note">
+</td>
+<td class="content">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>XXTB_FSTJ</strong> 表中的 <em>ZB_SJZ</em> 字段为用户上报的数据值</p>
+</li>
+<li>
+<p><strong>XXTB_FSTJ</strong> 表中的 <em>FS</em> 字段为该行数据最终计算的得分。</p>
+</li>
+</ol>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/createReport.png" alt="createReport">
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="local-variable">this</span>.listDataByIndicator(sj,indicatorId); <img src="./images/icons/callouts/1.png" alt="1"></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><img src="./images/icons/callouts/1.png" alt="1"></td>
+<td>此处进行各项分数的计算</td>
+</tr>
+</table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/operation.png" alt="operation">
+</div>
+<div class="title">最终各项得分进行计算调用</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<img src="./images/icons/tip.png" alt="Tip">
+</td>
+<td class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/fz.png" alt="fz">
+</div>
+</div>
+<div class="paragraph">
+<p>根据传过来的 <strong>service_name</strong> 然后加上 <strong>ServiceImpl</strong> 取得 <em>beanName</em> 。</p>
+</div>
+<div class="paragraph">
+<p>此处为策略模式进行调用。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footnotes">
 <hr>
@@ -4036,7 +4531,7 @@ applicationContext.start();
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br>
-Last updated 2016-03-26 22:10:44 中国标准时间
+Last updated 2016-05-23 17:06:12 中国标准时间
 </div>
 </div>
 <script type="text/x-mathjax-config">
