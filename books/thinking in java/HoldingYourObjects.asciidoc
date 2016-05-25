@@ -322,3 +322,205 @@ sub: [Mouse, Pug]
 |addAll||
 |pets.toArray(new Pet[0])|看 _toArray_ 的实现，此处指定数组长度为0时，实际上是重新 _new_ 了一个数组|
 |===
+
+== Iterator
+_Iterator_ 提供了对 _Containers_ 的统一访问，使得调用者不再需要关心具体的 _Container_ 实现。
+
+_Java_ *Iterator* 只能朝一个方向移动（遍历）。
+
+.使用 _Iterator_　可进行的操作
+. 使用 _Collection_ 的 _iterator()_ 方法返回一个 _Iterator_ 对象
+. 获取序列中的下一对象，调用 _Iterator_ 的 _next()_ 方法
+. 查看是否有下一对象时，使用 _hasNext()_ 方法
+. 移除最后获得的对象，使用 _remove()_ 方法
+
+.示例
+[source,java]
+----
+package holding;//: holding/SimpleIteration.java
+
+import typeinfo.pets.*;
+
+import java.util.*;
+
+public class SimpleIteration {
+    public static void main(String[] args) {
+        List<Pet> pets = Pets.arrayList(12);
+        Iterator<Pet> it = pets.iterator();
+        while (it.hasNext()) {
+            Pet p = it.next();
+            System.out.print(p.id() + ":" + p + " ");
+        }
+        System.out.println();
+        // A simpler approach, when possible:
+        for (Pet p : pets) // <1>
+            System.out.print(p.id() + ":" + p + " ");
+        System.out.println();
+        // An Iterator can also remove elements:
+        it = pets.iterator();
+        for (int i = 0; i < 6; i++) {
+            it.next();
+            it.remove();
+        }
+        System.out.println(pets);
+    }
+} /* Output:
+0:Rat 1:Manx 2:Cymric 3:Mutt 4:Pug 5:Cymric 6:Pug 7:Manx 8:Cymric 9:Rat 10:EgyptianMau 11:Hamster
+0:Rat 1:Manx 2:Cymric 3:Mutt 4:Pug 5:Cymric 6:Pug 7:Manx 8:Cymric 9:Rat 10:EgyptianMau 11:Hamster
+[Pug, Manx, Cymric, Rat, EgyptianMau, Hamster]
+*///:~
+----
+<1> _foreach_ 写法，实际上也是调用 _iterator_ 实现的。所以它只能遍历实现了 _Iterator_ 接口的 _container_
+
+[NOTE]
+====
+_remove()_ 方法是可选的，即不是所有的 *Iterator* 实现类都需要实现该方法。
+
+不过 _JDK_ 中的 _container_ 都实现了该方法。
+====
+
+=== ListIterator
+*ListIterator* 是 _List_ 专有的一个 _Iterator_　的子接口，通过调用 _listIterator()_ 获得。
+
+_Iterator_ 只能向 _next_ 遍历，而 *ListIterator* 则可以向 _previous_ 遍历。
+
+.ListIteration
+[source,java]
+----
+package holding;//: holding/ListIteration.java
+
+import typeinfo.pets.*;
+
+import java.util.*;
+
+public class ListIteration {
+    public static void main(String[] args) {
+        List<Pet> pets = Pets.arrayList(8);
+        ListIterator<Pet> it = pets.listIterator();
+        while (it.hasNext())
+            System.out.print(it.next() + ", " + it.nextIndex() +
+                    ", " + it.previousIndex() + "; ");
+        System.out.println();
+        // Backwards:
+        while (it.hasPrevious())
+            System.out.print(it.previous().id() + " ");
+        System.out.println();
+        System.out.println(pets);
+        it =   pets.listIterator(3); // <1>
+        while (it.hasNext()) {
+            it.next();
+            it.set(Pets.randomPet()); // <2>
+        }
+        System.out.println(pets);
+    }
+} /* Output:
+Rat, 1, 0; Manx, 2, 1; Cymric, 3, 2; Mutt, 4, 3; Pug, 5, 4; Cymric, 6, 5; Pug, 7, 6; Manx, 8, 7;
+7 6 5 4 3 2 1 0
+[Rat, Manx, Cymric, Mutt, Pug, Cymric, Pug, Manx]
+[Rat, Manx, Cymric, Cymric, Rat, EgyptianMau, Hamster, EgyptianMau]
+*///:~
+----
+<1> 该方法的一个重载，详见文档说明。这里表示从索引位置为 _3_ 处开始向 _next_ 或 _previous_ 遍历。
+<2> 同时还有 _set_ 方法，来直接修改 _List_ 中的对象
+
+== LinkedList
+_LinkedList_ 同 _ArrayList_ 一样实现了抽象接口 _List_ ，但是它在执行往集合中间添加或移除数据时比 _ArrayList_ 更方便且性能消耗小很多，相反，在随机访问元素上比不过 _ArrayList_ 。
+
+_LinkedList_　添加了一些方法，使它可以像 _Stack_ _Queue_ 或 _双出口的 Queue_ 使用。
+
+.Queue接口
+|===
+|方法|说明|
+|add|插入元素至队列尾部|
+|offer|插入元素至队列尾部，当使用容量有限制的队列时，此方法比 _add_ 更好|
+|poll|获取并移除队列头部元素，如果队列为空，将返回 _null_|
+|element|获取但是不移除队列头部元素，如果队列为空，将抛出异常|
+|peek|获取但是不移除队列头部元素，如果队列为空，将返回 _null_|
+|===
+
+.LinkedList获取元素操作
+|===
+|方法|名称|
+|getFirst|取得队列头部元素，如果队列为空，将抛出 _NoSuchElementException_ |
+|element|取得队列头部元素，如果队列为空，将抛出 _NoSuchElementException_ |
+|peek|取得队列头部元素，如果队列为空，将返回 _null_ |
+|===
+
+.LinkedList移除元素操作
+|===
+|方法|名称|
+|remove|获取队列头部元素并移除，如果队列为空，将抛出 _NoSuchElementException_|
+|removeFirst|等同于 _remove_ |
+|pool|获取队列头部元素并移除，如果队列为空，将返回 _null_ |
+|removeLast|获取并移除队列尾部的元素|
+|===
+
+.LinkedList添加元素操作
+|===
+|方法|名称|
+|addFirst|添加元素至队列头部|
+|add|添加元素至队列尾部|
+|addLast|等同于 _add_ |
+|offer|等同于 _add_ |
+|===
+
+.LinkedListFeatures
+[source,java]
+----
+package holding;//: holding/LinkedListFeatures.java
+
+import typeinfo.pets.*;
+
+import java.util.*;
+
+import static net.mindview.util.Print.*;
+
+public class LinkedListFeatures {
+    public static void main(String[] args) {
+        LinkedList<Pet> pets =
+                new LinkedList<Pet>(Pets.arrayList(5));
+        print(pets);
+        // Identical:
+        print("pets.getFirst(): " + pets.getFirst());
+        print("pets.element(): " + pets.element());
+        // Only differs in empty-list behavior:
+        print("pets.peek(): " + pets.peek());
+        // Identical; remove and return the first element:
+        print("pets.remove(): " + pets.remove());
+        print("pets.removeFirst(): " + pets.removeFirst());
+        // Only differs in empty-list behavior:
+        print("pets.poll(): " + pets.poll());
+        print(pets);
+        pets.addFirst(new Rat());
+        print("After addFirst(): " + pets);
+        pets.offer(Pets.randomPet());
+        print("After offer(): " + pets);
+        pets.add(Pets.randomPet());
+        print("After add(): " + pets);
+        pets.addLast(new Hamster());
+        print("After addLast(): " + pets);
+        print("pets.removeLast(): " + pets.removeLast());
+    }
+} /* Output:
+[Rat, Manx, Cymric, Mutt, Pug]
+pets.getFirst(): Rat
+pets.element(): Rat
+pets.peek(): Rat
+pets.remove(): Rat
+pets.removeFirst(): Manx
+pets.poll(): Cymric
+[Mutt, Pug]
+After addFirst(): [Rat, Mutt, Pug]
+After offer(): [Rat, Mutt, Pug, Cymric]
+After add(): [Rat, Mutt, Pug, Cymric, Pug]
+After addLast(): [Rat, Mutt, Pug, Cymric, Pug, Hamster]
+pets.removeLast(): Hamster
+*///:~
+----
+
+== Stack
+_Stack_ 经常被称为 *"last-in,first-out"* 的 _container_ ，也被称为 _push down_ 栈，向下存储。因为你最后放入的元素，将会是第一个被你弹出的元素。
+
+_LinkedList_ 中有相关的方法直接实现了 _Stack_ 的功能，所以你甚至可以直接使用 _LinkedList_ 当作 _Stack_ 使用。然而有时候， _Stack_ 更有语义一些。
+
+image::stackQueue.png[]
