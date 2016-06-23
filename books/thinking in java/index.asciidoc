@@ -21,3 +21,5 @@ include::ReusingClass.asciidoc[]
 include::Polymorphism.asciidoc[]
 
 include::Interfaces.asciidoc[]
+
+include::ErrorHandlingwithExceptions.asciidoc[]
