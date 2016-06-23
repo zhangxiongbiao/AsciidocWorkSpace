@@ -1,0 +1,544 @@
+= 详细设计
+:imagesdir: images
+
+== 总线信息管理
+=== 概要说明
+资源服务总线可以管理本总线的信息，也可以添加其它总线的信息，方便总线与总线之间进行对接。总线信息发布后，总线信息的删除操作为逻辑删除。
+
+=== 实现框架
+
+=== 主要实现逻辑及说明
+基于 _总线基本信息表_  完成增删改查。
+
+=== 界面设计
+
+=== 接口设计
+
+=== 其它
+
+== 请求方管理
+=== 概要说明
+请求方管理主要负责录入并管理服务请求方程序的基本信息。
+
+=== 实现框架
+基于 _Spring_ 注入框架实现。
+
+=== 主要实现逻辑及说明
+基本 _服务请求者信息表_ 完成增删改查。
+
+[TIP]
+====
+其中 _请求方注册_ 有前台应用。
+====
+
+=== 界面设计
+
+=== 接口设计
+
+=== 其它
+
+
+== 服务方管理
+
+=== 概要说明
+服务方管理主要负责对服务提供方的信息维护。包含有服务提供方的信息录入，修改，删除，查询等。
+
+=== 实现框架
+基于 _Spring_ 注入框架实现。
+
+=== 主要实现逻辑及说明
+基于 _服务提供者表_ 完成增删改查功能。
+
+=== 界面设计
+
+=== 接口设计
+
+=== 其它
+
+== 服务管理
+
+=== 概要说明
+服务管理主要是对提供者发布的服务进行管理。主要包括服务的注册，修改，删除，查询，审批等功能。
+
+=== 实现框架
+基于 _Spring_ 注入框架实现。
+
+=== 主要实现逻辑及说明
+==== 服务注册
+服务注册，提供服务注册的地方，可以对服务进行增删改查，提送审核。
+
+.功能要点
+****
+.	注册服务时，需要获取挂接 _webservice_ 服务的方法、参数及返回类型
+. 服务注册成功后应提送审核
+. 注册时，应检测注册的 _webservice_ 服务是否可以访问
+****
+
+==== 服务修改
+服务状态为 *撤销服务* 时方可对服务进行修改。修改成功后服务需要重新提送审核。
+
+==== 服务删除
+服务删除为 *逻辑删除* ，即不直接删除服务数据，仅修改服务状态。
+
+==== 服务列表查询
+后台可列表展现所有已发布的服务信息。
+
+==== 服务审批
+服务审批为系统管理员权限，管理员可对注册的服务进行审批，审批通过的服务即可发布。
+
+[TIP]
+====
+发布服务的同时，需要将服务通过 _wsdl_ 代理发布至 _dubbo_ 服务总线。
+====
+
+=== 界面设计
+
+=== 接口设计
+==== 服务列表查询接口
+接口实现功能::
+通过该接口可以获取所有已经发布的服务信息。接口为 _webservice_ 方式发布出来。
+
+.接口信息
+[source,java]
+----
+public interface IServiceResource {
+
+    /**
+     * 获取所有服务资源信息
+     * @param requestXml 查询请求信息
+     * @return 服务资源信息
+     * @throws Exception
+     */
+    public String listAll(String requestXml) throws Exception;
+}
+----
+
+.入参requestXml示例
+[source,xml]
+----
+<QRmessage>
+		<FWZYCXQQ_BWBH>QR010027000088201201010930301110001</FWZYCXQQ_BWBH>
+		<FWQQZ_ZCXX>
+			<FWQQZMC>刑侦处三科请求者</FWQQZMC>
+			<FWQQZBS>ZZZZ12345678</FWQQZBS>
+          <HYN_BZDM>1</HYN_BZDM>
+			<HYNFWQQZQJ>
+				<ZWJBDM>101</ZWJBDM>
+				<GWQJDM>1302</GWQJDM>
+				<XZQHDM>110101</XZQHDM>
+				<MMDJDM>1</MMDJDM>
+			</HYNFWQQZQJ>
+			<FWQQZRKDZLB>
+				<FWQQZ_IPDZ>010.027.000.088</FWQQZ_IPDZ>
+				<FWQQZ_ZXDKHM>7080</FWQQZ_ZXDKHM>
+			</FWQQZRKDZLB>
+		</FWQQZ_ZCXX>
+		<FWCXQQ_RQSJ>20120101083030</FWCXQQ_RQSJ>
+		<FWLXBM>ABCD1234512345123456</FWLXBM>
+		<FW_XZQHDM>110105</FW_XZQHDM>
+		<FW_MMDJDM>1</FW_MMDJDM>
+</QRmessage>
+----
+.入参中各参数信息说明
+[TIP]
+====
+image::service_list_request.png[]
+====
+
+.返回信息示例
+[source,xml]
+----
+<QPmessage>
+		<FWZYCXTG_BWBH>QP010028000088201201010930301110001</FWZYCXTG_BWBH>
+		<FWZYCXQQ_BWBH>QR010027000088201201010930301110001</FWZYCXQQ_BWBH>
+		<FWCXTG_RQSJ>20120101093030</FWCXTG_RQSJ>
+		<FWTGZTDM>0001</FWTGZTDM>
+		<FWCXJGSL>2</FWCXJGSL>
+		<FWCXJG></FWCXJG>
+</QPmessage>
+----
+
+.返回信息中各参数说明
+[TIP]
+====
+image::service_provide_list.png[]
+====
+
+=== 其它
+
+== 服务访问权限管理
+
+=== 概要说明
+服务访问权限管理主要是负责对服务访问的控制。经过授权访问某服务的请求者可直接访问该服务，未经授权时则需要校验其岗位、密级等。
+
+=== 实现框架
+基于 _Spring_ 注入框架实现。
+
+=== 主要实现逻辑及说明
+
+.权限控制分类
+image::privilege.png[]
+
+服务授权::
+. 总线路由情况时，手动提交申请授权。
++
+总线路由时，如果需要访问某一服务。请求方管理员可以通过填写服务访问申请单，经系统管理员审核通过后即可访问该服务。
++
+流程如下：
++
+image::service_auth.png[]
++
+表结构如下:
++
+image::auth_service_table.png[]
+
+. 自主路由情况时，请求程序提交申请授权。
++
+当请求方程序选择自主路由时，需要通过提交授权申请报文。经总线 _校验_ 通过后，将返回服务访问授权信息。
++
+[TIP]
+====
+此处总线接收到请求方提交的申请报文后，将校验请求方的 `行政范围` , `岗位范围` , `辖区范围` , `涉密范围` , `警种范围` 等来决定请求方是否可以访问服务方，若可以，则将返回授权信息。
+====
++
+相关表结构:
++
+image::temp_auth.png[]
+
+
+访问权限校验::
+在基于总线路由的访问情况下，请求方如果没有通过上述的 *服务授权* 的话，则总线默认是需要校验请求方的访问权限是否达到所访问的服务规定的访问范围。
++
+服务访问权限的校验， *实际上是比较请求方与服务的使用范围* ,见下图:
++
+image::privilege_compare.png[]
++
+[TIP]
+====
+. 有总线制定使用范围情况下，优先使用总线制定使用范围。
+. 其次使用提供者使用范围。使用了总线范围后将不再校验提供者制定范围。
+. 如果都未指定，则将不进行访问权限校验。
+====
+
+
+=== 界面设计
+
+=== 接口设计
+==== 自主路由下临时授权接口
+
+.自主路由授权接口
+[source,java]
+----
+public interface IAuthApplyService {
+
+    /**
+     * 授权申请
+     * @param applyInfo 请求方申请授权信息
+     * @return 总线授权结果信息
+     * @throws Exception
+     */
+    public String authApply(String applyInfo) throws Exception;
+}
+----
+
+.接口入参applyInfo示例
+[source,xml]
+----
+<RAmessage>
+		<SQSQ_BWBH>RA010027000088201201010930301110001</SQSQ_BWBH>
+		<FWQQZ_ZCXX>
+			<FWQQZMC>刑侦处三科请求者</FWQQZMC>
+			<FWQQZBS>ZZZZ12345678</FWQQZBS>
+          <HYN_BZDM>1</HYN_BZDM>
+			<HYNFWQQZQJ>
+				<ZWJBDM>101</ZWJBDM>
+				<GWQJDM>1302</GWQJDM>
+				<XZQHDM>110101</XZQHDM>
+				<MMDJDM>1</MMDJDM>
+			</HYNFWQQZQJ>
+			<FWQQZRKDZLB>
+				<FWQQZ_IPDZ>010.027.000.088</FWQQZ_IPDZ>
+				<FWQQZ_ZXDKHM>7080</FWQQZ_ZXDKHM>
+			</FWQQZRKDZLB>
+		</FWQQZ_ZCXX>
+		<FWBS>ABCD12345678</FWBS>
+		<FW_ZXBS>11010105030099</FW_ZXBS>
+		<SQSQ_RQSJ>20120101083030</SQSQ_RQSJ>
+		<XXCZRY_XM>李磊</XXCZRY_XM>
+		<XXCZRY_GMSFHM>110101199010201234</XXCZRY_GMSFHM>
+</RAmessage>
+----
+.请求报文各参数说明
+[TIP]
+====
+image::apply_message1.png[]
+image::apply_message2.png[]
+image::apply_message3.png[]
+====
+
+.接口返回值示例
+[source,xml]
+----
+<AUmessage>
+		<SQ_BWBH>AU010028000088201201010930301110001</SQ_BWBH>
+		<SQSQ_BWBH>RA010027000088201201010930301110001</SQSQ_BWBH>
+		<FWQQZ_ZCXX>
+			<FWQQZMC>刑侦处三科请求者</FWQQZMC>
+			<FWQQZBS>ZZZZ12345678</FWQQZBS>
+          <HYN_BZDM>1</HYN_BZDM>
+			<HYNFWQQZQJ>
+				<ZWJBDM>101</ZWJBDM>
+				<GWQJDM>1302</GWQJDM>
+				<XZQHDM>110101</XZQHDM>
+				<MMDJDM>1</MMDJDM>
+			</HYNFWQQZQJ>
+			<FWQQZRKDZLB>
+				<FWQQZ_IPDZ>010.027.000.088</FWQQZ_IPDZ>
+				<FWQQZ_ZXDKHM>7080</FWQQZ_ZXDKHM>
+			</FWQQZRKDZLB>
+		</FWQQZ_ZCXX>
+		<FWBS>ABCD12345678</FWBS>
+		<FW_ZXBS>11010105030099</FW_ZXBS>
+		<SQ_RQSJ>20120101093030</SQ_RQSJ>
+<FWTGZTDM>0000</FWTGZTDM>
+		<SQ_BZ>
+			<FW_IPDZ>010.028.000.001</FW_IPDZ>
+			<FW_ZXDKHM>7080</FW_ZXDKHM>
+			<FWSSZX_IPDZ>010.028.000.201</FWSSZX_IPDZ>
+			<FWSSZX_ZXDKHM>8080</FWSSZX_ZXDKHM>
+			<SQM></SQM>
+		</SQ_BZ>
+</AUmessage>
+----
+
+.响应报文各参数示例
+[TIP]
+====
+image::aut_result_message1.png[]
+image::aut_result_message2.png[]
+====
+
+=== 其它
+
+== 服务请求接口
+服务请求为分同步与异步请求两种方式。
+
+=== 同步请求
+==== 概要说明
+请求方发出请求后，会一直等到请求结果返回。
+
+==== 实现框架
+. 基于 _Spring_ 注入框架
+. 基于 _dubbo_ rpc 服务框架
+
+==== 主要实现逻辑及说明
+
+.请求访问流程图
+image::request_flow.jpg[]
+
+.流程说明
+. 请求方构造请求报文，并将请求发送至总线
+. 总线解析请求报文，判断请求方是否有权限访问服务方
+. 无权限则直接返回错误码给请求方
+. 如果请求方有权限访问服务，则构造请求报文为总线报文并发送给wsdl代理
+. wsdl代理作为服务方会先解析总线报文，构造查询参数，并调用真实的第三方webservice服务
+. wsdl代理调用服务完成后，将解析服务响应并解析为提供者报文返回给总线
+. 总线将提供者报文封装为总线报文，返回给服务请求方
+
+==== 界面设计
+
+==== 接口设计
+===== 总线授收请求接口
+即总线接收请求方发送的请求报文接口。
+
+.总线处理请求接口
+[source,java]
+----
+public interface IServiceBusAccept {
+
+    /**
+     * 处理服务请求方的请求
+     * @param requestXml 请求报文
+     * @return 总线提供报文
+     * @throws Exception 服务调用异常时抛出
+     */
+    public String request(String requestXml) throws Exception;
+}
+----
+
+.请求参数示例
+[source,xml]
+----
+<SRmessage>
+		<FWQQ_BWBH>SR010027000088201201010930301110001</FWQQ_BWBH>
+		<FWQQZ_ZCXX>
+			<FWQQZMC>刑侦处三科请求者</FWQQZMC>
+			<FWQQZBS>ZZZZ12345678</FWQQZBS>
+          <HYN_BZDM>1</HYN_BZDM>
+			<HYNFWQQZQJ>
+				<ZWJBDM>101</ZWJBDM>
+				<GWQJDM>1302</GWQJDM>
+				<XZQHDM>110101</XZQHDM>
+				<MMDJDM>1</MMDJDM>
+			</HYNFWQQZQJ>
+			<FWQQZRKDZLB>
+				<FWQQZ_IPDZ>010.027.000.088</FWQQZ_IPDZ>
+				<FWQQZ_ZXDKHM>7080</FWQQZ_ZXDKHM>
+			</FWQQZRKDZLB>
+			<FWQQZ_LXFS>
+				<LXR_XM>张三</LXR_XM>
+				<LXR_DH>13312345678</LXR_DH>
+				<LXR_GMSFHM>110121198009010025</LXR_GMSFHM>
+			</FWQQZ_LXFS>
+		</FWQQZ_ZCXX>
+		<FWBS>ABCD12345678</FWBS>
+		<FWBBH>1.0</FWBBH>
+		<FW_ZXBS>11010105030099</FW_ZXBS>
+		<FWQQ_RQSJ>20120101083030</FWQQ_RQSJ>
+		<FWQQ_BZ>
+      <FWQQNR>
+        <FWNR_FFMC>QueryDriverInfo</FWNR_FFMC>
+        <FWNR_RQC>
+          <Item>
+            <FWNR_RQC_MC>QueryCondition</FWNR_RQC_MC>
+            <FWNR_RQC_LX>String</FWNR_RQC_LX>
+            <FWNR_RQC_SZ>
+              <Data>(XM='张三') AND (SFZH='321082790208061')</Data>
+            </FWNR_RQC_SZ>
+          </Item>
+          <Item>
+            <FWNR_RQC_MC> RequiredItems </FWNR_RQC_MC>
+            <FWNR_RQC_LX>arrayOf_string</FWNR_RQC_LX>
+            <FWNR_RQC_SZ>
+              <Row>
+                <Data>XM</Data>
+                <Data>XB</Data>
+                <Data>CSRQ</Data>
+                <Data>ZJCX</Data>
+              </Row>
+            </FWNR_RQC_SZ>
+          </Item>
+        </FWNR_RQC>
+      </FWQQNR>
+    </FWQQ_BZ> // <1>
+		<XXCZRY_XM>李磊</XXCZRY_XM>
+		<XXCZRY_GMSFHM>110101199010201234</XXCZRY_GMSFHM>
+</SRmessage>
+----
+<1> 此处为请求具体内容，即查询参数等
+
+.响应参数示例
+[source,xml]
+----
+<SBmessage>
+		<ZX_BWBH>SB010027000020201201010930301110001</ZX_BWBH>
+		<ZXBS>11010105030099</ZXBS>
+		<BWYXJDM>3</BWYXJDM>
+		<ZXBWLY_IPDZ>010.027.000.020</ZXBWLY_IPDZ>
+		<ZXBWMD_IPDZ>010.027.000.044</ZXBWMD_IPDZ>
+		<ZXBW_RQSJ>20120101083030</ZXBW_RQSJ>
+		<ZXBW_BZ>
+			<SPmessage>
+	 		<ZX_BWBH>SP010028000088201201010930301110001</ZX_BWBH>
+			<FWTGZ_ZCXX>
+			<FWTGZ_GAJGMC>北京市公安局信息中心</FWTGZ_GAJGMC>
+			<FWTGZ_GAJGJGDM>110101050300</FWTGZ_GAJGJGDM>
+			<FWTGZZC_IPDZ>010.028.000.088</FWTGZZC_IPDZ>
+			<FWTGZZC_RQSJ>20110101093030</FWTGZZC_RQSJ>
+			<FWTGZ_LXFS>
+			<LXR_XM>张三</LXR_XM>
+			<LXDH>66883344</LXDH>
+			<DZXX>110@110.com</DZXX>
+			<TXDZ>北京市前门大街1号</TXDZ>
+			</FWTGZ_LXFS>
+			</FWTGZ_ZCXX>
+					<FWBS>ABCD12345678</FWBS>
+					<FW_ZXBS>11010105030099</FW_ZXBS>
+					<FWQQZ_ZCXX>
+						<FWQQZMC>刑侦处三科请求者</FWQQZMC>
+						<FWQQZBS>ZZZZ12345678</FWQQZBS>
+			          <HYN_BZDM>1</HYN_BZDM>
+						<HYNFFQQZQJ>
+							<ZWJBDM>101</ZWJBDM>
+							<GWQJDM>1302</GWQJDM>
+							<XZQHDM>110101</XZQHDM>
+							<MMDJDM>1</MMDJDM>
+						</HYNFFQQZQJ>
+						<FWQQZRKDZLB>
+							<FWQQZ_IPDZ>010.027.000.088</FWQQZ_IPDZ>
+							<FWQQZ_ZXDKHM>7080</FWQQZ_ZXDKHM>
+						</FWQQZRKDZLB>
+					</FWQQZ_ZCXX>
+					<FWQQ_BWBH>SR010027000088201201010930301110001</FWQQ_BWBH>
+			<FWTG_RQSJ>20120101093030</FWTG_RQSJ>
+			<FWTGZTDM>0000</FWTGZTDM>
+			<FWTG_BZ>
+			  <FWTGNR>
+			    <FWNR_FFMC>QueryDriverInfo</FWNR_FFMC>
+			    <FWNR_CC>
+			      <Item>
+			        <FWNR_CC_MC>output</FWNR_CC_MC>
+			        <FWNR_CC_LX>arrayOfArrayOf_string</FWNR_CC_LX>
+			        <FWNR_CC_SZ>
+			          <Row>
+			            <Data>XM</Data>
+			            <Data>XB</Data>
+			            <Data>CSRQ</Data>
+			            <Data>ZJCX</Data>
+			          </Row>
+			          <Row>
+			            <Data>张三</Data>
+			            <Data>男</Data>
+			            <Data>19580829</Data>
+			            <Data>C1</Data>
+			          </Row>
+			        </FWNR_CC_SZ>
+			      </Item>
+			    </FWNR_CC>
+			  </FWTGNR>
+			</FWTG_BZ>
+			</SPmessage>
+		</ZXBW_BZ>
+</SBmessage>
+----
+[TIP]
+====
+响应报文为: 总线报文嵌套服务提供报文。
+====
+
+===== wsdl代理接收请求接口
+即总线接收到请求方的请求报文后，将请求报文封装为总线报文，然后提交请求
+
+.接口描述
+[source,java]
+----
+public interface IServiceProxyAccept {
+
+    /**
+     * 处理服务请求方的请求
+     * @param requestXml 总线请求报文
+     * @return 提供报文
+     * @throws Exception 服务调用异常时抛出
+     */
+    public String request(String requestXml) throws Exception;
+}
+----
+
+.请求参数示例
+[source,xml]
+----
+
+----
+
+
+=== 异步请求
+==== 概要说明
+异步请求即请求方发出请求后，总线将请求结果暂时返回，稍候由请求方再次发送获取结果的请求时才将结果返回。
+
+== 总线路由功能
+
+== 安全审计
+
+== 服务流程编排
+
+== 服务资源编目

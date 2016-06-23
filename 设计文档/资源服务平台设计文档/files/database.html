@@ -1,0 +1,3518 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN' 'http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml' >
+<head>
+<title>总线</title>
+<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+<meta http-equiv='X-UA-Compatible' content='IE=edge'/>
+<style type='text/css'>
+body {
+    font-family: 'trebuchet MS', 'Lucida sans', Dialog;
+    font-size: 12px;
+    color: #444;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.bordered {
+    border: solid #ccc 1px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-box-shadow: 0 1px 1px #ccc;
+    -moz-box-shadow: 0 1px 1px #ccc;
+    box-shadow: 0 1px 1px #ccc;
+}
+
+.bordered tr:hover {
+    background: #fbf8e9;
+    -o-transition: all 0.1s ease-in-out;
+    -webkit-transition: all 0.1s ease-in-out;
+    -moz-transition: all 0.1s ease-in-out;
+    -ms-transition: all 0.1s ease-in-out;
+    transition: all 0.1s ease-in-out;
+}
+
+.bordered td, .bordered th {
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    padding: 4px;
+    text-align: left;
+}
+
+.bordered th {
+    background-color: #d7d7ea;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#f4f4fb), to(#d7d7ea));
+    background-image: -webkit-linear-gradient(top, #f4f4fb, #d7d7ea);
+    background-image:    -moz-linear-gradient(top, #f4f4fb, #d7d7ea);
+    background-image:     -ms-linear-gradient(top, #f4f4fb, #d7d7ea);
+    background-image:      -o-linear-gradient(top, #f4f4fb, #d7d7ea);
+    background-image:         linear-gradient(top, #f4f4fb, #d7d7ea);
+    -webkit-box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
+    -moz-box-shadow:0 1px 0 rgba(255,255,255,.8) inset;
+    box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
+    border-top: none;
+    text-shadow: 0 1px 0 rgba(255,255,255,.5);
+}
+
+.bordered td:first-child, .bordered th:first-child {
+    border-left: none;
+}
+
+.bordered th:first-child {
+    -moz-border-radius: 6px 0 0 0;
+    -webkit-border-radius: 6px 0 0 0;
+    border-radius: 6px 0 0 0;
+}
+
+.bordered th:last-child {
+    -moz-border-radius: 0 6px 0 0;
+    -webkit-border-radius: 0 6px 0 0;
+    border-radius: 0 6px 0 0;
+}
+
+.bordered th:only-child{
+    -moz-border-radius: 6px 6px 0 0;
+    -webkit-border-radius: 6px 6px 0 0;
+    border-radius: 6px 6px 0 0;
+}
+
+.bordered tr:last-child td:first-child {
+    -moz-border-radius: 0 0 0 6px;
+    -webkit-border-radius: 0 0 0 6px;
+    border-radius: 0 0 0 6px;
+}
+
+.bordered tr:last-child td:last-child {
+    -moz-border-radius: 0 0 6px 0;
+    -webkit-border-radius: 0 0 6px 0;
+    border-radius: 0 0 6px 0;
+}
+
+</style>
+</head>
+
+<body>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'   width='1845' height='1715' viewbox='0 0 1845 1715' >
+  <script type='text/ecmascript'>
+  <![CDATA[
+  function hghl(el) { for ( var i in el ){ document.getElementById(el[i]).setAttribute('class','highlight');  }  }
+  function uhghl(el) { for ( var i in el ){ document.getElementById(el[i]).setAttribute('class','scene'); }  } 
+  ]]>
+  </script> 
+
+<style type='text/css'>
+  text                { fill:#000000; font-family: SimSun, 'Trebuchet MS', Dialog; font-size:12px; }
+  text:hover          { fill:#a00000; font-size:13px; }
+  text.highlight      { fill:#a00000; font-size:13px; }
+  text.colType        { fill:#b3b3b3; }
+  path                { stroke:#54402e; stroke-width:1.25; fill:none; }
+  path.scene          { stroke-width:10; opacity:0;}
+  path.highlight      { stroke-width:7; stroke:#e5d78a; opacity:0.6;}
+  rect.table          { fill:#ffffff; stroke:#101010; stroke-width:0.44; filter:url(#shadow); }
+  line.delim          { stroke:#222; stroke-width:0.3; }
+  rect.callout        { fill:url(#calloutGradient); stroke:#bebdbd; stroke-width:0.5; filter: url(#shadow);}
+  rect.grp            { stroke:#b1b1b1; stroke-width:1.7; }
+</style>
+<defs>
+  <pattern patternUnits='userSpaceOnUse' id='layoutBgA' width='10' height='20' x='0' y='0' viewBox='0 0 5 10'>  
+     <line x1='-2' y1='1' x2='7' y2='10' stroke='#f3f3f3' stroke-width='.5'/>  
+     <line x1='-2' y1='6' x2='7' y2='15' stroke='#f3f3f3' stroke-width='.5'/>  
+     <line x1='-2' y1='-4' x2='7' y2='5' stroke='#f3f3f3' stroke-width='.5'/>  
+  </pattern>  
+  <radialGradient id='layoutBgB' gradientUnits='userSpaceOnUse' cx='50%' cy='50%' r='75%' fx='46%' fy='22%'>
+     <stop offset='0%' stop-opacity='.2' stop-color='#f0f0f0' />  
+     <stop offset='100%' stop-color='#e7e7e7' />  
+  </radialGradient>
+  <linearGradient id='tableHeaderGradient0' x1='0%' y1='0%' x2='0%' y2='90%' >
+          <stop offset='-50%' stop-color='#c0d4f3'/> 
+          <stop offset='20%' stop-color='#fafafa'/> 
+          <stop offset='100%' stop-color='#c0d4f3'/> 
+   </linearGradient>
+  <linearGradient id='groupUnderTitleLine' x1='0%' y1='0%' x2='100%' y2='0%' >
+          <stop offset='0%' stop-color='#999999' stop-opacity='0.7'/> 
+          <stop offset='100%' stop-color='#999999' stop-opacity='0' /> 
+   </linearGradient>
+  <radialGradient id='calloutGradient' cx='25%' cy='20%' r='80%' fx='10%' fy='10%'>
+	   <stop offset='0%' stop-color='#ffffff' />
+    <stop offset='100%' stop-color='#f8f6d1' />
+  </radialGradient>
+  <filter id='shadow' width='120%' height='120%'> 
+      <feOffset result='offOut' in='SourceGraphic' dx='2' dy='2' /> 
+      <feColorMatrix result='matrixOut' in='offOut' type='matrix' 
+      values='0.1 0 0 0 0 0 0.1 0 0 0 0 0 0.1 0 0 0 0 0 0.5 0' /> 
+      <feGaussianBlur result='blurOut' in='matrixOut' stdDeviation='3' /> 
+      <feBlend in='SourceGraphic' in2='blurOut' mode='normal' /> 
+    </filter> 
+  <filter id='fkShadow' height='130%'> 
+    <feGaussianBlur in='SourceAlpha' stdDeviation='1.5'/> <!-- stdDeviation is how much to blur -->
+    <feOffset dx='1.2' dy='1.2' result='offsetblur'/> <!-- how much to offset -->
+    <feMerge>
+    <feMergeNode/> <!-- this contains the offset blurred image -->
+    <feMergeNode in='SourceGraphic'/> <!-- this contains the element that the filter is applied to -->
+    </feMerge>
+  </filter>
+  <radialGradient id='legendGradient' fx='5%' fy='5%' r='75%' spreadMethod='pad'>
+          <stop offset='0%' stop-color='#eaf6ee' stop-opacity='1'/> 
+          <stop offset='100%' stop-color='#cce3ca' stop-opacity='1' /> 
+   </radialGradient>
+  <symbol id='calloutArrowDown' overflow='visible' >
+      <path d='M 0,0 L 7,11 L 15,0 z' style='fill:#f8f6d1;stroke:none; filter: url(#shadow);' />
+      <path d='M 0,0 L 7,11 L 15,0' style='stroke:#bebdbd; stroke-width:0.5;' />
+  </symbol>
+  <symbol id='calloutArrowUp' overflow='visible' >
+      <path d='M 0,15 L 7,3 L 15,15 z' style='fill:#ffffff; stroke:none; filter: url(#shadow);' />
+      <path d='M 0,15 L 7,3 L 15,15' style='stroke:#bebdbd; stroke-width:0.5;' />
+  </symbol>
+  <symbol id='pk' overflow='visible' >
+    <g transform='scale(0.99)'>
+     <path style='fill:#fbea8e;stroke:#472106;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;'
+        d='M 9.3678877,3.5695485 C 9.1030218,3.2729386 9.0796382,2.7628519 9.3396185,2.4517097 9.5449651,2.1956495 9.9040386,2.0980533 10.199638,2.2169415 10.533525,2.3415459 10.775153,2.706942 10.750675,3.0842709 10.737029,3.3980003 10.541153,3.699122 10.258248,3.8066067 9.966649,3.9250429 9.6169668,3.8418805 9.4008073,3.6062324 9.3894892,3.5943518 9.3785264,3.582104 9.3678886,3.5695487 z M 11.226617,6.9916004 C 11.888137,6.3548946 12.293488,5.4172188 12.311087,4.442353 12.378144,2.7379364 11.248678,1.0541269 9.7322318,0.44767357 8.3887112,-0.1280313 6.7865012,0.26822889 5.8918395,1.4007929 5.080823,2.3839145 4.9336815,3.8452096 5.3635544,5.101615 L 4.3670905,5.315913 C 4.0664984,5.3682645 4.0967703,5.6316724 4.2574957,5.8208829 L 4.9124,6.5655244 4.1543436,7.2512357 3.2136002,7.2163506 3.1674775,8.5586827 2.0406832,8.5086512 1.5965306,8.9299953 1.5471661,10.179833 0.75616674,10.195223 0.2112857,10.758575 0.15354288,11.735988 0.07199052,12.765553 c 0.36440953,0.238225 0.79006967,0.195492 1.44938278,-0.02675 L 6.3033562,8.1282037 6.8217102,8.6765688 C 6.9985465,8.8799427 7.3003699,8.7497574 7.358381,8.5016252 L 7.4938877,7.5084164 c 0.8537488,0.3985387 1.8303125,0.4711541 2.6851793,0.1427713 0.393927,-0.1407258 0.746858,-0.3701772 1.04755,-0.6595873 z'/>
+     <path d='M 6.8014948,6.3102123 0.15369063,13.024481 0.21560535,12.141962 6.0062342,6.2683782 z'
+        style='fill:#ffe5a5;fill-opacity:1;stroke:#854e31;stroke-width:0.06912433;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:3.00300009'/>
+    </g>
+  </symbol>
+  <symbol id='unq' overflow='visible' >
+    <g transform='scale(0.99)'>
+      <rect style='fill:#e07554;stroke:#7e4d31;stroke-width:0.71934468;stroke-linecap:round;stroke-linejoin:round;'
+         width='2.29' height='8.43' x='7.48' y='-0.76' ry='1.14' transform='matrix(0.701,0.713,-0.727,0.685,0,0)' />
+      <path style='fill:white;stroke:#858585;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;'
+         d='m 26.04,8.64 a 4.13,4.13 0 1 1 -8.26,0 4.13,4.13 0 1 1 8.26,0 z'
+         transform='matrix(1.025,0,0,0.987,-14.690,-3.862)' />
+      <text x='5.5' y='7.7' style='font-size:8px;fill:#8a8a8a;'>1</text>
+    </g>
+  </symbol>
+  <symbol id='idx' overflow='visible' >
+    <g transform='scale(0.99)'>
+      <rect style='fill:#e07554;stroke:#7e4d31;stroke-width:0.71934468;stroke-linecap:round;stroke-linejoin:round;'
+         width='2.29' height='8.43' x='7.48' y='-0.76' ry='1.14' transform='matrix(0.701,0.713,-0.727,0.685,0,0)' />
+      <path style='fill:white;stroke:#858585;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;'
+         d='m 26.04,8.64 a 4.13,4.13 0 1 1 -8.26,0 4.13,4.13 0 1 1 8.26,0 z'
+         transform='matrix(1.025,0,0,0.987,-14.690,-3.862)' />
+    </g>
+  </symbol>
+  <symbol id='fk' overflow='visible' >
+    <g transform='scale(0.87)'>
+      <path style='fill:#b7d0f6;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+      d='M 12.48,0.33 7.07,0.89 9.067,2.974 0.329,11.731 1.073,12.597 9.811,3.841 11.77,5.78 z' />
+    </g>
+  </symbol>
+  <symbol id='ref' overflow='visible' >
+    <g transform='scale(0.87)'>
+      <path style='fill:#f3e1b7;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+          d='M 0.10,12.70 5.31,12.15 3.40,10.06 11.82,1.32 11.11,0.45 2.68,9.19 0.80,7.24 z'/>
+    </g>
+  </symbol>
+  <symbol id='flag' overflow='visible' >
+    <g transform='scale(0.92)'>
+      <path style='fill:#b7d0f6;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+          d='M 0.12,12.67 0.16,7.22 C 2.59,7.22 4.13,8.78 9.22,4.22 5.68,4.98 2.53,4.50 0.09,1.80 z'/>
+    </g>
+  </symbol>
+  <symbol id='nn' overflow='visible' >
+  <path style='stroke:#9b3e50;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+          d='M 0,0 3,3 M 0,3 3,0 z'/>
+  </symbol>
+  <marker id='arrow01' viewBox='0 0 15.00 7.50' refX='7.50' refY='3.75' markerUnits='strokeWidth' markerWidth='15.00' markerHeight='7.50' orient='auto'>
+    <path d='M 15.000,3.750 L 7.500,2.500 L 7.500,7.500 L 15.000,3.750 z' style='fill:#5e554d;' />
+  </marker>
+  <marker id='arrow1' viewBox='0 0 15.00 7.50' refX='7.50' refY='3.75' markerUnits='strokeWidth' markerWidth='15.00' markerHeight='7.50' orient='auto'>
+    <path d='M 15.000,3.750 L 7.500,2.500 L 7.500,7.500 L 15.000,3.750 z' style='fill:#5e554d;' />
+  </marker>
+  <marker id='foot01' viewBox='0 0 15.00 7.50' refX='7.50' refY='3.75' markerUnits='strokeWidth' markerWidth='15.00' markerHeight='7.50' orient='auto'>
+    <path d='M 0.00,3.75 L 15.00,3.75 z' />
+    <circle cx='11.25' cy='3.75' r='2.50' style='fill:white;stroke:#5e554d;' />
+    <path d='M 3.75,0.00 L 3.75, 7.50 z' />
+  </marker>
+  <marker id='foot0p' viewBox='0 0 15.00 7.50' refX='7.50' refY='3.75' markerUnits='strokeWidth' markerWidth='15.00' markerHeight='7.50' orient='auto'>
+    <path d='M 0.00,3.75 L 15.00,3.75 z' />
+    <circle cx='11.25' cy='3.75' r='2.50' style='fill:white;stroke:#5e554d;' />
+    <path d='M 0.00,0.00 L 7.50,3.75 L 0.00,7.50' />
+  </marker>
+  <marker id='foot1' viewBox='0 0 15.00 7.50' refX='7.50' refY='3.75' markerUnits='strokeWidth' markerWidth='15.00' markerHeight='7.50' orient='auto'>
+    <path d='M 0.00,3.75 L 15.00,3.75 z' />
+    <path d='M 7.50,0.00 L 7.50, 7.50 z' />
+    <path d='M 3.75,0.00 L 3.75, 7.50 z' />
+  </marker>
+  <marker id='foot1p' viewBox='0 0 15.00 7.50' refX='7.50' refY='3.75' markerUnits='strokeWidth' markerWidth='15.00' markerHeight='7.50' orient='auto'>
+    <path d='M 0.00,3.75 L 15.00,3.75 z' />
+    <path d='M 7.50,0.00 L 7.50, 7.50 z' />
+    <path d='M 0.00,0.00 L 7.50,3.75 L 0.00,7.50' />
+  </marker>
+  <linearGradient id='tbg_c0d4f3' x1='0%' y1='0%' x2='0%' y2='100%' >
+     <stop offset='0%' stop-color='#ffffff' /> 
+     <stop offset='100%' stop-color='#c0d4f3' /> 
+  </linearGradient>
+</defs>
+
+<!-- ============= Desktop ============= -->
+<rect x='1' y='1' width='1843' height='1713' rx='7' ry='7' style='fill:url(#layoutBgA); stroke:#333333; stroke-width:0.5;' />
+<rect x='1' y='1' width='1843' height='1713' rx='7' ry='7' style='fill:url(#layoutBgB)'/>
+
+<!-- ============= Legend ============= -->
+<g transform='translate(10,10)'>
+  <rect x='10' y='10' width='260' height='64' rx='6' ry='6' style='fill:url(#legendGradient);filter:url(#shadow);'/> 
+  <text x='20' y='30'><tspan>Project</tspan> DM7 by <a xlink:href='http://www.dbschema.com' text-decoration='underline'>DbSchema</a></text> 
+  <text x='20' y='44'><tspan>Layout</tspan> 总线</text> 
+  <text x='20' y='58' style='fill:#777'><tspan>Column comments as mouse-over tooltips.</tspan></text> 
+</g>
+
+<g transform='translate(0,110)'>
+<!-- ============= Fk 'S_PROVIDER_RESOURCE_MAPPING_fk_S_PROVIDER_RESOURCE_MAPPING' ============= -->
+<path id='S_PROVIDER_RESOURCE_MAPPING_fk_S_PROVIDER_RESOURCE_MAPPING'  onmouseover="hghl(['S_PROVIDER_RESOURCE_MAPPING_fk_S_PROVIDER_RESOURCE_MAPPING','GONGANYUN2.S_PROVIDER_RESOURCE_MAPPING.PROVIDER_ID','GONGANYUN2.S_SERVICE_PROVIDER.ID'])" onmouseout="uhghl(['S_PROVIDER_RESOURCE_MAPPING_fk_S_PROVIDER_RESOURCE_MAPPING','GONGANYUN2.S_PROVIDER_RESOURCE_MAPPING.PROVIDER_ID','GONGANYUN2.S_SERVICE_PROVIDER.ID'])" transform='translate(7,0)' class='scene' d='M 660 720 L 652,720 Q 645,720 645,712 L 645,427 Q 645,420 652,420 L 660,420' >
+	<title>Fk fk_S_PROVIDER_RESOURCE_MAPPING
+S_PROVIDER_RESOURCE_MAPPING ref S_SERVICE_PROVIDER ( PROVIDER_ID -&gt; ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow1)'    d='M 660 720 L 652,720 Q 645,720 645,712 L 645,427 Q 645,420 652,420 L 660,420' ></path>
+<!-- ============= Fk 'S_PROVIDER_RESOURCE_MAPPING_fk_S_PROVIDER_RESOURCE_MAPPING_0' ============= -->
+<path id='S_PROVIDER_RESOURCE_MAPPING_fk_S_PROVIDER_RESOURCE_MAPPING_0'  onmouseover="hghl(['S_PROVIDER_RESOURCE_MAPPING_fk_S_PROVIDER_RESOURCE_MAPPING_0','GONGANYUN2.S_PROVIDER_RESOURCE_MAPPING.SERVICE_RESOURCE_ID','GONGANYUN2.S_SERVICE_RESOURCE.ID'])" onmouseout="uhghl(['S_PROVIDER_RESOURCE_MAPPING_fk_S_PROVIDER_RESOURCE_MAPPING_0','GONGANYUN2.S_PROVIDER_RESOURCE_MAPPING.SERVICE_RESOURCE_ID','GONGANYUN2.S_SERVICE_RESOURCE.ID'])" transform='translate(7,0)' class='scene' d='M 885 735 L 892,735 Q 900,735 900,742 L 900,750' >
+	<title>Fk fk_S_PROVIDER_RESOURCE_MAPPING_0
+S_PROVIDER_RESOURCE_MAPPING ref S_SERVICE_RESOURCE ( SERVICE_RESOURCE_ID -&gt; ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)'     d='M 885 735 L 892,735 Q 900,735 900,742 L 900,750' ></path>
+<!-- ============= Fk 'S_CONSUMER_SERVICE_MAPPING_fk_S_CONSUMER_SERVICE_MAPPING' ============= -->
+<path id='S_CONSUMER_SERVICE_MAPPING_fk_S_CONSUMER_SERVICE_MAPPING'  onmouseover="hghl(['S_CONSUMER_SERVICE_MAPPING_fk_S_CONSUMER_SERVICE_MAPPING','GONGANYUN2.S_CONSUMER_SERVICE_MAPPING.CONSUMER_ID','GONGANYUN2.S_SERVICE_CONSUMER.ID'])" onmouseout="uhghl(['S_CONSUMER_SERVICE_MAPPING_fk_S_CONSUMER_SERVICE_MAPPING','GONGANYUN2.S_CONSUMER_SERVICE_MAPPING.CONSUMER_ID','GONGANYUN2.S_SERVICE_CONSUMER.ID'])" transform='translate(7,0)' class='scene' d='M 1260 540 L 1267,540 Q 1275,540 1275,532 L 1275,525' >
+	<title>Fk fk_S_CONSUMER_SERVICE_MAPPING
+S_CONSUMER_SERVICE_MAPPING ref S_SERVICE_CONSUMER ( CONSUMER_ID -&gt; ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)'     d='M 1260 540 L 1267,540 Q 1275,540 1275,532 L 1275,525' ></path>
+<!-- ============= Fk 'S_CONSUMER_SERVICE_MAPPING_fk_S_CONSUMER_SERVICE_MAPPING_0' ============= -->
+<path id='S_CONSUMER_SERVICE_MAPPING_fk_S_CONSUMER_SERVICE_MAPPING_0'  onmouseover="hghl(['S_CONSUMER_SERVICE_MAPPING_fk_S_CONSUMER_SERVICE_MAPPING_0','GONGANYUN2.S_CONSUMER_SERVICE_MAPPING.SERVICE_RESOURCE_ID','GONGANYUN2.S_SERVICE_RESOURCE.ID'])" onmouseout="uhghl(['S_CONSUMER_SERVICE_MAPPING_fk_S_CONSUMER_SERVICE_MAPPING_0','GONGANYUN2.S_CONSUMER_SERVICE_MAPPING.SERVICE_RESOURCE_ID','GONGANYUN2.S_SERVICE_RESOURCE.ID'])" transform='translate(7,0)' class='scene' d='M 1035 555 L 907,555 Q 900,555 900,562 L 900,862 Q 900,870 892,870 L 855,870' >
+	<title>Fk fk_S_CONSUMER_SERVICE_MAPPING_0
+S_CONSUMER_SERVICE_MAPPING ref S_SERVICE_RESOURCE ( SERVICE_RESOURCE_ID -&gt; ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)'     d='M 1035 555 L 907,555 Q 900,555 900,562 L 900,862 Q 900,870 892,870 L 855,870' ></path>
+<!-- ============= Fk 'S_AUTH_APPLY_fk_AUTH_APPLY_MESSAGE' ============= -->
+<path id='S_AUTH_APPLY_fk_AUTH_APPLY_MESSAGE'  onmouseover="hghl(['S_AUTH_APPLY_fk_AUTH_APPLY_MESSAGE','GONGANYUN2.S_AUTH_APPLY.SERVICE_RESOURCE_ID','GONGANYUN2.S_SERVICE_RESOURCE.ID'])" onmouseout="uhghl(['S_AUTH_APPLY_fk_AUTH_APPLY_MESSAGE','GONGANYUN2.S_AUTH_APPLY.SERVICE_RESOURCE_ID','GONGANYUN2.S_SERVICE_RESOURCE.ID'])" transform='translate(7,0)' class='scene' d='M 1035 885 L 877,885 Q 870,885 870,877 L 870,870' >
+	<title>Fk fk_AUTH_APPLY_MESSAGE
+S_AUTH_APPLY ref S_SERVICE_RESOURCE ( SERVICE_RESOURCE_ID -&gt; ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)'     d='M 1035 885 L 877,885 Q 870,885 870,877 L 870,870' ></path>
+<!-- ============= Fk 'S_AUTH_APPLY_fk_AUTH_APPLY_MESSAGE_0' ============= -->
+<path id='S_AUTH_APPLY_fk_AUTH_APPLY_MESSAGE_0'  onmouseover="hghl(['S_AUTH_APPLY_fk_AUTH_APPLY_MESSAGE_0','GONGANYUN2.S_AUTH_APPLY.CONSUMER_ID','GONGANYUN2.S_SERVICE_CONSUMER.ID'])" onmouseout="uhghl(['S_AUTH_APPLY_fk_AUTH_APPLY_MESSAGE_0','GONGANYUN2.S_AUTH_APPLY.CONSUMER_ID','GONGANYUN2.S_SERVICE_CONSUMER.ID'])" transform='translate(7,0)' class='scene' d='M 1260 870 L 1267,870 Q 1275,870 1275,862 L 1275,855' >
+	<title>Fk fk_AUTH_APPLY_MESSAGE_0
+S_AUTH_APPLY ref S_SERVICE_CONSUMER ( CONSUMER_ID -&gt; ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)'     d='M 1260 870 L 1267,870 Q 1275,870 1275,862 L 1275,855' ></path>
+<!-- ============= Fk 'S_AUTH_RESULT_fk_S_AUTH_RESULT' ============= -->
+<path id='S_AUTH_RESULT_fk_S_AUTH_RESULT'  onmouseover="hghl(['S_AUTH_RESULT_fk_S_AUTH_RESULT','GONGANYUN2.S_AUTH_RESULT.APPLY_ID','GONGANYUN2.S_AUTH_APPLY.ID'])" onmouseout="uhghl(['S_AUTH_RESULT_fk_S_AUTH_RESULT','GONGANYUN2.S_AUTH_RESULT.APPLY_ID','GONGANYUN2.S_AUTH_APPLY.ID'])" transform='translate(7,0)' class='scene' d='M 1035 1065 L 1027,1065 Q 1020,1065 1020,1057 L 1020,682 Q 1020,675 1027,675 L 1035,675' >
+	<title>Fk fk_S_AUTH_RESULT
+S_AUTH_RESULT ref S_AUTH_APPLY ( APPLY_ID -&gt; ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow1)'    d='M 1035 1065 L 1027,1065 Q 1020,1065 1020,1057 L 1020,682 Q 1020,675 1027,675 L 1035,675' ></path>
+<!-- ============= Fk 'S_SERVICE_ADDRESS_fk_S_SERVICE_ADDRESS' ============= -->
+<path id='S_SERVICE_ADDRESS_fk_S_SERVICE_ADDRESS'  onmouseover="hghl(['S_SERVICE_ADDRESS_fk_S_SERVICE_ADDRESS','GONGANYUN2.S_SERVICE_ADDRESS.FWNR_RQC','GONGANYUN2.S_SERVICE_ADDR_PARAM.ID'])" onmouseout="uhghl(['S_SERVICE_ADDRESS_fk_S_SERVICE_ADDRESS','GONGANYUN2.S_SERVICE_ADDRESS.FWNR_RQC','GONGANYUN2.S_SERVICE_ADDR_PARAM.ID'])" transform='translate(7,0)' class='scene' d='M 660 1245 L 652,1245 Q 645,1245 645,1252 L 645,1357 Q 645,1365 652,1365 L 660,1365' >
+	<title>Fk fk_S_SERVICE_ADDRESS
+S_SERVICE_ADDRESS ref S_SERVICE_ADDR_PARAM ( FWNR_RQC -&gt; ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow1)'    d='M 660 1245 L 652,1245 Q 645,1245 645,1252 L 645,1357 Q 645,1365 652,1365 L 660,1365' ></path>
+<!-- ============= Fk 'S_SERVICE_ADDRESS_fk_S_SERVICE_ADDRESS_0' ============= -->
+<path id='S_SERVICE_ADDRESS_fk_S_SERVICE_ADDRESS_0'  onmouseover="hghl(['S_SERVICE_ADDRESS_fk_S_SERVICE_ADDRESS_0','GONGANYUN2.S_SERVICE_ADDRESS.FWNR_CC','GONGANYUN2.S_SERVICE_ADDR_PARAM.ID'])" onmouseout="uhghl(['S_SERVICE_ADDRESS_fk_S_SERVICE_ADDRESS_0','GONGANYUN2.S_SERVICE_ADDRESS.FWNR_CC','GONGANYUN2.S_SERVICE_ADDR_PARAM.ID'])" transform='translate(7,0)' class='scene' d='M 660 1260 L 652,1260 Q 645,1260 645,1267 L 645,1275' >
+	<title>Fk fk_S_SERVICE_ADDRESS_0
+S_SERVICE_ADDRESS ref S_SERVICE_ADDR_PARAM ( FWNR_CC -&gt; ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)'     d='M 660 1260 L 652,1260 Q 645,1260 645,1267 L 645,1275' ></path>
+<!-- ============= Fk 'S_SERVICE_TIME_MAPPING_fk_S_SERVICE_TIME_MAPPING' ============= -->
+<path id='S_SERVICE_TIME_MAPPING_fk_S_SERVICE_TIME_MAPPING'  onmouseover="hghl(['S_SERVICE_TIME_MAPPING_fk_S_SERVICE_TIME_MAPPING','GONGANYUN2.S_SERVICE_TIME_MAPPING.TIME_ID','GONGANYUN2.S_SERVICE_TIME_RULE.ID'])" onmouseout="uhghl(['S_SERVICE_TIME_MAPPING_fk_S_SERVICE_TIME_MAPPING','GONGANYUN2.S_SERVICE_TIME_MAPPING.TIME_ID','GONGANYUN2.S_SERVICE_TIME_RULE.ID'])" transform='translate(7,0)' class='scene' d='M 1350 510 L 1342,510 Q 1335,510 1335,502 L 1335,307 Q 1335,300 1342,300 L 1350,300' >
+	<title>Fk fk_S_SERVICE_TIME_MAPPING
+S_SERVICE_TIME_MAPPING ref S_SERVICE_TIME_RULE ( TIME_ID -&gt; ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow1)'    d='M 1350 510 L 1342,510 Q 1335,510 1335,502 L 1335,307 Q 1335,300 1342,300 L 1350,300' ></path>
+<!-- ============= Fk 'S_SERVICE_VISIT_COUNT_LOG_fk_S_SERVICE_VISIT_COUNT_LOG' ============= -->
+<path id='S_SERVICE_VISIT_COUNT_LOG_fk_S_SERVICE_VISIT_COUNT_LOG'  onmouseover="hghl(['S_SERVICE_VISIT_COUNT_LOG_fk_S_SERVICE_VISIT_COUNT_LOG','GONGANYUN2.S_SERVICE_VISIT_COUNT_LOG.VISIT_COUNT_ID','GONGANYUN2.S_SERVICE_VISIT_COUNT.CONSUMER_ID'])" onmouseout="uhghl(['S_SERVICE_VISIT_COUNT_LOG_fk_S_SERVICE_VISIT_COUNT_LOG','GONGANYUN2.S_SERVICE_VISIT_COUNT_LOG.VISIT_COUNT_ID','GONGANYUN2.S_SERVICE_VISIT_COUNT.CONSUMER_ID'])" transform='translate(7,0)' class='scene' d='M 1575 480 L 1567,480 Q 1560,480 1560,472 L 1560,322 Q 1560,315 1567,315 L 1575,315' >
+	<title>Fk fk_S_SERVICE_VISIT_COUNT_LOG
+S_SERVICE_VISIT_COUNT_LOG ref S_SERVICE_VISIT_COUNT ( VISIT_COUNT_ID -&gt; CONSUMER_ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow01)'    d='M 1575 480 L 1567,480 Q 1560,480 1560,472 L 1560,322 Q 1560,315 1567,315 L 1575,315' ></path>
+<!-- ============= Fk 'S_SERVICE_CATA_MAPPING_fk_S_SERVICE_CATA_MAPPING' ============= -->
+<path id='S_SERVICE_CATA_MAPPING_fk_S_SERVICE_CATA_MAPPING'  onmouseover="hghl(['S_SERVICE_CATA_MAPPING_fk_S_SERVICE_CATA_MAPPING','GONGANYUN2.S_SERVICE_CATA_MAPPING.CATA_ID','GONGANYUN2.S_SERVICE_CATA.ID'])" onmouseout="uhghl(['S_SERVICE_CATA_MAPPING_fk_S_SERVICE_CATA_MAPPING','GONGANYUN2.S_SERVICE_CATA_MAPPING.CATA_ID','GONGANYUN2.S_SERVICE_CATA.ID'])" transform='translate(7,0)' class='scene' d='M 315 930 L 307,930 Q 300,930 300,937 L 300,1042 Q 300,1050 307,1050 L 315,1050' >
+	<title>Fk fk_S_SERVICE_CATA_MAPPING
+S_SERVICE_CATA_MAPPING ref S_SERVICE_CATA ( CATA_ID -&gt; ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow1)'    d='M 315 930 L 307,930 Q 300,930 300,937 L 300,1042 Q 300,1050 307,1050 L 315,1050' ></path>
+<!-- ============= Fk 'S_SERVICE_CATA_MAPPING_fk_S_SERVICE_CATA_MAPPING_0' ============= -->
+<path id='S_SERVICE_CATA_MAPPING_fk_S_SERVICE_CATA_MAPPING_0'  onmouseover="hghl(['S_SERVICE_CATA_MAPPING_fk_S_SERVICE_CATA_MAPPING_0','GONGANYUN2.S_SERVICE_CATA_MAPPING.SERVICE_RESOURCE_ID','GONGANYUN2.S_SERVICE_RESOURCE.ID'])" onmouseout="uhghl(['S_SERVICE_CATA_MAPPING_fk_S_SERVICE_CATA_MAPPING_0','GONGANYUN2.S_SERVICE_CATA_MAPPING.SERVICE_RESOURCE_ID','GONGANYUN2.S_SERVICE_RESOURCE.ID'])" transform='translate(7,0)' class='scene' d='M 540 945 L 637,945 Q 645,945 645,937 L 645,877 Q 645,870 652,870 L 660,870' >
+	<title>Fk fk_S_SERVICE_CATA_MAPPING_0
+S_SERVICE_CATA_MAPPING ref S_SERVICE_RESOURCE ( SERVICE_RESOURCE_ID -&gt; ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow01)'    d='M 540 945 L 637,945 Q 645,945 645,937 L 645,877 Q 645,870 652,870 L 660,870' ></path>
+<!-- ============= Fk 'S_CATA_DICT_fk_S_CATA_DICT' ============= -->
+<path id='S_CATA_DICT_fk_S_CATA_DICT'  onmouseover="hghl(['S_CATA_DICT_fk_S_CATA_DICT','GONGANYUN2.S_CATA_DICT.RULE_ID','GONGANYUN2.S_CATA_CODE_RULE.ID'])" onmouseout="uhghl(['S_CATA_DICT_fk_S_CATA_DICT','GONGANYUN2.S_CATA_DICT.RULE_ID','GONGANYUN2.S_CATA_CODE_RULE.ID'])" transform='translate(7,0)' class='scene' d='M 315 1350 L 307,1350 Q 300,1350 300,1357 L 300,1447 Q 300,1455 307,1455 L 315,1455' >
+	<title>Fk fk_S_CATA_DICT
+S_CATA_DICT ref S_CATA_CODE_RULE ( RULE_ID -&gt; ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow01)'    d='M 315 1350 L 307,1350 Q 300,1350 300,1357 L 300,1447 Q 300,1455 307,1455 L 315,1455' ></path>
+<!-- ============= Fk 'S_SERVICE_CATA_fk_S_SERVICE_CATA' ============= -->
+<path id='S_SERVICE_CATA_fk_S_SERVICE_CATA'  onmouseover="hghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA','GONGANYUN2.S_SERVICE_CATA.ZIP_CODE','GONGANYUN2.S_CATA_DICT.CODE'])" onmouseout="uhghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA','GONGANYUN2.S_SERVICE_CATA.ZIP_CODE','GONGANYUN2.S_CATA_DICT.CODE'])" transform='translate(7,0)' class='scene' d='M 315 1095 L 307,1095 Q 300,1095 300,1102 L 300,1312 Q 300,1320 307,1320 L 315,1320' >
+	<title>Fk fk_S_SERVICE_CATA
+S_SERVICE_CATA ref S_CATA_DICT ( ZIP_CODE -&gt; CODE )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow01)'    d='M 315 1095 L 307,1095 Q 300,1095 300,1102 L 300,1312 Q 300,1320 307,1320 L 315,1320' ></path>
+<!-- ============= Fk 'S_SERVICE_CATA_fk_S_SERVICE_CATA_0' ============= -->
+<path id='S_SERVICE_CATA_fk_S_SERVICE_CATA_0'  onmouseover="hghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA_0','GONGANYUN2.S_SERVICE_CATA.SCOPE_CODE','GONGANYUN2.S_CATA_DICT.CODE'])" onmouseout="uhghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA_0','GONGANYUN2.S_SERVICE_CATA.SCOPE_CODE','GONGANYUN2.S_CATA_DICT.CODE'])" transform='translate(7,0)' class='scene' d='M 315 1110 L 307,1110 Q 300,1110 300,1117 L 300,1125' >
+	<title>Fk fk_S_SERVICE_CATA_0
+S_SERVICE_CATA ref S_CATA_DICT ( SCOPE_CODE -&gt; CODE )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)'     d='M 315 1110 L 307,1110 Q 300,1110 300,1117 L 300,1125' ></path>
+<!-- ============= Fk 'S_SERVICE_CATA_fk_S_SERVICE_CATA_1' ============= -->
+<path id='S_SERVICE_CATA_fk_S_SERVICE_CATA_1'  onmouseover="hghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA_1','GONGANYUN2.S_SERVICE_CATA.APP_CODE','GONGANYUN2.S_CATA_DICT.CODE'])" onmouseout="uhghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA_1','GONGANYUN2.S_SERVICE_CATA.APP_CODE','GONGANYUN2.S_CATA_DICT.CODE'])" transform='translate(7,0)' class='scene' d='M 315 1125 L 307,1125 Q 300,1125 300,1132 L 300,1140' >
+	<title>Fk fk_S_SERVICE_CATA_1
+S_SERVICE_CATA ref S_CATA_DICT ( APP_CODE -&gt; CODE )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)'     d='M 315 1125 L 307,1125 Q 300,1125 300,1132 L 300,1140' ></path>
+<!-- ============= Fk 'S_SERVICE_CATA_fk_S_SERVICE_CATA_2' ============= -->
+<path id='S_SERVICE_CATA_fk_S_SERVICE_CATA_2'  onmouseover="hghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA_2','GONGANYUN2.S_SERVICE_CATA.BUSINESS_CODE','GONGANYUN2.S_CATA_DICT.CODE'])" onmouseout="uhghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA_2','GONGANYUN2.S_SERVICE_CATA.BUSINESS_CODE','GONGANYUN2.S_CATA_DICT.CODE'])" transform='translate(7,0)' class='scene' d='M 315 1140 L 307,1140 Q 300,1140 300,1147 L 300,1155' >
+	<title>Fk fk_S_SERVICE_CATA_2
+S_SERVICE_CATA ref S_CATA_DICT ( BUSINESS_CODE -&gt; CODE )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)'     d='M 315 1140 L 307,1140 Q 300,1140 300,1147 L 300,1155' ></path>
+<!-- ============= Fk 'S_SERVICE_CATA_fk_S_SERVICE_CATA_3' ============= -->
+<path id='S_SERVICE_CATA_fk_S_SERVICE_CATA_3'  onmouseover="hghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA_3','GONGANYUN2.S_SERVICE_CATA.ELEMENT_CODE','GONGANYUN2.S_SERVICE_ELEMENT.CODE'])" onmouseout="uhghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA_3','GONGANYUN2.S_SERVICE_CATA.ELEMENT_CODE','GONGANYUN2.S_SERVICE_ELEMENT.CODE'])" transform='translate(7,0)' class='scene' d='M 495 1170 L 607,1170 Q 615,1170 615,1177 L 615,1312 Q 615,1320 607,1320 L 600,1320' >
+	<title>Fk fk_S_SERVICE_CATA_3
+S_SERVICE_CATA ref S_SERVICE_ELEMENT ( ELEMENT_CODE -&gt; CODE )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow01)'    d='M 495 1170 L 607,1170 Q 615,1170 615,1177 L 615,1312 Q 615,1320 607,1320 L 600,1320' ></path>
+<!-- ============= Fk 'S_SERVICE_GROUP_MAPPING_fk_S_SERVICE_GROUP_MAPPING' ============= -->
+<path id='S_SERVICE_GROUP_MAPPING_fk_S_SERVICE_GROUP_MAPPING'  onmouseover="hghl(['S_SERVICE_GROUP_MAPPING_fk_S_SERVICE_GROUP_MAPPING','GONGANYUN2.S_SERVICE_GROUP_MAPPING.PARENT_SERVICE_ID','GONGANYUN2.S_SERVICE_RESOURCE.ID'])" onmouseout="uhghl(['S_SERVICE_GROUP_MAPPING_fk_S_SERVICE_GROUP_MAPPING','GONGANYUN2.S_SERVICE_GROUP_MAPPING.PARENT_SERVICE_ID','GONGANYUN2.S_SERVICE_RESOURCE.ID'])" transform='translate(7,0)' class='scene' d='M 570 750 L 637,750 Q 645,750 645,757 L 645,862 Q 645,870 652,870 L 660,870' >
+	<title>Fk fk_S_SERVICE_GROUP_MAPPING
+S_SERVICE_GROUP_MAPPING ref S_SERVICE_RESOURCE ( PARENT_SERVICE_ID -&gt; ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)'     d='M 570 750 L 637,750 Q 645,750 645,757 L 645,862 Q 645,870 652,870 L 660,870' ></path>
+<!-- ============= Fk 'S_SERVICE_GROUP_MAPPING_fk_S_SERVICE_GROUP_MAPPING_0' ============= -->
+<path id='S_SERVICE_GROUP_MAPPING_fk_S_SERVICE_GROUP_MAPPING_0'  onmouseover="hghl(['S_SERVICE_GROUP_MAPPING_fk_S_SERVICE_GROUP_MAPPING_0','GONGANYUN2.S_SERVICE_GROUP_MAPPING.CHILD_SERVICE_ID','GONGANYUN2.S_SERVICE_RESOURCE.ID'])" onmouseout="uhghl(['S_SERVICE_GROUP_MAPPING_fk_S_SERVICE_GROUP_MAPPING_0','GONGANYUN2.S_SERVICE_GROUP_MAPPING.CHILD_SERVICE_ID','GONGANYUN2.S_SERVICE_RESOURCE.ID'])" transform='translate(7,0)' class='scene' d='M 570 765 L 577,765 Q 585,765 585,757 L 585,757 Q 585,750 592,750 L 600,750' >
+	<title>Fk fk_S_SERVICE_GROUP_MAPPING_0
+S_SERVICE_GROUP_MAPPING ref S_SERVICE_RESOURCE ( CHILD_SERVICE_ID -&gt; ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)'     d='M 570 765 L 577,765 Q 585,765 585,757 L 585,757 Q 585,750 592,750 L 600,750' ></path>
+<!-- ============= Fk 'S_SERVICE_CONSUMER_fk_S_SERVICE_CONSUMER' ============= -->
+<path id='S_SERVICE_CONSUMER_fk_S_SERVICE_CONSUMER'  onmouseover="hghl(['S_SERVICE_CONSUMER_fk_S_SERVICE_CONSUMER','GONGANYUN2.S_SERVICE_CONSUMER.FWQQZ_ZXBS','GONGANYUN2.S_SERVICE_BUS.ZXBS'])" onmouseout="uhghl(['S_SERVICE_CONSUMER_fk_S_SERVICE_CONSUMER','GONGANYUN2.S_SERVICE_CONSUMER.FWQQZ_ZXBS','GONGANYUN2.S_SERVICE_BUS.ZXBS'])" transform='translate(7,0)' class='scene' d='M 1080 285 L 877,285 Q 870,285 870,277 L 870,270' >
+	<title>Fk fk_S_SERVICE_CONSUMER
+S_SERVICE_CONSUMER ref S_SERVICE_BUS ( FWQQZ_ZXBS -&gt; ZXBS )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)'     d='M 1080 285 L 877,285 Q 870,285 870,277 L 870,270' ></path>
+<!-- ============= Fk 'S_SERVICE_PROVIDER_fk_S_SERVICE_PROVIDER' ============= -->
+<path id='S_SERVICE_PROVIDER_fk_S_SERVICE_PROVIDER'  onmouseover="hghl(['S_SERVICE_PROVIDER_fk_S_SERVICE_PROVIDER','GONGANYUN2.S_SERVICE_PROVIDER.FWTGZ_ZXBS','GONGANYUN2.S_SERVICE_BUS.ZXBS'])" onmouseout="uhghl(['S_SERVICE_PROVIDER_fk_S_SERVICE_PROVIDER','GONGANYUN2.S_SERVICE_PROVIDER.FWTGZ_ZXBS','GONGANYUN2.S_SERVICE_BUS.ZXBS'])" transform='translate(7,0)' class='scene' d='M 855 480 L 862,480 Q 870,480 870,472 L 870,127 Q 870,120 862,120 L 840,120' >
+	<title>Fk fk_S_SERVICE_PROVIDER
+S_SERVICE_PROVIDER ref S_SERVICE_BUS ( FWTGZ_ZXBS -&gt; ZXBS )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow01)'    d='M 855 480 L 862,480 Q 870,480 870,472 L 870,127 Q 870,120 862,120 L 840,120' ></path>
+<!-- ============= Fk 'S_SERVICE_RESOURCE_fk_S_SERVICE_RESOURCE' ============= -->
+<path id='S_SERVICE_RESOURCE_fk_S_SERVICE_RESOURCE'  onmouseover="hghl(['S_SERVICE_RESOURCE_fk_S_SERVICE_RESOURCE','GONGANYUN2.S_SERVICE_RESOURCE.FWDZ_ID','GONGANYUN2.S_SERVICE_ADDRESS.ID'])" onmouseout="uhghl(['S_SERVICE_RESOURCE_fk_S_SERVICE_RESOURCE','GONGANYUN2.S_SERVICE_RESOURCE.FWDZ_ID','GONGANYUN2.S_SERVICE_ADDRESS.ID'])" transform='translate(7,0)' class='scene' d='M 660 1065 L 652,1065 Q 645,1065 645,1072 L 645,1177 Q 645,1185 652,1185 L 660,1185' >
+	<title>Fk fk_S_SERVICE_RESOURCE
+S_SERVICE_RESOURCE ref S_SERVICE_ADDRESS ( FWDZ_ID -&gt; ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow1)'    d='M 660 1065 L 652,1065 Q 645,1065 645,1072 L 645,1177 Q 645,1185 652,1185 L 660,1185' ></path>
+<!-- ============= Fk 'S_ASYNCHRONOUS_CACHE_fk_S_ASYNCHRONOUS_CACHE' ============= -->
+<path id='S_ASYNCHRONOUS_CACHE_fk_S_ASYNCHRONOUS_CACHE'  onmouseover="hghl(['S_ASYNCHRONOUS_CACHE_fk_S_ASYNCHRONOUS_CACHE','GONGANYUN2.S_ASYNCHRONOUS_CACHE.SERVICE_RESOURCE_ID','GONGANYUN2.S_SERVICE_RESOURCE.ID'])" onmouseout="uhghl(['S_ASYNCHRONOUS_CACHE_fk_S_ASYNCHRONOUS_CACHE','GONGANYUN2.S_ASYNCHRONOUS_CACHE.SERVICE_RESOURCE_ID','GONGANYUN2.S_SERVICE_RESOURCE.ID'])" transform='translate(7,0)' class='scene' d='M 1020 1335 L 877,1335 Q 870,1335 870,1327 L 870,877 Q 870,870 862,870 L 855,870' >
+	<title>Fk fk_S_ASYNCHRONOUS_CACHE
+S_ASYNCHRONOUS_CACHE ref S_SERVICE_RESOURCE ( SERVICE_RESOURCE_ID -&gt; ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow01)'    d='M 1020 1335 L 877,1335 Q 870,1335 870,1327 L 870,877 Q 870,870 862,870 L 855,870' ></path>
+<!-- ============= Fk 'S_ASYNCHRONOUS_CACHE_fk_S_ASYNCHRONOUS_CACHE_0' ============= -->
+<path id='S_ASYNCHRONOUS_CACHE_fk_S_ASYNCHRONOUS_CACHE_0'  onmouseover="hghl(['S_ASYNCHRONOUS_CACHE_fk_S_ASYNCHRONOUS_CACHE_0','GONGANYUN2.S_ASYNCHRONOUS_CACHE.CONSUMER_ID','GONGANYUN2.S_SERVICE_CONSUMER.ID'])" onmouseout="uhghl(['S_ASYNCHRONOUS_CACHE_fk_S_ASYNCHRONOUS_CACHE_0','GONGANYUN2.S_ASYNCHRONOUS_CACHE.CONSUMER_ID','GONGANYUN2.S_SERVICE_CONSUMER.ID'])" transform='translate(7,0)' class='scene' d='M 1230 1320 L 1267,1320 Q 1275,1320 1275,1312 L 1275,97 Q 1275,90 1267,90 L 1260,90' >
+	<title>Fk fk_S_ASYNCHRONOUS_CACHE_0
+S_ASYNCHRONOUS_CACHE ref S_SERVICE_CONSUMER ( CONSUMER_ID -&gt; ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow1)'    d='M 1230 1320 L 1267,1320 Q 1275,1320 1275,1312 L 1275,97 Q 1275,90 1267,90 L 1260,90' ></path>
+<!-- ============= Fk 'S_SERVICE_RESPONSE_LOG_fk_S_SERVICE_RESPONSE_LOG' ============= -->
+<path id='S_SERVICE_RESPONSE_LOG_fk_S_SERVICE_RESPONSE_LOG'  onmouseover="hghl(['S_SERVICE_RESPONSE_LOG_fk_S_SERVICE_RESPONSE_LOG','GONGANYUN2.S_SERVICE_RESPONSE_LOG.FWQQ_BWBH','GONGANYUN2.S_SERVICE_REQUEST_LOG.FWQQ_BWBH'])" onmouseout="uhghl(['S_SERVICE_RESPONSE_LOG_fk_S_SERVICE_RESPONSE_LOG','GONGANYUN2.S_SERVICE_RESPONSE_LOG.FWQQ_BWBH','GONGANYUN2.S_SERVICE_REQUEST_LOG.FWQQ_BWBH'])" transform='translate(7,0)' class='scene' d='M 30 360 L 22,360 Q 15,360 15,352 L 15,142 Q 15,135 22,135 L 30,135' >
+	<title>Fk fk_S_SERVICE_RESPONSE_LOG
+S_SERVICE_RESPONSE_LOG ref S_SERVICE_REQUEST_LOG ( FWQQ_BWBH )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow01)'    d='M 30 360 L 22,360 Q 15,360 15,352 L 15,142 Q 15,135 22,135 L 30,135' ></path>
+<!-- ============= Table 'S_PROVIDER_RESOURCE_MAPPING' ============= -->
+<rect class='table' x='675' y='668' width='210' height='90' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='675.500000' y1='694.500000' x2='884.500000' y2='694.500000'/>
+<line class='delim' x1='690.500000' y1='694.500000' x2='690.500000' y2='757.500000'/>
+<line class='delim' x1='873.500000' y1='694.500000' x2='873.500000' y2='757.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='675.50' y1='694.50' x2='884.50' y2='694.50'/>
+<a xlink:href='#S_PROVIDER_RESOURCE_MAPPING'><text x='689' y='686'>S_PROVIDER_RESOURCE_MAPPING</text><title>Table GONGANYUN2.S_PROVIDER_RESOURCE_MAPPING
+服务提供者与资源映射表</title></a>
+  <use id='nn' x='677' y='702' xlink:href='#nn'/><a xlink:href='#S_PROVIDER_RESOURCE_MAPPING.ID'><use id='pk' x='677' y='701' xlink:href='#pk'/><title>Pk Pk_S_PROVIDER_RESOURCE_MAPPING ( ID ) </title></a>
+<a xlink:href='#S_PROVIDER_RESOURCE_MAPPING.ID'><text id='GONGANYUN2.S_PROVIDER_RESOURCE_MAPPING.ID' x='693' y='712'>ID</text><text x='870' y='712' text-anchor='end' class='colType'>varchar2</text><title>ID
+* varchar2
+主键ID</title></a>
+  <a xlink:href='#S_PROVIDER_RESOURCE_MAPPING.PROVIDER_ID'><use id='idx' x='677' y='716' xlink:href='#idx'/><title>idx_S_PROVIDER_RESOURCE_MAPPING ( PROVIDER_ID ) </title></a>
+<a xlink:href='#S_PROVIDER_RESOURCE_MAPPING.PROVIDER_ID'><text id='GONGANYUN2.S_PROVIDER_RESOURCE_MAPPING.PROVIDER_ID' x='693' y='727' onmouseover="hghl(['S_PROVIDER_RESOURCE_MAPPING_fk_S_PROVIDER_RESOURCE_MAPPING'])" onmouseout="uhghl(['S_PROVIDER_RESOURCE_MAPPING_fk_S_PROVIDER_RESOURCE_MAPPING'])">PROVIDER_ID</text><text x='870' y='727' text-anchor='end' class='colType'>varchar2</text><title>PROVIDER_ID
+varchar2
+提供者主键ID</title></a>
+<a xlink:href='#S_PROVIDER_RESOURCE_MAPPING.PROVIDER_ID'><use id='fk' x='873' y='716' xlink:href='#fk'/><title>References S_SERVICE_PROVIDER ( PROVIDER_ID -&gt; ID ) </title></a>
+  <a xlink:href='#S_PROVIDER_RESOURCE_MAPPING.SERVICE_RESOURCE_ID'><use id='idx' x='677' y='731' xlink:href='#idx'/><title>idx_S_PROVIDER_RESOURCE_MAPPING_0 ( SERVICE_RESOURCE_ID ) </title></a>
+<a xlink:href='#S_PROVIDER_RESOURCE_MAPPING.SERVICE_RESOURCE_ID'><text id='GONGANYUN2.S_PROVIDER_RESOURCE_MAPPING.SERVICE_RESOURCE_ID' x='693' y='742' onmouseover="hghl(['S_PROVIDER_RESOURCE_MAPPING_fk_S_PROVIDER_RESOURCE_MAPPING_0'])" onmouseout="uhghl(['S_PROVIDER_RESOURCE_MAPPING_fk_S_PROVIDER_RESOURCE_MAPPING_0'])">SERVICE_RESOURCE_ID</text><text x='870' y='742' text-anchor='end' class='colType'>varchar2</text><title>SERVICE_RESOURCE_ID
+varchar2
+服务资源ID</title></a>
+<a xlink:href='#S_PROVIDER_RESOURCE_MAPPING.SERVICE_RESOURCE_ID'><use id='fk' x='873' y='731' xlink:href='#fk'/><title>References S_SERVICE_RESOURCE ( SERVICE_RESOURCE_ID -&gt; ID ) </title></a>
+
+<!-- ============= Table 'S_CONSUMER_SERVICE_MAPPING' ============= -->
+<rect class='table' x='1050' y='488' width='210' height='90' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='1050.500000' y1='514.500000' x2='1259.500000' y2='514.500000'/>
+<line class='delim' x1='1065.500000' y1='514.500000' x2='1065.500000' y2='577.500000'/>
+<line class='delim' x1='1248.500000' y1='514.500000' x2='1248.500000' y2='577.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='1050.50' y1='514.50' x2='1259.50' y2='514.50'/>
+<a xlink:href='#S_CONSUMER_SERVICE_MAPPING'><text x='1067' y='506'>S_CONSUMER_SERVICE_MAPPING</text><title>Table GONGANYUN2.S_CONSUMER_SERVICE_MAPPING
+请求者可访问资源关联</title></a>
+  <use id='nn' x='1052' y='522' xlink:href='#nn'/><a xlink:href='#S_CONSUMER_SERVICE_MAPPING.ID'><use id='pk' x='1052' y='521' xlink:href='#pk'/><title>Pk Pk_S_CONSUMER_SERVICE_MAPPING ( ID ) </title></a>
+<a xlink:href='#S_CONSUMER_SERVICE_MAPPING.ID'><text id='GONGANYUN2.S_CONSUMER_SERVICE_MAPPING.ID' x='1068' y='532'>ID</text><text x='1245' y='532' text-anchor='end' class='colType'>varchar2</text><title>ID
+* varchar2
+主键ID</title></a>
+  <a xlink:href='#S_CONSUMER_SERVICE_MAPPING.CONSUMER_ID'><use id='idx' x='1052' y='536' xlink:href='#idx'/><title>idx_S_CONSUMER_SERVICE_MAPPING ( CONSUMER_ID ) </title></a>
+<a xlink:href='#S_CONSUMER_SERVICE_MAPPING.CONSUMER_ID'><text id='GONGANYUN2.S_CONSUMER_SERVICE_MAPPING.CONSUMER_ID' x='1068' y='547' onmouseover="hghl(['S_CONSUMER_SERVICE_MAPPING_fk_S_CONSUMER_SERVICE_MAPPING'])" onmouseout="uhghl(['S_CONSUMER_SERVICE_MAPPING_fk_S_CONSUMER_SERVICE_MAPPING'])">CONSUMER_ID</text><text x='1245' y='547' text-anchor='end' class='colType'>varchar2</text><title>CONSUMER_ID
+varchar2
+请求者ID</title></a>
+<a xlink:href='#S_CONSUMER_SERVICE_MAPPING.CONSUMER_ID'><use id='fk' x='1248' y='536' xlink:href='#fk'/><title>References S_SERVICE_CONSUMER ( CONSUMER_ID -&gt; ID ) </title></a>
+  <a xlink:href='#S_CONSUMER_SERVICE_MAPPING.SERVICE_RESOURCE_ID'><use id='idx' x='1052' y='551' xlink:href='#idx'/><title>idx_S_CONSUMER_SERVICE_MAPPING_0 ( SERVICE_RESOURCE_ID ) </title></a>
+<a xlink:href='#S_CONSUMER_SERVICE_MAPPING.SERVICE_RESOURCE_ID'><text id='GONGANYUN2.S_CONSUMER_SERVICE_MAPPING.SERVICE_RESOURCE_ID' x='1068' y='562' onmouseover="hghl(['S_CONSUMER_SERVICE_MAPPING_fk_S_CONSUMER_SERVICE_MAPPING_0'])" onmouseout="uhghl(['S_CONSUMER_SERVICE_MAPPING_fk_S_CONSUMER_SERVICE_MAPPING_0'])">SERVICE_RESOURCE_ID</text><text x='1245' y='562' text-anchor='end' class='colType'>varchar2</text><title>SERVICE_RESOURCE_ID
+varchar2
+服务资源ID</title></a>
+<a xlink:href='#S_CONSUMER_SERVICE_MAPPING.SERVICE_RESOURCE_ID'><use id='fk' x='1248' y='551' xlink:href='#fk'/><title>References S_SERVICE_RESOURCE ( SERVICE_RESOURCE_ID -&gt; ID ) </title></a>
+
+<!-- ============= Table 'S_AUTH_APPLY' ============= -->
+<rect class='table' x='1050' y='638' width='210' height='270' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='1050.500000' y1='664.500000' x2='1259.500000' y2='664.500000'/>
+<line class='delim' x1='1065.500000' y1='664.500000' x2='1065.500000' y2='907.500000'/>
+<line class='delim' x1='1248.500000' y1='664.500000' x2='1248.500000' y2='907.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='1050.50' y1='664.50' x2='1259.50' y2='664.50'/>
+<a xlink:href='#S_AUTH_APPLY'><text x='1111' y='656'>S_AUTH_APPLY</text><title>Table GONGANYUN2.S_AUTH_APPLY
+授权申请信息</title></a>
+  <use id='nn' x='1052' y='672' xlink:href='#nn'/><a xlink:href='#S_AUTH_APPLY.ID'><use id='pk' x='1052' y='671' xlink:href='#pk'/><title>Pk Pk_AUTH_APPLY_MESSAGE ( ID ) </title></a>
+<a xlink:href='#S_AUTH_APPLY.ID'><text id='GONGANYUN2.S_AUTH_APPLY.ID' x='1068' y='682' onmouseover="hghl(['S_AUTH_RESULT_fk_S_AUTH_RESULT'])" onmouseout="uhghl(['S_AUTH_RESULT_fk_S_AUTH_RESULT'])">ID</text><text x='1245' y='682' text-anchor='end' class='colType'>varchar2</text><title>ID
+* varchar2
+主键ID</title></a>
+<a xlink:href='#S_AUTH_APPLY.ID'><use id='ref' x='1248' y='671' xlink:href='#ref'/><title>Referred by S_AUTH_RESULT ( APPLY_ID -&gt; ID ) </title></a>
+  <use id='nn' x='1052' y='687' xlink:href='#nn'/><a xlink:href='#S_AUTH_APPLY.SQSQ_BWBH'><text id='GONGANYUN2.S_AUTH_APPLY.SQSQ_BWBH' x='1068' y='697' onmouseover="hghl(['AUTH_APPLY_MESSAGE_LOG_fk_AUTH_APPLY_MESSAGE_LOG'])" onmouseout="uhghl(['AUTH_APPLY_MESSAGE_LOG_fk_AUTH_APPLY_MESSAGE_LOG'])">SQSQ_BWBH</text><text x='1245' y='697' text-anchor='end' class='colType'>varchar2</text><title>SQSQ_BWBH
+* varchar2
+授权申请_报文编号。
+
+用于唯一标识一条授权申请报文。应符合7.1的规定；</title></a>
+<a xlink:href='#S_AUTH_APPLY.SQSQ_BWBH'><use id='ref' x='1248' y='686' xlink:href='#ref'/><title>Referred by AUTH_APPLY_MESSAGE_LOG ( SQSQ_BWBH ) </title></a>
+  <a xlink:href='#S_AUTH_APPLY.SQSQ_RQSJ'><text id='GONGANYUN2.S_AUTH_APPLY.SQSQ_RQSJ' x='1068' y='712'>SQSQ_RQSJ</text><text x='1245' y='712' text-anchor='end' class='colType'>date</text><title>SQSQ_RQSJ
+date
+授权申请_日期时间</title></a>
+  <a xlink:href='#S_AUTH_APPLY.XXCZRY_XM'><text id='GONGANYUN2.S_AUTH_APPLY.XXCZRY_XM' x='1068' y='727'>XXCZRY_XM</text><text x='1245' y='727' text-anchor='end' class='colType'>varchar2</text><title>XXCZRY_XM
+varchar2
+信息操作人员_姓名</title></a>
+  <a xlink:href='#S_AUTH_APPLY.XXCZRY_GMSFHM'><text id='GONGANYUN2.S_AUTH_APPLY.XXCZRY_GMSFHM' x='1068' y='742'>XXCZRY_GMSFHM</text><text x='1245' y='742' text-anchor='end' class='colType'>varchar2</text><title>XXCZRY_GMSFHM
+varchar2
+信息操作人员_编号</title></a>
+  <a xlink:href='#S_AUTH_APPLY.XXCZRY_GAJGJGDM'><text id='GONGANYUN2.S_AUTH_APPLY.XXCZRY_GAJGJGDM' x='1068' y='757'>XXCZRY_GAJGJGDM</text><text x='1245' y='757' text-anchor='end' class='colType'>varchar2</text><title>XXCZRY_GAJGJGDM
+varchar2
+信息操作人员_机构代码</title></a>
+  <a xlink:href='#S_AUTH_APPLY.XXCZRY_ZWJBDM'><text id='GONGANYUN2.S_AUTH_APPLY.XXCZRY_ZWJBDM' x='1068' y='772'>XXCZRY_ZWJBDM</text><text x='1245' y='772' text-anchor='end' class='colType'>varchar2</text><title>XXCZRY_ZWJBDM
+varchar2
+信息操作人员_职务级别代码</title></a>
+  <a xlink:href='#S_AUTH_APPLY.XXCZRY_GWQJDM'><text id='GONGANYUN2.S_AUTH_APPLY.XXCZRY_GWQJDM' x='1068' y='787'>XXCZRY_GWQJDM</text><text x='1245' y='787' text-anchor='end' class='colType'>varchar2</text><title>XXCZRY_GWQJDM
+varchar2
+信息操作人员_岗位权级代码</title></a>
+  <a xlink:href='#S_AUTH_APPLY.XXCZRY_XZQHDM'><text id='GONGANYUN2.S_AUTH_APPLY.XXCZRY_XZQHDM' x='1068' y='802'>XXCZRY_XZQHDM</text><text x='1245' y='802' text-anchor='end' class='colType'>varchar2</text><title>XXCZRY_XZQHDM
+varchar2
+信息操作人员_行政区划代码</title></a>
+  <a xlink:href='#S_AUTH_APPLY.XXCZRY_MMDJDM'><text id='GONGANYUN2.S_AUTH_APPLY.XXCZRY_MMDJDM' x='1068' y='817'>XXCZRY_MMDJDM</text><text x='1245' y='817' text-anchor='end' class='colType'>varchar2</text><title>XXCZRY_MMDJDM
+varchar2
+信息操作人员_秘密等级代码</title></a>
+  <a xlink:href='#S_AUTH_APPLY.XXCZRY_JZDM'><text id='GONGANYUN2.S_AUTH_APPLY.XXCZRY_JZDM' x='1068' y='832'>XXCZRY_JZDM</text><text x='1245' y='832' text-anchor='end' class='colType'>varchar2</text><title>XXCZRY_JZDM
+varchar2
+信息操作人员_警种（部门）代码</title></a>
+  <a xlink:href='#S_AUTH_APPLY.SPZT'><text id='GONGANYUN2.S_AUTH_APPLY.SPZT' x='1068' y='847'>SPZT</text><text x='1245' y='847' text-anchor='end' class='colType'>integer</text><title>SPZT
+integer
+审批状态</title></a>
+  <a xlink:href='#S_AUTH_APPLY.APPLY_TYPE'><text id='GONGANYUN2.S_AUTH_APPLY.APPLY_TYPE' x='1068' y='862'>APPLY_TYPE</text><text x='1245' y='862' text-anchor='end' class='colType'>integer</text><title>APPLY_TYPE
+integer
+授权申请类型。0表示永久授权，1表示临时授权。</title></a>
+  <a xlink:href='#S_AUTH_APPLY.CONSUMER_ID'><use id='idx' x='1052' y='866' xlink:href='#idx'/><title>idx_AUTH_APPLY_MESSAGE_0 ( CONSUMER_ID ) </title></a>
+<a xlink:href='#S_AUTH_APPLY.CONSUMER_ID'><text id='GONGANYUN2.S_AUTH_APPLY.CONSUMER_ID' x='1068' y='877' onmouseover="hghl(['S_AUTH_APPLY_fk_AUTH_APPLY_MESSAGE_0'])" onmouseout="uhghl(['S_AUTH_APPLY_fk_AUTH_APPLY_MESSAGE_0'])">CONSUMER_ID</text><text x='1245' y='877' text-anchor='end' class='colType'>varchar2</text><title>CONSUMER_ID
+varchar2
+请求者ID</title></a>
+<a xlink:href='#S_AUTH_APPLY.CONSUMER_ID'><use id='fk' x='1248' y='866' xlink:href='#fk'/><title>References S_SERVICE_CONSUMER ( CONSUMER_ID -&gt; ID ) </title></a>
+  <a xlink:href='#S_AUTH_APPLY.SERVICE_RESOURCE_ID'><use id='idx' x='1052' y='881' xlink:href='#idx'/><title>idx_AUTH_APPLY_MESSAGE ( SERVICE_RESOURCE_ID ) </title></a>
+<a xlink:href='#S_AUTH_APPLY.SERVICE_RESOURCE_ID'><text id='GONGANYUN2.S_AUTH_APPLY.SERVICE_RESOURCE_ID' x='1068' y='892' onmouseover="hghl(['S_AUTH_APPLY_fk_AUTH_APPLY_MESSAGE'])" onmouseout="uhghl(['S_AUTH_APPLY_fk_AUTH_APPLY_MESSAGE'])">SERVICE_RESOURCE_ID</text><text x='1245' y='892' text-anchor='end' class='colType'>varchar2</text><title>SERVICE_RESOURCE_ID
+varchar2
+服务资源ID</title></a>
+<a xlink:href='#S_AUTH_APPLY.SERVICE_RESOURCE_ID'><use id='fk' x='1248' y='881' xlink:href='#fk'/><title>References S_SERVICE_RESOURCE ( SERVICE_RESOURCE_ID -&gt; ID ) </title></a>
+
+<!-- ============= Table 'S_AUTH_RESULT' ============= -->
+<rect class='table' x='1050' y='953' width='135' height='135' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='1050.500000' y1='979.500000' x2='1184.500000' y2='979.500000'/>
+<line class='delim' x1='1065.500000' y1='979.500000' x2='1065.500000' y2='1087.500000'/>
+<line class='delim' x1='1173.500000' y1='979.500000' x2='1173.500000' y2='1087.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='1050.50' y1='979.50' x2='1184.50' y2='979.50'/>
+<a xlink:href='#S_AUTH_RESULT'><text x='1071' y='971'>S_AUTH_RESULT</text><title>Table GONGANYUN2.S_AUTH_RESULT
+临时授权结果</title></a>
+  <use id='nn' x='1052' y='987' xlink:href='#nn'/><a xlink:href='#S_AUTH_RESULT.ID'><use id='pk' x='1052' y='986' xlink:href='#pk'/><title>Pk Pk_S_AUTH_RESULT ( ID ) </title></a>
+<a xlink:href='#S_AUTH_RESULT.ID'><text id='GONGANYUN2.S_AUTH_RESULT.ID' x='1068' y='997'>ID</text><text x='1170' y='997' text-anchor='end' class='colType'>varchar2</text><title>ID
+* varchar2
+主键ID</title></a>
+  <use id='nn' x='1052' y='1002' xlink:href='#nn'/><a xlink:href='#S_AUTH_RESULT.SQ_BWBH'><text id='GONGANYUN2.S_AUTH_RESULT.SQ_BWBH' x='1068' y='1012' onmouseover="hghl(['AUTH_MESSAGE_LOG_fk_AUTH_MESSAGE_LOG'])" onmouseout="uhghl(['AUTH_MESSAGE_LOG_fk_AUTH_MESSAGE_LOG'])">SQ_BWBH</text><text x='1170' y='1012' text-anchor='end' class='colType'>varchar2</text><title>SQ_BWBH
+* varchar2
+授权报文编号</title></a>
+<a xlink:href='#S_AUTH_RESULT.SQ_BWBH'><use id='ref' x='1173' y='1001' xlink:href='#ref'/><title>Referred by AUTH_MESSAGE_LOG ( SQ_BWBH ) </title></a>
+  <a xlink:href='#S_AUTH_RESULT.SQ_RQSJ'><text id='GONGANYUN2.S_AUTH_RESULT.SQ_RQSJ' x='1068' y='1027'>SQ_RQSJ</text><text x='1170' y='1027' text-anchor='end' class='colType'>date</text><title>SQ_RQSJ
+date
+授权_日期时间</title></a>
+  <a xlink:href='#S_AUTH_RESULT.FWTGZTDM'><text id='GONGANYUN2.S_AUTH_RESULT.FWTGZTDM' x='1068' y='1042'>FWTGZTDM</text><text x='1170' y='1042' text-anchor='end' class='colType'>varchar2</text><title>FWTGZTDM
+varchar2
+服务提供状态代码</title></a>
+  <a xlink:href='#S_AUTH_RESULT.SQXX'><text id='GONGANYUN2.S_AUTH_RESULT.SQXX' x='1068' y='1057'>SQXX</text><text x='1170' y='1057' text-anchor='end' class='colType'>varchar2</text><title>SQXX
+varchar2
+授权信息。
+
+由服务提供者生成，当服务请求者采用自主路由时需凭借此信息访问服务提供者的服务</title></a>
+  <a xlink:href='#S_AUTH_RESULT.APPLY_ID'><use id='idx' x='1052' y='1061' xlink:href='#idx'/><title>idx_S_AUTH_RESULT ( APPLY_ID ) </title></a>
+<a xlink:href='#S_AUTH_RESULT.APPLY_ID'><text id='GONGANYUN2.S_AUTH_RESULT.APPLY_ID' x='1068' y='1072' onmouseover="hghl(['S_AUTH_RESULT_fk_S_AUTH_RESULT'])" onmouseout="uhghl(['S_AUTH_RESULT_fk_S_AUTH_RESULT'])">APPLY_ID</text><text x='1170' y='1072' text-anchor='end' class='colType'>varchar2</text><title>APPLY_ID
+varchar2
+授权申请ID</title></a>
+<a xlink:href='#S_AUTH_RESULT.APPLY_ID'><use id='fk' x='1173' y='1061' xlink:href='#fk'/><title>References S_AUTH_APPLY ( APPLY_ID -&gt; ID ) </title></a>
+
+<!-- ============= Table 'S_SERVICE_ADDRESS' ============= -->
+<rect class='table' x='675' y='1148' width='150' height='135' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='675.500000' y1='1174.500000' x2='824.500000' y2='1174.500000'/>
+<line class='delim' x1='690.500000' y1='1174.500000' x2='690.500000' y2='1282.500000'/>
+<line class='delim' x1='813.500000' y1='1174.500000' x2='813.500000' y2='1282.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='675.50' y1='1174.50' x2='824.50' y2='1174.50'/>
+<a xlink:href='#S_SERVICE_ADDRESS'><text x='691' y='1166'>S_SERVICE_ADDRESS</text><title>Table GONGANYUN2.S_SERVICE_ADDRESS
+服务地址信息</title></a>
+  <use id='nn' x='677' y='1182' xlink:href='#nn'/><a xlink:href='#S_SERVICE_ADDRESS.ID'><use id='pk' x='677' y='1181' xlink:href='#pk'/><title>Pk Pk_S_SERVICE_ADDRESS ( ID ) </title></a>
+<a xlink:href='#S_SERVICE_ADDRESS.ID'><text id='GONGANYUN2.S_SERVICE_ADDRESS.ID' x='693' y='1192' onmouseover="hghl(['S_SERVICE_RESOURCE_fk_S_SERVICE_RESOURCE'])" onmouseout="uhghl(['S_SERVICE_RESOURCE_fk_S_SERVICE_RESOURCE'])">ID</text><text x='810' y='1192' text-anchor='end' class='colType'>varchar2</text><title>ID
+* varchar2
+主键ID</title></a>
+<a xlink:href='#S_SERVICE_ADDRESS.ID'><use id='ref' x='813' y='1181' xlink:href='#ref'/><title>Referred by S_SERVICE_RESOURCE ( FWDZ_ID -&gt; ID ) </title></a>
+  <a xlink:href='#S_SERVICE_ADDRESS.FW_IPDZ'><text id='GONGANYUN2.S_SERVICE_ADDRESS.FW_IPDZ' x='693' y='1207'>FW_IPDZ</text><text x='810' y='1207' text-anchor='end' class='colType'>varchar2</text><title>FW_IPDZ
+varchar2
+服务_入口地址</title></a>
+  <a xlink:href='#S_SERVICE_ADDRESS.FW_ZXDKHM'><text id='GONGANYUN2.S_SERVICE_ADDRESS.FW_ZXDKHM' x='693' y='1222'>FW_ZXDKHM</text><text x='810' y='1222' text-anchor='end' class='colType'>varchar2</text><title>FW_ZXDKHM
+varchar2
+服务_端口号</title></a>
+  <a xlink:href='#S_SERVICE_ADDRESS.FWNR_FFMC'><text id='GONGANYUN2.S_SERVICE_ADDRESS.FWNR_FFMC' x='693' y='1237'>FWNR_FFMC</text><text x='810' y='1237' text-anchor='end' class='colType'>varchar2</text><title>FWNR_FFMC
+varchar2
+服务方法名称</title></a>
+  <a xlink:href='#S_SERVICE_ADDRESS.FWNR_RQC'><use id='idx' x='677' y='1241' xlink:href='#idx'/><title>idx_S_SERVICE_ADDRESS ( FWNR_RQC ) </title></a>
+<a xlink:href='#S_SERVICE_ADDRESS.FWNR_RQC'><text id='GONGANYUN2.S_SERVICE_ADDRESS.FWNR_RQC' x='693' y='1252' onmouseover="hghl(['S_SERVICE_ADDRESS_fk_S_SERVICE_ADDRESS'])" onmouseout="uhghl(['S_SERVICE_ADDRESS_fk_S_SERVICE_ADDRESS'])">FWNR_RQC</text><text x='810' y='1252' text-anchor='end' class='colType'>varchar2</text><title>FWNR_RQC
+varchar2
+服务请求参数集ID</title></a>
+<a xlink:href='#S_SERVICE_ADDRESS.FWNR_RQC'><use id='fk' x='813' y='1241' xlink:href='#fk'/><title>References S_SERVICE_ADDR_PARAM ( FWNR_RQC -&gt; ID ) </title></a>
+  <a xlink:href='#S_SERVICE_ADDRESS.FWNR_CC'><use id='idx' x='677' y='1256' xlink:href='#idx'/><title>idx_S_SERVICE_ADDRESS_0 ( FWNR_CC ) </title></a>
+<a xlink:href='#S_SERVICE_ADDRESS.FWNR_CC'><text id='GONGANYUN2.S_SERVICE_ADDRESS.FWNR_CC' x='693' y='1267' onmouseover="hghl(['S_SERVICE_ADDRESS_fk_S_SERVICE_ADDRESS_0'])" onmouseout="uhghl(['S_SERVICE_ADDRESS_fk_S_SERVICE_ADDRESS_0'])">FWNR_CC</text><text x='810' y='1267' text-anchor='end' class='colType'>varchar2</text><title>FWNR_CC
+varchar2
+返回结果集参数ID</title></a>
+<a xlink:href='#S_SERVICE_ADDRESS.FWNR_CC'><use id='fk' x='813' y='1256' xlink:href='#fk'/><title>References S_SERVICE_ADDR_PARAM ( FWNR_CC -&gt; ID ) </title></a>
+
+<!-- ============= Table 'S_SERVICE_ADDR_PARAM' ============= -->
+<rect class='table' x='675' y='1328' width='150' height='90' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='675.500000' y1='1354.500000' x2='824.500000' y2='1354.500000'/>
+<line class='delim' x1='690.500000' y1='1354.500000' x2='690.500000' y2='1417.500000'/>
+<line class='delim' x1='813.500000' y1='1354.500000' x2='813.500000' y2='1417.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='675.50' y1='1354.50' x2='824.50' y2='1354.50'/>
+<a xlink:href='#S_SERVICE_ADDR_PARAM'><text x='680' y='1346'>S_SERVICE_ADDR_PARAM</text><title>Table GONGANYUN2.S_SERVICE_ADDR_PARAM
+服务地址参数集信息</title></a>
+  <use id='nn' x='677' y='1362' xlink:href='#nn'/><a xlink:href='#S_SERVICE_ADDR_PARAM.ID'><use id='pk' x='677' y='1361' xlink:href='#pk'/><title>Pk Pk_S_SERVICE_ADDR_PARAM ( ID ) </title></a>
+<a xlink:href='#S_SERVICE_ADDR_PARAM.ID'><text id='GONGANYUN2.S_SERVICE_ADDR_PARAM.ID' x='693' y='1372' onmouseover="hghl(['S_SERVICE_ADDRESS_fk_S_SERVICE_ADDRESS','S_SERVICE_ADDRESS_fk_S_SERVICE_ADDRESS_0'])" onmouseout="uhghl(['S_SERVICE_ADDRESS_fk_S_SERVICE_ADDRESS','S_SERVICE_ADDRESS_fk_S_SERVICE_ADDRESS_0'])">ID</text><text x='810' y='1372' text-anchor='end' class='colType'>varchar2</text><title>ID
+* varchar2
+主键ID</title></a>
+<a xlink:href='#S_SERVICE_ADDR_PARAM.ID'><use id='ref' x='813' y='1361' xlink:href='#ref'/><title>Referred by S_SERVICE_ADDRESS ( FWNR_RQC -&gt; ID ) 
+Referred by S_SERVICE_ADDRESS ( FWNR_CC -&gt; ID ) </title></a>
+  <a xlink:href='#S_SERVICE_ADDR_PARAM.MC'><text id='GONGANYUN2.S_SERVICE_ADDR_PARAM.MC' x='693' y='1387'>MC</text><text x='810' y='1387' text-anchor='end' class='colType'>varchar2</text><title>MC
+varchar2
+名称</title></a>
+  <a xlink:href='#S_SERVICE_ADDR_PARAM.LX'><text id='GONGANYUN2.S_SERVICE_ADDR_PARAM.LX' x='693' y='1402'>LX</text><text x='810' y='1402' text-anchor='end' class='colType'>varchar2</text><title>LX
+varchar2
+类型</title></a>
+
+<!-- ============= Table 'S_SERVICE_TIME_RULE' ============= -->
+<rect class='table' x='1365' y='263' width='135' height='150' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='1365.500000' y1='289.500000' x2='1499.500000' y2='289.500000'/>
+<line class='delim' x1='1380.500000' y1='289.500000' x2='1380.500000' y2='412.500000'/>
+<line class='delim' x1='1488.500000' y1='289.500000' x2='1488.500000' y2='412.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='1365.50' y1='289.50' x2='1499.50' y2='289.50'/>
+<a xlink:href='#S_SERVICE_TIME_RULE'><text x='1371' y='281'>S_SERVICE_TIME_RULE</text><title>Table GONGANYUN2.S_SERVICE_TIME_RULE
+服务访问时间规则</title></a>
+  <use id='nn' x='1367' y='297' xlink:href='#nn'/><a xlink:href='#S_SERVICE_TIME_RULE.ID'><use id='pk' x='1367' y='296' xlink:href='#pk'/><title>Pk Pk_S_SERVICE_VISIT_TIME ( ID ) </title></a>
+<a xlink:href='#S_SERVICE_TIME_RULE.ID'><text id='GONGANYUN2.S_SERVICE_TIME_RULE.ID' x='1383' y='307' onmouseover="hghl(['S_SERVICE_TIME_MAPPING_fk_S_SERVICE_TIME_MAPPING'])" onmouseout="uhghl(['S_SERVICE_TIME_MAPPING_fk_S_SERVICE_TIME_MAPPING'])">ID</text><text x='1485' y='307' text-anchor='end' class='colType'>varchar2</text><title>ID
+* varchar2
+主键ID</title></a>
+<a xlink:href='#S_SERVICE_TIME_RULE.ID'><use id='ref' x='1488' y='296' xlink:href='#ref'/><title>Referred by S_SERVICE_TIME_MAPPING ( TIME_ID -&gt; ID ) </title></a>
+  <a xlink:href='#S_SERVICE_TIME_RULE.RULE_NAME'><text id='GONGANYUN2.S_SERVICE_TIME_RULE.RULE_NAME' x='1383' y='322'>RULE_NAME</text><text x='1485' y='322' text-anchor='end' class='colType'>varchar</text><title>RULE_NAME
+varchar
+规则名称</title></a>
+  <a xlink:href='#S_SERVICE_TIME_RULE.TIME_CYCLE'><text id='GONGANYUN2.S_SERVICE_TIME_RULE.TIME_CYCLE' x='1383' y='337'>TIME_CYCLE</text><text x='1485' y='337' text-anchor='end' class='colType'>varchar</text><title>TIME_CYCLE
+varchar
+访问时间。如1,3,5表示周一、三、五可以访问。</title></a>
+  <a xlink:href='#S_SERVICE_TIME_RULE.START_TIME'><text id='GONGANYUN2.S_SERVICE_TIME_RULE.START_TIME' x='1383' y='352'>START_TIME</text><text x='1485' y='352' text-anchor='end' class='colType'>varchar</text><title>START_TIME
+varchar
+当天开始时间</title></a>
+  <a xlink:href='#S_SERVICE_TIME_RULE.END_TIME'><text id='GONGANYUN2.S_SERVICE_TIME_RULE.END_TIME' x='1383' y='367'>END_TIME</text><text x='1485' y='367' text-anchor='end' class='colType'>varchar</text><title>END_TIME
+varchar
+当天结束时间</title></a>
+  <a xlink:href='#S_SERVICE_TIME_RULE.MEMO1'><text id='GONGANYUN2.S_SERVICE_TIME_RULE.MEMO1' x='1383' y='382'>MEMO1</text><text x='1485' y='382' text-anchor='end' class='colType'>varchar</text><title>MEMO1
+varchar
+备用字段1</title></a>
+  <a xlink:href='#S_SERVICE_TIME_RULE.MEMO2'><text id='GONGANYUN2.S_SERVICE_TIME_RULE.MEMO2' x='1383' y='397'>MEMO2</text><text x='1485' y='397' text-anchor='end' class='colType'>varchar</text><title>MEMO2
+varchar
+备用字段2</title></a>
+
+<!-- ============= Table 'S_SERVICE_VISIT_COUNT' ============= -->
+<rect class='table' x='1590' y='263' width='210' height='105' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='1590.500000' y1='289.500000' x2='1799.500000' y2='289.500000'/>
+<line class='delim' x1='1605.500000' y1='289.500000' x2='1605.500000' y2='367.500000'/>
+<line class='delim' x1='1788.500000' y1='289.500000' x2='1788.500000' y2='367.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='1590.50' y1='289.50' x2='1799.50' y2='289.50'/>
+<a xlink:href='#S_SERVICE_VISIT_COUNT'><text x='1628' y='281'>S_SERVICE_VISIT_COUNT</text><title>Table GONGANYUN2.S_SERVICE_VISIT_COUNT
+服务访问次数关联</title></a>
+  <use id='nn' x='1592' y='297' xlink:href='#nn'/><a xlink:href='#S_SERVICE_VISIT_COUNT.ID'><use id='pk' x='1592' y='296' xlink:href='#pk'/><title>Pk Pk_S_SERVICE_VISIT_COUNT ( ID ) </title></a>
+<a xlink:href='#S_SERVICE_VISIT_COUNT.ID'><text id='GONGANYUN2.S_SERVICE_VISIT_COUNT.ID' x='1608' y='307'>ID</text><text x='1785' y='307' text-anchor='end' class='colType'>varchar2</text><title>ID
+* varchar2
+主键ID</title></a>
+  <a xlink:href='#S_SERVICE_VISIT_COUNT.CONSUMER_ID'><use id='unq' x='1592' y='311' xlink:href='#unq'/><title>Unq Pk_S_SERVICE_VISIT_COUNT_0 ( CONSUMER_ID ) </title></a>
+<a xlink:href='#S_SERVICE_VISIT_COUNT.CONSUMER_ID'><text id='GONGANYUN2.S_SERVICE_VISIT_COUNT.CONSUMER_ID' x='1608' y='322' onmouseover="hghl(['S_SERVICE_VISIT_COUNT_LOG_fk_S_SERVICE_VISIT_COUNT_LOG'])" onmouseout="uhghl(['S_SERVICE_VISIT_COUNT_LOG_fk_S_SERVICE_VISIT_COUNT_LOG'])">CONSUMER_ID</text><text x='1785' y='322' text-anchor='end' class='colType'>varchar2</text><title>CONSUMER_ID
+varchar2
+请求者ID</title></a>
+<a xlink:href='#S_SERVICE_VISIT_COUNT.CONSUMER_ID'><use id='ref' x='1788' y='311' xlink:href='#ref'/><title>Referred by S_SERVICE_VISIT_COUNT_LOG ( VISIT_COUNT_ID -&gt; CONSUMER_ID ) </title></a>
+  <a xlink:href='#S_SERVICE_VISIT_COUNT.SERVICE_RESOURCE_ID'><text id='GONGANYUN2.S_SERVICE_VISIT_COUNT.SERVICE_RESOURCE_ID' x='1608' y='337'>SERVICE_RESOURCE_ID</text><text x='1785' y='337' text-anchor='end' class='colType'>varchar2</text><title>SERVICE_RESOURCE_ID
+varchar2
+服务资源ID</title></a>
+  <use id='nn' x='1592' y='342' xlink:href='#nn'/><a xlink:href='#S_SERVICE_VISIT_COUNT.VISIT_COUNT'><text id='GONGANYUN2.S_SERVICE_VISIT_COUNT.VISIT_COUNT' x='1608' y='352'>VISIT_COUNT</text><text x='1785' y='352' text-anchor='end' class='colType'>int</text><title>VISIT_COUNT
+* int
+每日限制访问次数</title></a>
+
+<!-- ============= Table 'S_SERVICE_TIME_MAPPING' ============= -->
+<rect class='table' x='1365' y='458' width='150' height='150' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='1365.500000' y1='484.500000' x2='1514.500000' y2='484.500000'/>
+<line class='delim' x1='1380.500000' y1='484.500000' x2='1380.500000' y2='607.500000'/>
+<line class='delim' x1='1503.500000' y1='484.500000' x2='1503.500000' y2='607.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='1365.50' y1='484.50' x2='1514.50' y2='484.50'/>
+<a xlink:href='#S_SERVICE_TIME_MAPPING'><text x='1369' y='476'>S_SERVICE_TIME_MAPPING</text><title>Table GONGANYUN2.S_SERVICE_TIME_MAPPING
+服务访问时间规则映射</title></a>
+  <use id='nn' x='1367' y='492' xlink:href='#nn'/><a xlink:href='#S_SERVICE_TIME_MAPPING.ID'><use id='pk' x='1367' y='491' xlink:href='#pk'/><title>Pk Pk_S_SERVICE_TIME_MAPPING ( ID ) </title></a>
+<a xlink:href='#S_SERVICE_TIME_MAPPING.ID'><text id='GONGANYUN2.S_SERVICE_TIME_MAPPING.ID' x='1383' y='502'>ID</text><text x='1500' y='502' text-anchor='end' class='colType'>varchar2</text><title>ID
+* varchar2
+主键ID</title></a>
+  <a xlink:href='#S_SERVICE_TIME_MAPPING.TIME_ID'><use id='idx' x='1367' y='506' xlink:href='#idx'/><title>idx_S_SERVICE_TIME_MAPPING ( TIME_ID ) </title></a>
+<a xlink:href='#S_SERVICE_TIME_MAPPING.TIME_ID'><text id='GONGANYUN2.S_SERVICE_TIME_MAPPING.TIME_ID' x='1383' y='517' onmouseover="hghl(['S_SERVICE_TIME_MAPPING_fk_S_SERVICE_TIME_MAPPING'])" onmouseout="uhghl(['S_SERVICE_TIME_MAPPING_fk_S_SERVICE_TIME_MAPPING'])">TIME_ID</text><text x='1500' y='517' text-anchor='end' class='colType'>varchar2</text><title>TIME_ID
+varchar2
+时间规则ID</title></a>
+<a xlink:href='#S_SERVICE_TIME_MAPPING.TIME_ID'><use id='fk' x='1503' y='506' xlink:href='#fk'/><title>References S_SERVICE_TIME_RULE ( TIME_ID -&gt; ID ) </title></a>
+  <a xlink:href='#S_SERVICE_TIME_MAPPING.SERVICE_ID'><text id='GONGANYUN2.S_SERVICE_TIME_MAPPING.SERVICE_ID' x='1383' y='532'>SERVICE_ID</text><text x='1500' y='532' text-anchor='end' class='colType'>varchar2</text><title>SERVICE_ID
+varchar2
+服务资源ID</title></a>
+  <a xlink:href='#S_SERVICE_TIME_MAPPING.MEMO1'><text id='GONGANYUN2.S_SERVICE_TIME_MAPPING.MEMO1' x='1383' y='547'>MEMO1</text><text x='1500' y='547' text-anchor='end' class='colType'>varchar2</text><title>MEMO1
+varchar2
+备用字段1</title></a>
+  <a xlink:href='#S_SERVICE_TIME_MAPPING.MEMO2'><text id='GONGANYUN2.S_SERVICE_TIME_MAPPING.MEMO2' x='1383' y='562'>MEMO2</text><text x='1500' y='562' text-anchor='end' class='colType'>varchar2</text><title>MEMO2
+varchar2
+备用字段2</title></a>
+  <a xlink:href='#S_SERVICE_TIME_MAPPING.UPDATE_USER'><text id='GONGANYUN2.S_SERVICE_TIME_MAPPING.UPDATE_USER' x='1383' y='577'>UPDATE_USER</text><text x='1500' y='577' text-anchor='end' class='colType'>varchar2</text><title>UPDATE_USER
+varchar2
+更新用户</title></a>
+  <a xlink:href='#S_SERVICE_TIME_MAPPING.UPDATE_TIME'><text id='GONGANYUN2.S_SERVICE_TIME_MAPPING.UPDATE_TIME' x='1383' y='592'>UPDATE_TIME</text><text x='1500' y='592' text-anchor='end' class='colType'>date</text><title>UPDATE_TIME
+date
+更新时间</title></a>
+
+<!-- ============= Table 'S_SERVICE_VISIT_COUNT_LOG' ============= -->
+<rect class='table' x='1590' y='428' width='180' height='105' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='1590.500000' y1='454.500000' x2='1769.500000' y2='454.500000'/>
+<line class='delim' x1='1605.500000' y1='454.500000' x2='1605.500000' y2='532.500000'/>
+<line class='delim' x1='1758.500000' y1='454.500000' x2='1758.500000' y2='532.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='1590.50' y1='454.50' x2='1769.50' y2='454.50'/>
+<a xlink:href='#S_SERVICE_VISIT_COUNT_LOG'><text x='1599' y='446'>S_SERVICE_VISIT_COUNT_LOG</text><title>Table GONGANYUN2.S_SERVICE_VISIT_COUNT_LOG
+每日访问次数日志</title></a>
+  <use id='nn' x='1592' y='462' xlink:href='#nn'/><a xlink:href='#S_SERVICE_VISIT_COUNT_LOG.ID'><use id='pk' x='1592' y='461' xlink:href='#pk'/><title>Pk Pk_S_SERVICE_VISIT_COUNT_LOG ( ID ) </title></a>
+<a xlink:href='#S_SERVICE_VISIT_COUNT_LOG.ID'><text id='GONGANYUN2.S_SERVICE_VISIT_COUNT_LOG.ID' x='1608' y='472'>ID</text><text x='1755' y='472' text-anchor='end' class='colType'>varchar2</text><title>ID
+* varchar2
+主键ID</title></a>
+  <a xlink:href='#S_SERVICE_VISIT_COUNT_LOG.VISIT_COUNT_ID'><use id='idx' x='1592' y='476' xlink:href='#idx'/><title>idx_S_SERVICE_VISIT_COUNT_LOG ( VISIT_COUNT_ID ) </title></a>
+<a xlink:href='#S_SERVICE_VISIT_COUNT_LOG.VISIT_COUNT_ID'><text id='GONGANYUN2.S_SERVICE_VISIT_COUNT_LOG.VISIT_COUNT_ID' x='1608' y='487' onmouseover="hghl(['S_SERVICE_VISIT_COUNT_LOG_fk_S_SERVICE_VISIT_COUNT_LOG'])" onmouseout="uhghl(['S_SERVICE_VISIT_COUNT_LOG_fk_S_SERVICE_VISIT_COUNT_LOG'])">VISIT_COUNT_ID</text><text x='1755' y='487' text-anchor='end' class='colType'>varchar2</text><title>VISIT_COUNT_ID
+varchar2
+访问次数关联ID</title></a>
+<a xlink:href='#S_SERVICE_VISIT_COUNT_LOG.VISIT_COUNT_ID'><use id='fk' x='1758' y='476' xlink:href='#fk'/><title>References S_SERVICE_VISIT_COUNT ( VISIT_COUNT_ID -&gt; CONSUMER_ID ) </title></a>
+  <a xlink:href='#S_SERVICE_VISIT_COUNT_LOG.VISITED_COUNT'><text id='GONGANYUN2.S_SERVICE_VISIT_COUNT_LOG.VISITED_COUNT' x='1608' y='502'>VISITED_COUNT</text><text x='1755' y='502' text-anchor='end' class='colType'>varchar2</text><title>VISITED_COUNT
+varchar2
+已访问次数</title></a>
+  <a xlink:href='#S_SERVICE_VISIT_COUNT_LOG.VISIT_DATE'><text id='GONGANYUN2.S_SERVICE_VISIT_COUNT_LOG.VISIT_DATE' x='1608' y='517'>VISIT_DATE</text><text x='1755' y='517' text-anchor='end' class='colType'>date</text><title>VISIT_DATE
+date
+访问日期</title></a>
+
+<!-- ============= Table 'S_SERVICE_CATA_MAPPING' ============= -->
+<rect class='table' x='330' y='878' width='210' height='90' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='330.500000' y1='904.500000' x2='539.500000' y2='904.500000'/>
+<line class='delim' x1='345.500000' y1='904.500000' x2='345.500000' y2='967.500000'/>
+<line class='delim' x1='528.500000' y1='904.500000' x2='528.500000' y2='967.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='330.50' y1='904.50' x2='539.50' y2='904.50'/>
+<a xlink:href='#S_SERVICE_CATA_MAPPING'><text x='361' y='896'>S_SERVICE_CATA_MAPPING</text><title>Table GONGANYUN2.S_SERVICE_CATA_MAPPING
+服务目录与服务资源映射</title></a>
+  <a xlink:href='#S_SERVICE_CATA_MAPPING.ID'><text id='GONGANYUN2.S_SERVICE_CATA_MAPPING.ID' x='348' y='922'>ID</text><text x='525' y='922' text-anchor='end' class='colType'>varchar2</text><title>ID
+varchar2
+主键ID</title></a>
+  <a xlink:href='#S_SERVICE_CATA_MAPPING.CATA_ID'><use id='idx' x='332' y='926' xlink:href='#idx'/><title>idx_S_SERVICE_CATA_MAPPING ( CATA_ID ) </title></a>
+<a xlink:href='#S_SERVICE_CATA_MAPPING.CATA_ID'><text id='GONGANYUN2.S_SERVICE_CATA_MAPPING.CATA_ID' x='348' y='937' onmouseover="hghl(['S_SERVICE_CATA_MAPPING_fk_S_SERVICE_CATA_MAPPING'])" onmouseout="uhghl(['S_SERVICE_CATA_MAPPING_fk_S_SERVICE_CATA_MAPPING'])">CATA_ID</text><text x='525' y='937' text-anchor='end' class='colType'>varchar2</text><title>CATA_ID
+varchar2
+目录ID</title></a>
+<a xlink:href='#S_SERVICE_CATA_MAPPING.CATA_ID'><use id='fk' x='528' y='926' xlink:href='#fk'/><title>References S_SERVICE_CATA ( CATA_ID -&gt; ID ) </title></a>
+  <a xlink:href='#S_SERVICE_CATA_MAPPING.SERVICE_RESOURCE_ID'><use id='idx' x='332' y='941' xlink:href='#idx'/><title>idx_S_SERVICE_CATA_MAPPING_0 ( SERVICE_RESOURCE_ID ) </title></a>
+<a xlink:href='#S_SERVICE_CATA_MAPPING.SERVICE_RESOURCE_ID'><text id='GONGANYUN2.S_SERVICE_CATA_MAPPING.SERVICE_RESOURCE_ID' x='348' y='952' onmouseover="hghl(['S_SERVICE_CATA_MAPPING_fk_S_SERVICE_CATA_MAPPING_0'])" onmouseout="uhghl(['S_SERVICE_CATA_MAPPING_fk_S_SERVICE_CATA_MAPPING_0'])">SERVICE_RESOURCE_ID</text><text x='525' y='952' text-anchor='end' class='colType'>varchar2</text><title>SERVICE_RESOURCE_ID
+varchar2
+服务资源ID</title></a>
+<a xlink:href='#S_SERVICE_CATA_MAPPING.SERVICE_RESOURCE_ID'><use id='fk' x='528' y='941' xlink:href='#fk'/><title>References S_SERVICE_RESOURCE ( SERVICE_RESOURCE_ID -&gt; ID ) </title></a>
+
+<!-- ============= Table 'S_CATA_CODE_RULE' ============= -->
+<rect class='table' x='330' y='1418' width='150' height='135' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='330.500000' y1='1444.500000' x2='479.500000' y2='1444.500000'/>
+<line class='delim' x1='345.500000' y1='1444.500000' x2='345.500000' y2='1552.500000'/>
+<line class='delim' x1='468.500000' y1='1444.500000' x2='468.500000' y2='1552.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='330.50' y1='1444.50' x2='479.50' y2='1444.50'/>
+<a xlink:href='#S_CATA_CODE_RULE'><text x='348' y='1436'>S_CATA_CODE_RULE</text><title>Table GONGANYUN2.S_CATA_CODE_RULE
+目录编码规则</title></a>
+  <a xlink:href='#S_CATA_CODE_RULE.ID'><use id='unq' x='332' y='1451' xlink:href='#unq'/><title>Unq Pk_S_CATA_CODE_RULE ( ID ) </title></a>
+<a xlink:href='#S_CATA_CODE_RULE.ID'><text id='GONGANYUN2.S_CATA_CODE_RULE.ID' x='348' y='1462' onmouseover="hghl(['S_CATA_DICT_fk_S_CATA_DICT'])" onmouseout="uhghl(['S_CATA_DICT_fk_S_CATA_DICT'])">ID</text><text x='465' y='1462' text-anchor='end' class='colType'>varchar2</text><title>ID
+varchar2
+主键ID</title></a>
+<a xlink:href='#S_CATA_CODE_RULE.ID'><use id='ref' x='468' y='1451' xlink:href='#ref'/><title>Referred by S_CATA_DICT ( RULE_ID -&gt; ID ) </title></a>
+  <a xlink:href='#S_CATA_CODE_RULE.RULE_NAME'><text id='GONGANYUN2.S_CATA_CODE_RULE.RULE_NAME' x='348' y='1477'>RULE_NAME</text><text x='465' y='1477' text-anchor='end' class='colType'>varchar</text><title>RULE_NAME
+varchar
+规则名称</title></a>
+  <a xlink:href='#S_CATA_CODE_RULE.RULE_DESC'><text id='GONGANYUN2.S_CATA_CODE_RULE.RULE_DESC' x='348' y='1492'>RULE_DESC</text><text x='465' y='1492' text-anchor='end' class='colType'>varchar</text><title>RULE_DESC
+varchar
+规则描述</title></a>
+  <a xlink:href='#S_CATA_CODE_RULE.CODE_LENGTH'><text id='GONGANYUN2.S_CATA_CODE_RULE.CODE_LENGTH' x='348' y='1507'>CODE_LENGTH</text><text x='465' y='1507' text-anchor='end' class='colType'>varchar</text><title>CODE_LENGTH
+varchar
+编码长度</title></a>
+  <a xlink:href='#S_CATA_CODE_RULE.STAET_NUM'><text id='GONGANYUN2.S_CATA_CODE_RULE.STAET_NUM' x='348' y='1522'>STAET_NUM</text><text x='465' y='1522' text-anchor='end' class='colType'>varchar</text><title>STAET_NUM
+varchar
+开始位置</title></a>
+  <a xlink:href='#S_CATA_CODE_RULE.END_NUM'><text id='GONGANYUN2.S_CATA_CODE_RULE.END_NUM' x='348' y='1537'>END_NUM</text><text x='465' y='1537' text-anchor='end' class='colType'>varchar</text><title>END_NUM
+varchar
+结束位置</title></a>
+
+<!-- ============= Table 'S_CATA_DICT' ============= -->
+<rect class='table' x='330' y='1268' width='120' height='105' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='330.500000' y1='1294.500000' x2='449.500000' y2='1294.500000'/>
+<line class='delim' x1='345.500000' y1='1294.500000' x2='345.500000' y2='1372.500000'/>
+<line class='delim' x1='438.500000' y1='1294.500000' x2='438.500000' y2='1372.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='330.50' y1='1294.50' x2='449.50' y2='1294.50'/>
+<a xlink:href='#S_CATA_DICT'><text x='352' y='1286'>S_CATA_DICT</text><title>Table GONGANYUN2.S_CATA_DICT
+服务目录字典</title></a>
+  <a xlink:href='#S_CATA_DICT.ID'><text id='GONGANYUN2.S_CATA_DICT.ID' x='348' y='1312'>ID</text><text x='435' y='1312' text-anchor='end' class='colType'>integer</text><title>ID
+integer
+主键ID</title></a>
+  <a xlink:href='#S_CATA_DICT.CODE'><use id='unq' x='332' y='1316' xlink:href='#unq'/><title>Unq Pk_S_CATA_DICT ( CODE ) </title></a>
+<a xlink:href='#S_CATA_DICT.CODE'><text id='GONGANYUN2.S_CATA_DICT.CODE' x='348' y='1327' onmouseover="hghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA','S_SERVICE_CATA_fk_S_SERVICE_CATA_0','S_SERVICE_CATA_fk_S_SERVICE_CATA_1','S_SERVICE_CATA_fk_S_SERVICE_CATA_2'])" onmouseout="uhghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA','S_SERVICE_CATA_fk_S_SERVICE_CATA_0','S_SERVICE_CATA_fk_S_SERVICE_CATA_1','S_SERVICE_CATA_fk_S_SERVICE_CATA_2'])">CODE</text><text x='435' y='1327' text-anchor='end' class='colType'>integer</text><title>CODE
+integer
+编码</title></a>
+<a xlink:href='#S_CATA_DICT.CODE'><use id='ref' x='438' y='1316' xlink:href='#ref'/><title>Referred by S_SERVICE_CATA ( ZIP_CODE -&gt; CODE ) 
+Referred by S_SERVICE_CATA ( SCOPE_CODE -&gt; CODE ) 
+Referred by S_SERVICE_CATA ( APP_CODE -&gt; CODE ) 
+Referred by S_SERVICE_CATA ( BUSINESS_CODE -&gt; CODE ) </title></a>
+  <a xlink:href='#S_CATA_DICT.DESC'><text id='GONGANYUN2.S_CATA_DICT.DESC' x='348' y='1342'>DESC</text><text x='435' y='1342' text-anchor='end' class='colType'>integer</text><title>DESC
+integer
+描述</title></a>
+  <a xlink:href='#S_CATA_DICT.RULE_ID'><use id='idx' x='332' y='1346' xlink:href='#idx'/><title>idx_S_CATA_DICT ( RULE_ID ) </title></a>
+<a xlink:href='#S_CATA_DICT.RULE_ID'><text id='GONGANYUN2.S_CATA_DICT.RULE_ID' x='348' y='1357' onmouseover="hghl(['S_CATA_DICT_fk_S_CATA_DICT'])" onmouseout="uhghl(['S_CATA_DICT_fk_S_CATA_DICT'])">RULE_ID</text><text x='435' y='1357' text-anchor='end' class='colType'>varchar2</text><title>RULE_ID
+varchar2
+编码规则ID</title></a>
+<a xlink:href='#S_CATA_DICT.RULE_ID'><use id='fk' x='438' y='1346' xlink:href='#fk'/><title>References S_CATA_CODE_RULE ( RULE_ID -&gt; ID ) </title></a>
+
+<!-- ============= Table 'S_SERVICE_ELEMENT' ============= -->
+<rect class='table' x='480' y='1268' width='120' height='120' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='480.500000' y1='1294.500000' x2='599.500000' y2='1294.500000'/>
+<line class='delim' x1='495.500000' y1='1294.500000' x2='495.500000' y2='1387.500000'/>
+<line class='delim' x1='588.500000' y1='1294.500000' x2='588.500000' y2='1387.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='480.50' y1='1294.50' x2='599.50' y2='1294.50'/>
+<a xlink:href='#S_SERVICE_ELEMENT'><text x='483' y='1286'>S_SERVICE_ELEMENT</text><title>Table GONGANYUN2.S_SERVICE_ELEMENT
+服务资源要素</title></a>
+  <use id='nn' x='482' y='1302' xlink:href='#nn'/><a xlink:href='#S_SERVICE_ELEMENT.ID'><use id='pk' x='482' y='1301' xlink:href='#pk'/><title>Pk Pk_S_SERVICE_ELEMENT ( ID ) </title></a>
+<a xlink:href='#S_SERVICE_ELEMENT.ID'><text id='GONGANYUN2.S_SERVICE_ELEMENT.ID' x='498' y='1312'>ID</text><text x='585' y='1312' text-anchor='end' class='colType'>varchar2</text><title>ID
+* varchar2
+主键ID</title></a>
+  <a xlink:href='#S_SERVICE_ELEMENT.CODE'><use id='unq' x='482' y='1316' xlink:href='#unq'/><title>Unq Pk_S_SERVICE_ELEMENT_0 ( CODE ) </title></a>
+<a xlink:href='#S_SERVICE_ELEMENT.CODE'><text id='GONGANYUN2.S_SERVICE_ELEMENT.CODE' x='498' y='1327' onmouseover="hghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA_3'])" onmouseout="uhghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA_3'])">CODE</text><text x='585' y='1327' text-anchor='end' class='colType'>varchar2</text><title>CODE
+varchar2
+要素编码</title></a>
+<a xlink:href='#S_SERVICE_ELEMENT.CODE'><use id='ref' x='588' y='1316' xlink:href='#ref'/><title>Referred by S_SERVICE_CATA ( ELEMENT_CODE -&gt; CODE ) </title></a>
+  <a xlink:href='#S_SERVICE_ELEMENT.NAME'><text id='GONGANYUN2.S_SERVICE_ELEMENT.NAME' x='498' y='1342'>NAME</text><text x='585' y='1342' text-anchor='end' class='colType'>varchar</text><title>NAME
+varchar
+要素名称</title></a>
+  <a xlink:href='#S_SERVICE_ELEMENT.MEMO1'><text id='GONGANYUN2.S_SERVICE_ELEMENT.MEMO1' x='498' y='1357'>MEMO1</text><text x='585' y='1357' text-anchor='end' class='colType'>varchar</text><title>MEMO1
+varchar
+备用字段1</title></a>
+  <a xlink:href='#S_SERVICE_ELEMENT.MEMO2'><text id='GONGANYUN2.S_SERVICE_ELEMENT.MEMO2' x='498' y='1372'>MEMO2</text><text x='585' y='1372' text-anchor='end' class='colType'>varchar</text><title>MEMO2
+varchar
+备用字段2</title></a>
+
+<!-- ============= Table 'S_SERVICE_CATA' ============= -->
+<rect class='table' x='330' y='1013' width='165' height='210' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='330.500000' y1='1039.500000' x2='494.500000' y2='1039.500000'/>
+<line class='delim' x1='345.500000' y1='1039.500000' x2='345.500000' y2='1222.500000'/>
+<line class='delim' x1='483.500000' y1='1039.500000' x2='483.500000' y2='1222.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='330.50' y1='1039.50' x2='494.50' y2='1039.50'/>
+<a xlink:href='#S_SERVICE_CATA'><text x='364' y='1031'>S_SERVICE_CATA</text><title>Table GONGANYUN2.S_SERVICE_CATA
+服务目录</title></a>
+  <use id='nn' x='332' y='1047' xlink:href='#nn'/><a xlink:href='#S_SERVICE_CATA.ID'><use id='pk' x='332' y='1046' xlink:href='#pk'/><title>Pk Pk_S_SERVICE_CATA ( ID ) </title></a>
+<a xlink:href='#S_SERVICE_CATA.ID'><text id='GONGANYUN2.S_SERVICE_CATA.ID' x='348' y='1057' onmouseover="hghl(['S_SERVICE_CATA_MAPPING_fk_S_SERVICE_CATA_MAPPING'])" onmouseout="uhghl(['S_SERVICE_CATA_MAPPING_fk_S_SERVICE_CATA_MAPPING'])">ID</text><text x='480' y='1057' text-anchor='end' class='colType'>varchar2</text><title>ID
+* varchar2
+主键ID</title></a>
+<a xlink:href='#S_SERVICE_CATA.ID'><use id='ref' x='483' y='1046' xlink:href='#ref'/><title>Referred by S_SERVICE_CATA_MAPPING ( CATA_ID -&gt; ID ) </title></a>
+  <a xlink:href='#S_SERVICE_CATA.CATA_CODE'><text id='GONGANYUN2.S_SERVICE_CATA.CATA_CODE' x='348' y='1072'>CATA_CODE</text><text x='480' y='1072' text-anchor='end' class='colType'>varchar2</text><title>CATA_CODE
+varchar2
+目录编码</title></a>
+  <a xlink:href='#S_SERVICE_CATA.CATA_NAME'><text id='GONGANYUN2.S_SERVICE_CATA.CATA_NAME' x='348' y='1087'>CATA_NAME</text><text x='480' y='1087' text-anchor='end' class='colType'>varchar</text><title>CATA_NAME
+varchar
+目录名称</title></a>
+  <a xlink:href='#S_SERVICE_CATA.ZIP_CODE'><use id='idx' x='332' y='1091' xlink:href='#idx'/><title>idx_S_SERVICE_CATA ( ZIP_CODE ) </title></a>
+<a xlink:href='#S_SERVICE_CATA.ZIP_CODE'><text id='GONGANYUN2.S_SERVICE_CATA.ZIP_CODE' x='348' y='1102' onmouseover="hghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA'])" onmouseout="uhghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA'])">ZIP_CODE</text><text x='480' y='1102' text-anchor='end' class='colType'>varchar</text><title>ZIP_CODE
+varchar
+所属区域编码</title></a>
+<a xlink:href='#S_SERVICE_CATA.ZIP_CODE'><use id='fk' x='483' y='1091' xlink:href='#fk'/><title>References S_CATA_DICT ( ZIP_CODE -&gt; CODE ) </title></a>
+  <a xlink:href='#S_SERVICE_CATA.SCOPE_CODE'><use id='idx' x='332' y='1106' xlink:href='#idx'/><title>idx_S_SERVICE_CATA_0 ( SCOPE_CODE ) </title></a>
+<a xlink:href='#S_SERVICE_CATA.SCOPE_CODE'><text id='GONGANYUN2.S_SERVICE_CATA.SCOPE_CODE' x='348' y='1117' onmouseover="hghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA_0'])" onmouseout="uhghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA_0'])">SCOPE_CODE</text><text x='480' y='1117' text-anchor='end' class='colType'>varchar</text><title>SCOPE_CODE
+varchar
+行业编码</title></a>
+<a xlink:href='#S_SERVICE_CATA.SCOPE_CODE'><use id='fk' x='483' y='1106' xlink:href='#fk'/><title>References S_CATA_DICT ( SCOPE_CODE -&gt; CODE ) </title></a>
+  <a xlink:href='#S_SERVICE_CATA.APP_CODE'><use id='idx' x='332' y='1121' xlink:href='#idx'/><title>idx_S_SERVICE_CATA_1 ( APP_CODE ) </title></a>
+<a xlink:href='#S_SERVICE_CATA.APP_CODE'><text id='GONGANYUN2.S_SERVICE_CATA.APP_CODE' x='348' y='1132' onmouseover="hghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA_1'])" onmouseout="uhghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA_1'])">APP_CODE</text><text x='480' y='1132' text-anchor='end' class='colType'>varchar</text><title>APP_CODE
+varchar
+所属应用种类编码</title></a>
+<a xlink:href='#S_SERVICE_CATA.APP_CODE'><use id='fk' x='483' y='1121' xlink:href='#fk'/><title>References S_CATA_DICT ( APP_CODE -&gt; CODE ) </title></a>
+  <a xlink:href='#S_SERVICE_CATA.BUSINESS_CODE'><use id='idx' x='332' y='1136' xlink:href='#idx'/><title>idx_S_SERVICE_CATA_2 ( BUSINESS_CODE ) </title></a>
+<a xlink:href='#S_SERVICE_CATA.BUSINESS_CODE'><text id='GONGANYUN2.S_SERVICE_CATA.BUSINESS_CODE' x='348' y='1147' onmouseover="hghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA_2'])" onmouseout="uhghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA_2'])">BUSINESS_CODE</text><text x='480' y='1147' text-anchor='end' class='colType'>varchar</text><title>BUSINESS_CODE
+varchar
+所属业务类型编码</title></a>
+<a xlink:href='#S_SERVICE_CATA.BUSINESS_CODE'><use id='fk' x='483' y='1136' xlink:href='#fk'/><title>References S_CATA_DICT ( BUSINESS_CODE -&gt; CODE ) </title></a>
+  <a xlink:href='#S_SERVICE_CATA.RESOURCE_CODE'><text id='GONGANYUN2.S_SERVICE_CATA.RESOURCE_CODE' x='348' y='1162'>RESOURCE_CODE</text><text x='480' y='1162' text-anchor='end' class='colType'>varchar</text><title>RESOURCE_CODE
+varchar
+资源编码（流水号）</title></a>
+  <a xlink:href='#S_SERVICE_CATA.ELEMENT_CODE'><use id='idx' x='332' y='1166' xlink:href='#idx'/><title>idx_S_SERVICE_CATA_3 ( ELEMENT_CODE ) </title></a>
+<a xlink:href='#S_SERVICE_CATA.ELEMENT_CODE'><text id='GONGANYUN2.S_SERVICE_CATA.ELEMENT_CODE' x='348' y='1177' onmouseover="hghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA_3'])" onmouseout="uhghl(['S_SERVICE_CATA_fk_S_SERVICE_CATA_3'])">ELEMENT_CODE</text><text x='480' y='1177' text-anchor='end' class='colType'>varchar</text><title>ELEMENT_CODE
+varchar
+所属要素编码</title></a>
+<a xlink:href='#S_SERVICE_CATA.ELEMENT_CODE'><use id='fk' x='483' y='1166' xlink:href='#fk'/><title>References S_SERVICE_ELEMENT ( ELEMENT_CODE -&gt; CODE ) </title></a>
+  <a xlink:href='#S_SERVICE_CATA.MEMO1'><text id='GONGANYUN2.S_SERVICE_CATA.MEMO1' x='348' y='1192'>MEMO1</text><text x='480' y='1192' text-anchor='end' class='colType'>varchar</text><title>MEMO1
+varchar
+备用字段1</title></a>
+  <a xlink:href='#S_SERVICE_CATA.MEMO2'><text id='GONGANYUN2.S_SERVICE_CATA.MEMO2' x='348' y='1207'>MEMO2</text><text x='480' y='1207' text-anchor='end' class='colType'>varchar</text><title>MEMO2
+varchar
+备用字段2</title></a>
+
+<!-- ============= Table 'S_SERVICE_GROUP_MAPPING' ============= -->
+<rect class='table' x='375' y='698' width='195' height='90' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='375.500000' y1='724.500000' x2='569.500000' y2='724.500000'/>
+<line class='delim' x1='390.500000' y1='724.500000' x2='390.500000' y2='787.500000'/>
+<line class='delim' x1='558.500000' y1='724.500000' x2='558.500000' y2='787.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='375.50' y1='724.50' x2='569.50' y2='724.50'/>
+<a xlink:href='#S_SERVICE_GROUP_MAPPING'><text x='395' y='716'>S_SERVICE_GROUP_MAPPING</text><title>Table GONGANYUN2.S_SERVICE_GROUP_MAPPING
+服务组合关联</title></a>
+  <a xlink:href='#S_SERVICE_GROUP_MAPPING.ID'><text id='GONGANYUN2.S_SERVICE_GROUP_MAPPING.ID' x='393' y='742'>ID</text><text x='555' y='742' text-anchor='end' class='colType'>varchar2</text><title>ID
+varchar2
+主键ID</title></a>
+  <a xlink:href='#S_SERVICE_GROUP_MAPPING.PARENT_SERVICE_ID'><use id='idx' x='377' y='746' xlink:href='#idx'/><title>idx_S_SERVICE_GROUP_MAPPING ( PARENT_SERVICE_ID ) </title></a>
+<a xlink:href='#S_SERVICE_GROUP_MAPPING.PARENT_SERVICE_ID'><text id='GONGANYUN2.S_SERVICE_GROUP_MAPPING.PARENT_SERVICE_ID' x='393' y='757' onmouseover="hghl(['S_SERVICE_GROUP_MAPPING_fk_S_SERVICE_GROUP_MAPPING'])" onmouseout="uhghl(['S_SERVICE_GROUP_MAPPING_fk_S_SERVICE_GROUP_MAPPING'])">PARENT_SERVICE_ID</text><text x='555' y='757' text-anchor='end' class='colType'>varchar2</text><title>PARENT_SERVICE_ID
+varchar2
+父服务ID</title></a>
+<a xlink:href='#S_SERVICE_GROUP_MAPPING.PARENT_SERVICE_ID'><use id='fk' x='558' y='746' xlink:href='#fk'/><title>References S_SERVICE_RESOURCE ( PARENT_SERVICE_ID -&gt; ID ) </title></a>
+  <a xlink:href='#S_SERVICE_GROUP_MAPPING.CHILD_SERVICE_ID'><use id='idx' x='377' y='761' xlink:href='#idx'/><title>idx_S_SERVICE_GROUP_MAPPING_0 ( CHILD_SERVICE_ID ) </title></a>
+<a xlink:href='#S_SERVICE_GROUP_MAPPING.CHILD_SERVICE_ID'><text id='GONGANYUN2.S_SERVICE_GROUP_MAPPING.CHILD_SERVICE_ID' x='393' y='772' onmouseover="hghl(['S_SERVICE_GROUP_MAPPING_fk_S_SERVICE_GROUP_MAPPING_0'])" onmouseout="uhghl(['S_SERVICE_GROUP_MAPPING_fk_S_SERVICE_GROUP_MAPPING_0'])">CHILD_SERVICE_ID</text><text x='555' y='772' text-anchor='end' class='colType'>varchar2</text><title>CHILD_SERVICE_ID
+varchar2
+子服务ID</title></a>
+<a xlink:href='#S_SERVICE_GROUP_MAPPING.CHILD_SERVICE_ID'><use id='fk' x='558' y='761' xlink:href='#fk'/><title>References S_SERVICE_RESOURCE ( CHILD_SERVICE_ID -&gt; ID ) </title></a>
+
+<!-- ============= Table 'S_SERVICE_REG_LOG' ============= -->
+<rect class='table' x='300' y='83' width='210' height='135' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='300.500000' y1='109.500000' x2='509.500000' y2='109.500000'/>
+<line class='delim' x1='315.500000' y1='109.500000' x2='315.500000' y2='217.500000'/>
+<line class='delim' x1='498.500000' y1='109.500000' x2='498.500000' y2='217.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='300.50' y1='109.50' x2='509.50' y2='109.50'/>
+<a xlink:href='#S_SERVICE_REG_LOG'><text x='346' y='101'>S_SERVICE_REG_LOG</text><title>Table GONGANYUN2.S_SERVICE_REG_LOG
+服务注册日志</title></a>
+  <use id='nn' x='302' y='117' xlink:href='#nn'/><a xlink:href='#S_SERVICE_REG_LOG.ID'><use id='pk' x='302' y='116' xlink:href='#pk'/><title>Pk Pk_S_SERVICE_REG_LOG ( ID ) </title></a>
+<a xlink:href='#S_SERVICE_REG_LOG.ID'><text id='GONGANYUN2.S_SERVICE_REG_LOG.ID' x='318' y='127'>ID</text><text x='495' y='127' text-anchor='end' class='colType'>varchar2</text><title>ID
+* varchar2
+主键ID</title></a>
+  <a xlink:href='#S_SERVICE_REG_LOG.SERVICE_RESOURCE_ID'><text id='GONGANYUN2.S_SERVICE_REG_LOG.SERVICE_RESOURCE_ID' x='318' y='142'>SERVICE_RESOURCE_ID</text><text x='495' y='142' text-anchor='end' class='colType'>varchar2</text><title>SERVICE_RESOURCE_ID
+varchar2
+服务主键ID</title></a>
+  <a xlink:href='#S_SERVICE_REG_LOG.SERVICE_PROVIDER_ID'><text id='GONGANYUN2.S_SERVICE_REG_LOG.SERVICE_PROVIDER_ID' x='318' y='157'>SERVICE_PROVIDER_ID</text><text x='495' y='157' text-anchor='end' class='colType'>varchar2</text><title>SERVICE_PROVIDER_ID
+varchar2
+服务提供者ID</title></a>
+  <a xlink:href='#S_SERVICE_REG_LOG.XXCZRY_XM'><text id='GONGANYUN2.S_SERVICE_REG_LOG.XXCZRY_XM' x='318' y='172'>XXCZRY_XM</text><text x='495' y='172' text-anchor='end' class='colType'>varchar2</text><title>XXCZRY_XM
+varchar2
+信息操作人员_姓名</title></a>
+  <a xlink:href='#S_SERVICE_REG_LOG.XXCZRY_GMSFHM'><text id='GONGANYUN2.S_SERVICE_REG_LOG.XXCZRY_GMSFHM' x='318' y='187'>XXCZRY_GMSFHM</text><text x='495' y='187' text-anchor='end' class='colType'>varchar2</text><title>XXCZRY_GMSFHM
+varchar2
+信息操作人员_编号</title></a>
+  <a xlink:href='#S_SERVICE_REG_LOG.FWZC_RQSJ'><text id='GONGANYUN2.S_SERVICE_REG_LOG.FWZC_RQSJ' x='318' y='202'>FWZC_RQSJ</text><text x='495' y='202' text-anchor='end' class='colType'>date</text><title>FWZC_RQSJ
+date
+服务注册_日期时间</title></a>
+
+<!-- ============= Table 'S_SERVICE_UNREG_LOG' ============= -->
+<rect class='table' x='300' y='263' width='210' height='135' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='300.500000' y1='289.500000' x2='509.500000' y2='289.500000'/>
+<line class='delim' x1='315.500000' y1='289.500000' x2='315.500000' y2='397.500000'/>
+<line class='delim' x1='498.500000' y1='289.500000' x2='498.500000' y2='397.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='300.50' y1='289.50' x2='509.50' y2='289.50'/>
+<a xlink:href='#S_SERVICE_UNREG_LOG'><text x='339' y='281'>S_SERVICE_UNREG_LOG</text><title>Table GONGANYUN2.S_SERVICE_UNREG_LOG
+服务注销日志</title></a>
+  <use id='nn' x='302' y='297' xlink:href='#nn'/><a xlink:href='#S_SERVICE_UNREG_LOG.ID'><use id='pk' x='302' y='296' xlink:href='#pk'/><title>Pk Pk_S_SERVICE_UNREG_LOG ( ID ) </title></a>
+<a xlink:href='#S_SERVICE_UNREG_LOG.ID'><text id='GONGANYUN2.S_SERVICE_UNREG_LOG.ID' x='318' y='307'>ID</text><text x='495' y='307' text-anchor='end' class='colType'>varchar2</text><title>ID
+* varchar2
+主键ID</title></a>
+  <a xlink:href='#S_SERVICE_UNREG_LOG.FWZX_RQSJ'><text id='GONGANYUN2.S_SERVICE_UNREG_LOG.FWZX_RQSJ' x='318' y='322'>FWZX_RQSJ</text><text x='495' y='322' text-anchor='end' class='colType'>date</text><title>FWZX_RQSJ
+date
+服务注销_日期时间</title></a>
+  <a xlink:href='#S_SERVICE_UNREG_LOG.SERVICE_PROVIDER_ID'><text id='GONGANYUN2.S_SERVICE_UNREG_LOG.SERVICE_PROVIDER_ID' x='318' y='337'>SERVICE_PROVIDER_ID</text><text x='495' y='337' text-anchor='end' class='colType'>varchar2</text><title>SERVICE_PROVIDER_ID
+varchar2
+服务提供者ID</title></a>
+  <a xlink:href='#S_SERVICE_UNREG_LOG.SERVICE_RESOURCE_ID'><text id='GONGANYUN2.S_SERVICE_UNREG_LOG.SERVICE_RESOURCE_ID' x='318' y='352'>SERVICE_RESOURCE_ID</text><text x='495' y='352' text-anchor='end' class='colType'>varchar2</text><title>SERVICE_RESOURCE_ID
+varchar2
+服务资源ID</title></a>
+  <a xlink:href='#S_SERVICE_UNREG_LOG.XXCZRY_XM'><text id='GONGANYUN2.S_SERVICE_UNREG_LOG.XXCZRY_XM' x='318' y='367'>XXCZRY_XM</text><text x='495' y='367' text-anchor='end' class='colType'>varchar2</text><title>XXCZRY_XM
+varchar2
+信息操作人员_姓名</title></a>
+  <a xlink:href='#S_SERVICE_UNREG_LOG.XXCZRY_GMSFHM'><text id='GONGANYUN2.S_SERVICE_UNREG_LOG.XXCZRY_GMSFHM' x='318' y='382'>XXCZRY_GMSFHM</text><text x='495' y='382' text-anchor='end' class='colType'>varchar2</text><title>XXCZRY_GMSFHM
+varchar2
+信息操作人员_编号</title></a>
+
+<!-- ============= Table 'S_SERVICE_UPDATE_LOG' ============= -->
+<rect class='table' x='300' y='428' width='210' height='165' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='300.500000' y1='454.500000' x2='509.500000' y2='454.500000'/>
+<line class='delim' x1='315.500000' y1='454.500000' x2='315.500000' y2='592.500000'/>
+<line class='delim' x1='498.500000' y1='454.500000' x2='498.500000' y2='592.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='300.50' y1='454.50' x2='509.50' y2='454.50'/>
+<a xlink:href='#S_SERVICE_UPDATE_LOG'><text x='337' y='446'>S_SERVICE_UPDATE_LOG</text><title>Table GONGANYUN2.S_SERVICE_UPDATE_LOG
+服务更新日志</title></a>
+  <a xlink:href='#S_SERVICE_UPDATE_LOG.ID'><text id='GONGANYUN2.S_SERVICE_UPDATE_LOG.ID' x='318' y='472'>ID</text><text x='495' y='472' text-anchor='end' class='colType'>varchar2</text><title>ID
+varchar2
+主键ID</title></a>
+  <a xlink:href='#S_SERVICE_UPDATE_LOG.FWGX_RQSJ'><text id='GONGANYUN2.S_SERVICE_UPDATE_LOG.FWGX_RQSJ' x='318' y='487'>FWGX_RQSJ</text><text x='495' y='487' text-anchor='end' class='colType'>date</text><title>FWGX_RQSJ
+date
+服务更新_日期时间</title></a>
+  <a xlink:href='#S_SERVICE_UPDATE_LOG.JFW_ZCXX'><text id='GONGANYUN2.S_SERVICE_UPDATE_LOG.JFW_ZCXX' x='318' y='502'>JFW_ZCXX</text><text x='495' y='502' text-anchor='end' class='colType'>varchar2</text><title>JFW_ZCXX
+varchar2
+旧服务_注册信息</title></a>
+  <a xlink:href='#S_SERVICE_UPDATE_LOG.XFW_ZCXX'><text id='GONGANYUN2.S_SERVICE_UPDATE_LOG.XFW_ZCXX' x='318' y='517'>XFW_ZCXX</text><text x='495' y='517' text-anchor='end' class='colType'>varchar2</text><title>XFW_ZCXX
+varchar2
+新服务注册信息</title></a>
+  <a xlink:href='#S_SERVICE_UPDATE_LOG.SERVICE_PROVIDER_ID'><text id='GONGANYUN2.S_SERVICE_UPDATE_LOG.SERVICE_PROVIDER_ID' x='318' y='532'>SERVICE_PROVIDER_ID</text><text x='495' y='532' text-anchor='end' class='colType'>varchar2</text><title>SERVICE_PROVIDER_ID
+varchar2
+服务提供者ID</title></a>
+  <a xlink:href='#S_SERVICE_UPDATE_LOG.SERVICE_RESOURCE_ID'><text id='GONGANYUN2.S_SERVICE_UPDATE_LOG.SERVICE_RESOURCE_ID' x='318' y='547'>SERVICE_RESOURCE_ID</text><text x='495' y='547' text-anchor='end' class='colType'>varchar2</text><title>SERVICE_RESOURCE_ID
+varchar2
+服务资源ID</title></a>
+  <a xlink:href='#S_SERVICE_UPDATE_LOG.XXCZRY_XM'><text id='GONGANYUN2.S_SERVICE_UPDATE_LOG.XXCZRY_XM' x='318' y='562'>XXCZRY_XM</text><text x='495' y='562' text-anchor='end' class='colType'>varchar2</text><title>XXCZRY_XM
+varchar2
+信息操作人员_姓名</title></a>
+  <a xlink:href='#S_SERVICE_UPDATE_LOG.XXCZRY_GMSFHM'><text id='GONGANYUN2.S_SERVICE_UPDATE_LOG.XXCZRY_GMSFHM' x='318' y='577'>XXCZRY_GMSFHM</text><text x='495' y='577' text-anchor='end' class='colType'>varchar2</text><title>XXCZRY_GMSFHM
+varchar2
+信息操作人员_编号</title></a>
+
+<!-- ============= Table 'S_SERVICE_BUS' ============= -->
+<rect class='table' x='675' y='68' width='165' height='285' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='675.500000' y1='94.500000' x2='839.500000' y2='94.500000'/>
+<line class='delim' x1='690.500000' y1='94.500000' x2='690.500000' y2='352.500000'/>
+<line class='delim' x1='828.500000' y1='94.500000' x2='828.500000' y2='352.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='675.50' y1='94.50' x2='839.50' y2='94.50'/>
+<a xlink:href='#S_SERVICE_BUS'><text x='713' y='86'>S_SERVICE_BUS</text><title>Table GONGANYUN2.S_SERVICE_BUS
+总线基本信息</title></a>
+  <a xlink:href='#S_SERVICE_BUS.ID'><text id='GONGANYUN2.S_SERVICE_BUS.ID' x='693' y='112'>ID</text><text x='825' y='112' text-anchor='end' class='colType'>varchar2</text><title>ID
+varchar2
+主键ID</title></a>
+  <a xlink:href='#S_SERVICE_BUS.ZXBS'><use id='unq' x='677' y='116' xlink:href='#unq'/><title>Unq Pk_SERVICE_BUS ( ZXBS ) </title></a>
+<a xlink:href='#S_SERVICE_BUS.ZXBS'><text id='GONGANYUN2.S_SERVICE_BUS.ZXBS' x='693' y='127' onmouseover="hghl(['SERVICE_BUS_MESSAGE_fk_SERVICE_BUS_MESSAGE','S_SERVICE_CONSUMER_fk_S_SERVICE_CONSUMER','S_SERVICE_PROVIDER_fk_S_SERVICE_PROVIDER'])" onmouseout="uhghl(['SERVICE_BUS_MESSAGE_fk_SERVICE_BUS_MESSAGE','S_SERVICE_CONSUMER_fk_S_SERVICE_CONSUMER','S_SERVICE_PROVIDER_fk_S_SERVICE_PROVIDER'])">ZXBS</text><text x='825' y='127' text-anchor='end' class='colType'>varchar2</text><title>ZXBS
+varchar2
+总线唯一标识</title></a>
+<a xlink:href='#S_SERVICE_BUS.ZXBS'><use id='ref' x='828' y='116' xlink:href='#ref'/><title>Referred by SERVICE_BUS_MESSAGE ( ZXBS ) 
+Referred by S_SERVICE_CONSUMER ( FWQQZ_ZXBS -&gt; ZXBS ) 
+Referred by S_SERVICE_PROVIDER ( FWTGZ_ZXBS -&gt; ZXBS ) </title></a>
+  <a xlink:href='#S_SERVICE_BUS.ZXMC'><text id='GONGANYUN2.S_SERVICE_BUS.ZXMC' x='693' y='142'>ZXMC</text><text x='825' y='142' text-anchor='end' class='colType'>varchar2</text><title>ZXMC
+varchar2
+总线名称</title></a>
+  <a xlink:href='#S_SERVICE_BUS.GAJGMC'><text id='GONGANYUN2.S_SERVICE_BUS.GAJGMC' x='693' y='157'>GAJGMC</text><text x='825' y='157' text-anchor='end' class='colType'>varchar2</text><title>GAJGMC
+varchar2
+总线所在的公安机关名称</title></a>
+  <a xlink:href='#S_SERVICE_BUS.ZX_GAJGJGDM'><text id='GONGANYUN2.S_SERVICE_BUS.ZX_GAJGJGDM' x='693' y='172'>ZX_GAJGJGDM</text><text x='825' y='172' text-anchor='end' class='colType'>varchar2</text><title>ZX_GAJGJGDM
+varchar2
+总线所在的公安机关机构代码</title></a>
+  <a xlink:href='#S_SERVICE_BUS.ZX_IPDZ'><text id='GONGANYUN2.S_SERVICE_BUS.ZX_IPDZ' x='693' y='187'>ZX_IPDZ</text><text x='825' y='187' text-anchor='end' class='colType'>varchar2</text><title>ZX_IPDZ
+varchar2
+总线_入口地址。统一用域名表示</title></a>
+  <a xlink:href='#S_SERVICE_BUS.ZX_ZXDKHM'><text id='GONGANYUN2.S_SERVICE_BUS.ZX_ZXDKHM' x='693' y='202'>ZX_ZXDKHM</text><text x='825' y='202' text-anchor='end' class='colType'>varchar2</text><title>ZX_ZXDKHM
+varchar2
+总线_端口号</title></a>
+  <a xlink:href='#S_SERVICE_BUS.ZX_MS'><text id='GONGANYUN2.S_SERVICE_BUS.ZX_MS' x='693' y='217'>ZX_MS</text><text x='825' y='217' text-anchor='end' class='colType'>varchar2</text><title>ZX_MS
+varchar2
+总线_描述。关于总线的功能、特性、开发公司等信息的说明性文字
+
+长度（1000)</title></a>
+  <a xlink:href='#S_SERVICE_BUS.ZXCJ_RQ'><text id='GONGANYUN2.S_SERVICE_BUS.ZXCJ_RQ' x='693' y='232'>ZXCJ_RQ</text><text x='825' y='232' text-anchor='end' class='colType'>date</text><title>ZXCJ_RQ
+date
+总线创建_日期</title></a>
+  <a xlink:href='#S_SERVICE_BUS.ZXFZR_LXFS'><text id='GONGANYUN2.S_SERVICE_BUS.ZXFZR_LXFS' x='693' y='247'>ZXFZR_LXFS</text><text x='825' y='247' text-anchor='end' class='colType'>varchar2</text><title>ZXFZR_LXFS
+varchar2
+总线负责人_联系方式</title></a>
+  <a xlink:href='#S_SERVICE_BUS.LXR_SM'><text id='GONGANYUN2.S_SERVICE_BUS.LXR_SM' x='693' y='262'>LXR_SM</text><text x='825' y='262' text-anchor='end' class='colType'>varchar2</text><title>LXR_SM
+varchar2
+描述总线负责人联系方式的说明性文字；</title></a>
+  <a xlink:href='#S_SERVICE_BUS.LXR_XM'><text id='GONGANYUN2.S_SERVICE_BUS.LXR_XM' x='693' y='277'>LXR_XM</text><text x='825' y='277' text-anchor='end' class='colType'>varchar2</text><title>LXR_XM
+varchar2
+联系人_姓名</title></a>
+  <a xlink:href='#S_SERVICE_BUS.LXDH'><text id='GONGANYUN2.S_SERVICE_BUS.LXDH' x='693' y='292'>LXDH</text><text x='825' y='292' text-anchor='end' class='colType'>varchar2</text><title>LXDH
+varchar2
+联系电话</title></a>
+  <a xlink:href='#S_SERVICE_BUS.DZXX'><text id='GONGANYUN2.S_SERVICE_BUS.DZXX' x='693' y='307'>DZXX</text><text x='825' y='307' text-anchor='end' class='colType'>varchar2</text><title>DZXX
+varchar2
+电子信箱</title></a>
+  <a xlink:href='#S_SERVICE_BUS.TXDZ'><text id='GONGANYUN2.S_SERVICE_BUS.TXDZ' x='693' y='322'>TXDZ</text><text x='825' y='322' text-anchor='end' class='colType'>varchar2</text><title>TXDZ
+varchar2
+通信地址</title></a>
+  <a xlink:href='#S_SERVICE_BUS.STATUS'><text id='GONGANYUN2.S_SERVICE_BUS.STATUS' x='693' y='337'>STATUS</text><text x='825' y='337' text-anchor='end' class='colType'>varchar2</text><title>STATUS
+varchar2
+总线状态，0已停用，1已启用，2已删除</title></a>
+
+<!-- ============= Table 'S_SERVICE_CONSUMER' ============= -->
+<rect class='table' x='1095' y='53' width='165' height='390' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='1095.500000' y1='79.500000' x2='1259.500000' y2='79.500000'/>
+<line class='delim' x1='1110.500000' y1='79.500000' x2='1110.500000' y2='442.500000'/>
+<line class='delim' x1='1248.500000' y1='79.500000' x2='1248.500000' y2='442.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='1095.50' y1='79.50' x2='1259.50' y2='79.50'/>
+<a xlink:href='#S_SERVICE_CONSUMER'><text x='1115' y='71'>S_SERVICE_CONSUMER</text><title>Table GONGANYUN2.S_SERVICE_CONSUMER
+服务请求者信息</title></a>
+  <use id='nn' x='1097' y='87' xlink:href='#nn'/><a xlink:href='#S_SERVICE_CONSUMER.ID'><use id='pk' x='1097' y='86' xlink:href='#pk'/><title>Pk Pk_S_SERVICE_CONSUMER ( ID ) </title></a>
+<a xlink:href='#S_SERVICE_CONSUMER.ID'><text id='GONGANYUN2.S_SERVICE_CONSUMER.ID' x='1113' y='97' onmouseover="hghl(['S_ASYNCHRONOUS_CACHE_fk_S_ASYNCHRONOUS_CACHE_0','S_AUTH_APPLY_fk_AUTH_APPLY_MESSAGE_0','S_CONSUMER_SERVICE_MAPPING_fk_S_CONSUMER_SERVICE_MAPPING'])" onmouseout="uhghl(['S_ASYNCHRONOUS_CACHE_fk_S_ASYNCHRONOUS_CACHE_0','S_AUTH_APPLY_fk_AUTH_APPLY_MESSAGE_0','S_CONSUMER_SERVICE_MAPPING_fk_S_CONSUMER_SERVICE_MAPPING'])">ID</text><text x='1245' y='97' text-anchor='end' class='colType'>varchar2</text><title>ID
+* varchar2
+主键ID</title></a>
+<a xlink:href='#S_SERVICE_CONSUMER.ID'><use id='ref' x='1248' y='86' xlink:href='#ref'/><title>Referred by S_ASYNCHRONOUS_CACHE ( CONSUMER_ID -&gt; ID ) 
+Referred by S_AUTH_APPLY ( CONSUMER_ID -&gt; ID ) 
+Referred by S_CONSUMER_SERVICE_MAPPING ( CONSUMER_ID -&gt; ID ) </title></a>
+  <use id='nn' x='1097' y='102' xlink:href='#nn'/><a xlink:href='#S_SERVICE_CONSUMER.FWQQZBS'><text id='GONGANYUN2.S_SERVICE_CONSUMER.FWQQZBS' x='1113' y='112'>FWQQZBS</text><text x='1245' y='112' text-anchor='end' class='colType'>varchar2</text><title>FWQQZBS
+* varchar2
+服务请求者标识。
+
+包括公安行业内服务请求者标识和公安行业外服务请求者标识。其中，行业内服务请求者标识应符合GA/T XX2-201X中7.4的规定，行业外服务请求者标识应符合GA/T XX2-201X中7.8的规定；</title></a>
+  <a xlink:href='#S_SERVICE_CONSUMER.FWQQZMC'><text id='GONGANYUN2.S_SERVICE_CONSUMER.FWQQZMC' x='1113' y='127'>FWQQZMC</text><text x='1245' y='127' text-anchor='end' class='colType'>varchar2</text><title>FWQQZMC
+varchar2
+服务请求者名称</title></a>
+  <a xlink:href='#S_SERVICE_CONSUMER.HYN_BZDM'><text id='GONGANYUN2.S_SERVICE_CONSUMER.HYN_BZDM' x='1113' y='142'>HYN_BZDM</text><text x='1245' y='142' text-anchor='end' class='colType'>varchar2</text><title>HYN_BZDM
+varchar2
+表示服务请求者是否是公安行业内服务请求者的标识；</title></a>
+  <a xlink:href='#S_SERVICE_CONSUMER.HYNFWQQZQJ'><text id='GONGANYUN2.S_SERVICE_CONSUMER.HYNFWQQZQJ' x='1113' y='157'>HYNFWQQZQJ</text><text x='1245' y='157' text-anchor='end' class='colType'>varchar2</text><title>HYNFWQQZQJ
+varchar2
+行业内服务请求者权级</title></a>
+  <a xlink:href='#S_SERVICE_CONSUMER.ZWJBDM'><text id='GONGANYUN2.S_SERVICE_CONSUMER.ZWJBDM' x='1113' y='172'>ZWJBDM</text><text x='1245' y='172' text-anchor='end' class='colType'>varchar2</text><title>ZWJBDM
+varchar2
+职务级别代码</title></a>
+  <a xlink:href='#S_SERVICE_CONSUMER.GWQJDM'><text id='GONGANYUN2.S_SERVICE_CONSUMER.GWQJDM' x='1113' y='187'>GWQJDM</text><text x='1245' y='187' text-anchor='end' class='colType'>varchar2</text><title>GWQJDM
+varchar2
+岗位权级代码</title></a>
+  <a xlink:href='#S_SERVICE_CONSUMER.XZQHDM'><text id='GONGANYUN2.S_SERVICE_CONSUMER.XZQHDM' x='1113' y='202'>XZQHDM</text><text x='1245' y='202' text-anchor='end' class='colType'>varchar2</text><title>XZQHDM
+varchar2
+行政区划代码</title></a>
+  <a xlink:href='#S_SERVICE_CONSUMER.MMDJDM'><text id='GONGANYUN2.S_SERVICE_CONSUMER.MMDJDM' x='1113' y='217'>MMDJDM</text><text x='1245' y='217' text-anchor='end' class='colType'>varchar2</text><title>MMDJDM
+varchar2
+秘密等级代码</title></a>
+  <a xlink:href='#S_SERVICE_CONSUMER.JZDM'><text id='GONGANYUN2.S_SERVICE_CONSUMER.JZDM' x='1113' y='232'>JZDM</text><text x='1245' y='232' text-anchor='end' class='colType'>varchar2</text><title>JZDM
+varchar2
+警种代码（部门）</title></a>
+  <a xlink:href='#S_SERVICE_CONSUMER.FWQQZRKDZLB'><text id='GONGANYUN2.S_SERVICE_CONSUMER.FWQQZRKDZLB' x='1113' y='247'>FWQQZRKDZLB</text><text x='1245' y='247' text-anchor='end' class='colType'>varchar2</text><title>FWQQZRKDZLB
+varchar2
+服务请求者入口地址列表</title></a>
+  <a xlink:href='#S_SERVICE_CONSUMER.FWQQZ_IPDZ'><text id='GONGANYUN2.S_SERVICE_CONSUMER.FWQQZ_IPDZ' x='1113' y='262'>FWQQZ_IPDZ</text><text x='1245' y='262' text-anchor='end' class='colType'>varchar2</text><title>FWQQZ_IPDZ
+varchar2
+服务请求者入口地址</title></a>
+  <a xlink:href='#S_SERVICE_CONSUMER.FWQQZ_ZXDKHM'><text id='GONGANYUN2.S_SERVICE_CONSUMER.FWQQZ_ZXDKHM' x='1113' y='277'>FWQQZ_ZXDKHM</text><text x='1245' y='277' text-anchor='end' class='colType'>integer</text><title>FWQQZ_ZXDKHM
+integer
+服务请求者_端口号</title></a>
+  <a xlink:href='#S_SERVICE_CONSUMER.FWQQZ_ZXBS'><use id='idx' x='1097' y='281' xlink:href='#idx'/><title>idx_S_SERVICE_CONSUMER ( FWQQZ_ZXBS ) </title></a>
+<a xlink:href='#S_SERVICE_CONSUMER.FWQQZ_ZXBS'><text id='GONGANYUN2.S_SERVICE_CONSUMER.FWQQZ_ZXBS' x='1113' y='292' onmouseover="hghl(['S_SERVICE_CONSUMER_fk_S_SERVICE_CONSUMER'])" onmouseout="uhghl(['S_SERVICE_CONSUMER_fk_S_SERVICE_CONSUMER'])">FWQQZ_ZXBS</text><text x='1245' y='292' text-anchor='end' class='colType'>varchar2</text><title>FWQQZ_ZXBS
+varchar2
+服务请求者总线标识</title></a>
+<a xlink:href='#S_SERVICE_CONSUMER.FWQQZ_ZXBS'><use id='fk' x='1248' y='281' xlink:href='#fk'/><title>References S_SERVICE_BUS ( FWQQZ_ZXBS -&gt; ZXBS ) </title></a>
+  <a xlink:href='#S_SERVICE_CONSUMER.FWQQZ_MS'><text id='GONGANYUN2.S_SERVICE_CONSUMER.FWQQZ_MS' x='1113' y='307'>FWQQZ_MS</text><text x='1245' y='307' text-anchor='end' class='colType'>varchar2</text><title>FWQQZ_MS
+varchar2
+服务请求者_描述</title></a>
+  <a xlink:href='#S_SERVICE_CONSUMER.FWQQZ_LXFS'><text id='GONGANYUN2.S_SERVICE_CONSUMER.FWQQZ_LXFS' x='1113' y='322'>FWQQZ_LXFS</text><text x='1245' y='322' text-anchor='end' class='colType'>varchar2</text><title>FWQQZ_LXFS
+varchar2
+服务请求者_联系方式</title></a>
+  <a xlink:href='#S_SERVICE_CONSUMER.LXR_SM'><text id='GONGANYUN2.S_SERVICE_CONSUMER.LXR_SM' x='1113' y='337'>LXR_SM</text><text x='1245' y='337' text-anchor='end' class='colType'>varchar2</text><title>LXR_SM
+varchar2
+联系人_说明</title></a>
+  <a xlink:href='#S_SERVICE_CONSUMER.LXR_XM'><text id='GONGANYUN2.S_SERVICE_CONSUMER.LXR_XM' x='1113' y='352'>LXR_XM</text><text x='1245' y='352' text-anchor='end' class='colType'>varchar2</text><title>LXR_XM
+varchar2
+联系人_姓名</title></a>
+  <a xlink:href='#S_SERVICE_CONSUMER.LXDH'><text id='GONGANYUN2.S_SERVICE_CONSUMER.LXDH' x='1113' y='367'>LXDH</text><text x='1245' y='367' text-anchor='end' class='colType'>varchar2</text><title>LXDH
+varchar2
+联系电话</title></a>
+  <a xlink:href='#S_SERVICE_CONSUMER.DZXX'><text id='GONGANYUN2.S_SERVICE_CONSUMER.DZXX' x='1113' y='382'>DZXX</text><text x='1245' y='382' text-anchor='end' class='colType'>varchar2</text><title>DZXX
+varchar2
+电子信箱</title></a>
+  <a xlink:href='#S_SERVICE_CONSUMER.TXDZ'><text id='GONGANYUN2.S_SERVICE_CONSUMER.TXDZ' x='1113' y='397'>TXDZ</text><text x='1245' y='397' text-anchor='end' class='colType'>varchar2</text><title>TXDZ
+varchar2
+通信地址</title></a>
+  <a xlink:href='#S_SERVICE_CONSUMER.LXR_GMSFHM'><text id='GONGANYUN2.S_SERVICE_CONSUMER.LXR_GMSFHM' x='1113' y='412'>LXR_GMSFHM</text><text x='1245' y='412' text-anchor='end' class='colType'>varchar2</text><title>LXR_GMSFHM
+varchar2
+联系人_身份证号</title></a>
+  <a xlink:href='#S_SERVICE_CONSUMER.STATUS'><text id='GONGANYUN2.S_SERVICE_CONSUMER.STATUS' x='1113' y='427'>STATUS</text><text x='1245' y='427' text-anchor='end' class='colType'>int</text><title>STATUS
+int
+状态（0不可用，1可用，2删除）</title></a>
+
+<!-- ============= Table 'S_SERVICE_PROVIDER' ============= -->
+<rect class='table' x='675' y='383' width='180' height='255' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='675.500000' y1='409.500000' x2='854.500000' y2='409.500000'/>
+<line class='delim' x1='690.500000' y1='409.500000' x2='690.500000' y2='637.500000'/>
+<line class='delim' x1='843.500000' y1='409.500000' x2='843.500000' y2='637.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='675.50' y1='409.50' x2='854.50' y2='409.50'/>
+<a xlink:href='#S_SERVICE_PROVIDER'><text x='705' y='401'>S_SERVICE_PROVIDER</text><title>Table GONGANYUN2.S_SERVICE_PROVIDER
+服务提供者</title></a>
+  <use id='nn' x='677' y='417' xlink:href='#nn'/><a xlink:href='#S_SERVICE_PROVIDER.ID'><use id='pk' x='677' y='416' xlink:href='#pk'/><title>Pk Pk_S_SERVICE_PROVIDER ( ID ) </title></a>
+<a xlink:href='#S_SERVICE_PROVIDER.ID'><text id='GONGANYUN2.S_SERVICE_PROVIDER.ID' x='693' y='427' onmouseover="hghl(['S_PROVIDER_RESOURCE_MAPPING_fk_S_PROVIDER_RESOURCE_MAPPING'])" onmouseout="uhghl(['S_PROVIDER_RESOURCE_MAPPING_fk_S_PROVIDER_RESOURCE_MAPPING'])">ID</text><text x='840' y='427' text-anchor='end' class='colType'>varchar2</text><title>ID
+* varchar2
+主键ID</title></a>
+<a xlink:href='#S_SERVICE_PROVIDER.ID'><use id='ref' x='843' y='416' xlink:href='#ref'/><title>Referred by S_PROVIDER_RESOURCE_MAPPING ( PROVIDER_ID -&gt; ID ) </title></a>
+  <use id='nn' x='677' y='432' xlink:href='#nn'/><a xlink:href='#S_SERVICE_PROVIDER.FWTGZ_GAJGJGDM'><text id='GONGANYUN2.S_SERVICE_PROVIDER.FWTGZ_GAJGJGDM' x='693' y='442'>FWTGZ_GAJGJGDM</text><text x='840' y='442' text-anchor='end' class='colType'>varchar2</text><title>FWTGZ_GAJGJGDM
+* varchar2
+服务提供者标识</title></a>
+  <a xlink:href='#S_SERVICE_PROVIDER.FWTGZ_GAJGMC'><text id='GONGANYUN2.S_SERVICE_PROVIDER.FWTGZ_GAJGMC' x='693' y='457'>FWTGZ_GAJGMC</text><text x='840' y='457' text-anchor='end' class='colType'>varchar2</text><title>FWTGZ_GAJGMC
+varchar2
+服务提供者名称</title></a>
+  <a xlink:href='#S_SERVICE_PROVIDER.FWTGZZC_IPDZ'><text id='GONGANYUN2.S_SERVICE_PROVIDER.FWTGZZC_IPDZ' x='693' y='472'>FWTGZZC_IPDZ</text><text x='840' y='472' text-anchor='end' class='colType'>varchar2</text><title>FWTGZZC_IPDZ
+varchar2
+服务提供者注册_入口地址</title></a>
+  <a xlink:href='#S_SERVICE_PROVIDER.FWTGZ_ZXBS'><use id='idx' x='677' y='476' xlink:href='#idx'/><title>idx_S_SERVICE_PROVIDER ( FWTGZ_ZXBS ) </title></a>
+<a xlink:href='#S_SERVICE_PROVIDER.FWTGZ_ZXBS'><text id='GONGANYUN2.S_SERVICE_PROVIDER.FWTGZ_ZXBS' x='693' y='487' onmouseover="hghl(['S_SERVICE_PROVIDER_fk_S_SERVICE_PROVIDER'])" onmouseout="uhghl(['S_SERVICE_PROVIDER_fk_S_SERVICE_PROVIDER'])">FWTGZ_ZXBS</text><text x='840' y='487' text-anchor='end' class='colType'>varchar2</text><title>FWTGZ_ZXBS
+varchar2
+服务提供者_总线标识</title></a>
+<a xlink:href='#S_SERVICE_PROVIDER.FWTGZ_ZXBS'><use id='fk' x='843' y='476' xlink:href='#fk'/><title>References S_SERVICE_BUS ( FWTGZ_ZXBS -&gt; ZXBS ) </title></a>
+  <a xlink:href='#S_SERVICE_PROVIDER.FWTGZ_MS'><text id='GONGANYUN2.S_SERVICE_PROVIDER.FWTGZ_MS' x='693' y='502'>FWTGZ_MS</text><text x='840' y='502' text-anchor='end' class='colType'>varchar2</text><title>FWTGZ_MS
+varchar2
+服务提供者描述</title></a>
+  <a xlink:href='#S_SERVICE_PROVIDER.FWTGZZC_RQSJ'><text id='GONGANYUN2.S_SERVICE_PROVIDER.FWTGZZC_RQSJ' x='693' y='517'>FWTGZZC_RQSJ</text><text x='840' y='517' text-anchor='end' class='colType'>varchar2</text><title>FWTGZZC_RQSJ
+varchar2
+服务提供者注册时间</title></a>
+  <a xlink:href='#S_SERVICE_PROVIDER.FWTGZ_LXFS'><text id='GONGANYUN2.S_SERVICE_PROVIDER.FWTGZ_LXFS' x='693' y='532'>FWTGZ_LXFS</text><text x='840' y='532' text-anchor='end' class='colType'>varchar2</text><title>FWTGZ_LXFS
+varchar2
+服务提供者联系方式</title></a>
+  <a xlink:href='#S_SERVICE_PROVIDER.LXR_SM'><text id='GONGANYUN2.S_SERVICE_PROVIDER.LXR_SM' x='693' y='547'>LXR_SM</text><text x='840' y='547' text-anchor='end' class='colType'>varchar2</text><title>LXR_SM
+varchar2
+联系人说明</title></a>
+  <a xlink:href='#S_SERVICE_PROVIDER.LXR_XM'><text id='GONGANYUN2.S_SERVICE_PROVIDER.LXR_XM' x='693' y='562'>LXR_XM</text><text x='840' y='562' text-anchor='end' class='colType'>varchar2</text><title>LXR_XM
+varchar2
+联系人姓名</title></a>
+  <a xlink:href='#S_SERVICE_PROVIDER.LXDH'><text id='GONGANYUN2.S_SERVICE_PROVIDER.LXDH' x='693' y='577'>LXDH</text><text x='840' y='577' text-anchor='end' class='colType'>varchar2</text><title>LXDH
+varchar2
+联系电话</title></a>
+  <a xlink:href='#S_SERVICE_PROVIDER.DZXX'><text id='GONGANYUN2.S_SERVICE_PROVIDER.DZXX' x='693' y='592'>DZXX</text><text x='840' y='592' text-anchor='end' class='colType'>varchar2</text><title>DZXX
+varchar2
+电子信箱</title></a>
+  <a xlink:href='#S_SERVICE_PROVIDER.TXDZ'><text id='GONGANYUN2.S_SERVICE_PROVIDER.TXDZ' x='693' y='607'>TXDZ</text><text x='840' y='607' text-anchor='end' class='colType'>varchar2</text><title>TXDZ
+varchar2
+通信地址</title></a>
+  <a xlink:href='#S_SERVICE_PROVIDER.STATUS'><text id='GONGANYUN2.S_SERVICE_PROVIDER.STATUS' x='693' y='622'>STATUS</text><text x='840' y='622' text-anchor='end' class='colType'>int</text><title>STATUS
+int
+提供者状态（0不可用，1可用，2已删除）</title></a>
+
+<!-- ============= Table 'S_SERVICE_RESOURCE' ============= -->
+<rect class='table' x='675' y='833' width='180' height='270' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='675.500000' y1='859.500000' x2='854.500000' y2='859.500000'/>
+<line class='delim' x1='690.500000' y1='859.500000' x2='690.500000' y2='1102.500000'/>
+<line class='delim' x1='843.500000' y1='859.500000' x2='843.500000' y2='1102.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='675.50' y1='859.50' x2='854.50' y2='859.50'/>
+<a xlink:href='#S_SERVICE_RESOURCE'><text x='703' y='851'>S_SERVICE_RESOURCE</text><title>Table GONGANYUN2.S_SERVICE_RESOURCE
+服务资源信息</title></a>
+  <a xlink:href='#S_SERVICE_RESOURCE.ID'><use id='unq' x='677' y='866' xlink:href='#unq'/><title>Unq Pk_S_SERVICE_RESOURCE ( ID ) </title></a>
+<a xlink:href='#S_SERVICE_RESOURCE.ID'><text id='GONGANYUN2.S_SERVICE_RESOURCE.ID' x='693' y='877' onmouseover="hghl(['S_ASYNCHRONOUS_CACHE_fk_S_ASYNCHRONOUS_CACHE','S_AUTH_APPLY_fk_AUTH_APPLY_MESSAGE','S_CONSUMER_SERVICE_MAPPING_fk_S_CONSUMER_SERVICE_MAPPING_0','S_PROVIDER_RESOURCE_MAPPING_fk_S_PROVIDER_RESOURCE_MAPPING_0','S_SERVICE_CATA_MAPPING_fk_S_SERVICE_CATA_MAPPING_0','S_SERVICE_GROUP_MAPPING_fk_S_SERVICE_GROUP_MAPPING','S_SERVICE_GROUP_MAPPING_fk_S_SERVICE_GROUP_MAPPING_0'])" onmouseout="uhghl(['S_ASYNCHRONOUS_CACHE_fk_S_ASYNCHRONOUS_CACHE','S_AUTH_APPLY_fk_AUTH_APPLY_MESSAGE','S_CONSUMER_SERVICE_MAPPING_fk_S_CONSUMER_SERVICE_MAPPING_0','S_PROVIDER_RESOURCE_MAPPING_fk_S_PROVIDER_RESOURCE_MAPPING_0','S_SERVICE_CATA_MAPPING_fk_S_SERVICE_CATA_MAPPING_0','S_SERVICE_GROUP_MAPPING_fk_S_SERVICE_GROUP_MAPPING','S_SERVICE_GROUP_MAPPING_fk_S_SERVICE_GROUP_MAPPING_0'])">ID</text><text x='840' y='877' text-anchor='end' class='colType'>integer</text><title>ID
+integer
+主键ID</title></a>
+<a xlink:href='#S_SERVICE_RESOURCE.ID'><use id='ref' x='843' y='866' xlink:href='#ref'/><title>Referred by S_ASYNCHRONOUS_CACHE ( SERVICE_RESOURCE_ID -&gt; ID ) 
+Referred by S_AUTH_APPLY ( SERVICE_RESOURCE_ID -&gt; ID ) 
+Referred by S_CONSUMER_SERVICE_MAPPING ( SERVICE_RESOURCE_ID -&gt; ID ) 
+Referred by S_PROVIDER_RESOURCE_MAPPING ( SERVICE_RESOURCE_ID -&gt; ID ) 
+Referred by S_SERVICE_CATA_MAPPING ( SERVICE_RESOURCE_ID -&gt; ID ) 
+Referred by S_SERVICE_GROUP_MAPPING ( PARENT_SERVICE_ID -&gt; ID ) 
+Referred by S_SERVICE_GROUP_MAPPING ( CHILD_SERVICE_ID -&gt; ID ) </title></a>
+  <use id='nn' x='677' y='882' xlink:href='#nn'/><a xlink:href='#S_SERVICE_RESOURCE.FWBS'><use id='pk' x='677' y='881' xlink:href='#pk'/><title>Pk Pk_SERVICE_RESOURCE ( FWBS ) </title></a>
+<a xlink:href='#S_SERVICE_RESOURCE.FWBS'><text id='GONGANYUN2.S_SERVICE_RESOURCE.FWBS' x='693' y='892'>FWBS</text><text x='840' y='892' text-anchor='end' class='colType'>varchar2</text><title>FWBS
+* varchar2
+服务标识</title></a>
+  <a xlink:href='#S_SERVICE_RESOURCE.FWMC'><text id='GONGANYUN2.S_SERVICE_RESOURCE.FWMC' x='693' y='907'>FWMC</text><text x='840' y='907' text-anchor='end' class='colType'>varchar2</text><title>FWMC
+varchar2
+服务名称</title></a>
+  <a xlink:href='#S_SERVICE_RESOURCE.FW_MS'><text id='GONGANYUN2.S_SERVICE_RESOURCE.FW_MS' x='693' y='922'>FW_MS</text><text x='840' y='922' text-anchor='end' class='colType'>varchar2</text><title>FW_MS
+varchar2
+服务_描述
+
+关于服务的功能、特性、使用方式等信息的说明性文字；</title></a>
+  <a xlink:href='#S_SERVICE_RESOURCE.FWLXBM'><text id='GONGANYUN2.S_SERVICE_RESOURCE.FWLXBM' x='693' y='937'>FWLXBM</text><text x='840' y='937' text-anchor='end' class='colType'>varchar2</text><title>FWLXBM
+varchar2
+服务类型编码
+
+应符合GA/T XX2-201X中7.7的规定；</title></a>
+  <a xlink:href='#S_SERVICE_RESOURCE.FW_XZQHDM'><text id='GONGANYUN2.S_SERVICE_RESOURCE.FW_XZQHDM' x='693' y='952'>FW_XZQHDM</text><text x='840' y='952' text-anchor='end' class='colType'>varchar2</text><title>FW_XZQHDM
+varchar2
+服务_行政区划代码。
+
+服务所提供资源覆盖的辖区范围</title></a>
+  <a xlink:href='#S_SERVICE_RESOURCE.FW_MMDJDM'><text id='GONGANYUN2.S_SERVICE_RESOURCE.FW_MMDJDM' x='693' y='967'>FW_MMDJDM</text><text x='840' y='967' text-anchor='end' class='colType'>varchar2</text><title>FW_MMDJDM
+varchar2
+服务_秘密等级代码；
+
+服务所提供资源的涉密级别；</title></a>
+  <a xlink:href='#S_SERVICE_RESOURCE.TGZ_ZDSYFW'><text id='GONGANYUN2.S_SERVICE_RESOURCE.TGZ_ZDSYFW' x='693' y='982'>TGZ_ZDSYFW</text><text x='840' y='982' text-anchor='end' class='colType'>varchar2</text><title>TGZ_ZDSYFW
+varchar2
+提供者_制定使用范围
+
+
+描述提供者制定的允许访问该服务的请求者范围，包括请求者的：
+1)	行政范围。职务级别代码应符合4.3的规定；
+2)	岗位范围。岗位权级代码应符合4.3的规定；
+3)	辖区范围。行政区划代码应符合4.3的规定；
+4)	涉密范围。秘密等级代码应符合4.3的规定；
+5)	警种范围。警种（部门）代码应符合4.3的规定。
+以及不同权级对应获得的不同结果集。应符合第5章的规定；
+
+</title></a>
+  <a xlink:href='#S_SERVICE_RESOURCE.ZX_ZDSYFW'><text id='GONGANYUN2.S_SERVICE_RESOURCE.ZX_ZDSYFW' x='693' y='997'>ZX_ZDSYFW</text><text x='840' y='997' text-anchor='end' class='colType'>varchar2</text><title>ZX_ZDSYFW
+varchar2
+总线_制定使用范围
+
+描述总线制定的允许访问该服务的请求者范围，包括请求者的：
+1)	行政范围。职务级别代码应符合4.3的规定；
+2)	岗位范围。岗位权级代码应符合4.3的规定；
+3)	辖区范围。行政区划代码应符合4.3的规定；
+4)	涉密范围。秘密等级代码应符合4.3的规定；
+5)	警种（部门）范围。警种（部门）代码应符合4.3的规定。
+以及不同权级对应获得的不同结果集。应符合第5章的规定；
+</title></a>
+  <a xlink:href='#S_SERVICE_RESOURCE.FWTZ_ RQSJ'><text id='GONGANYUN2.S_SERVICE_RESOURCE.FWTZ_ RQSJ' x='693' y='1012'>FWTZ_ RQSJ</text><text x='840' y='1012' text-anchor='end' class='colType'>date</text><title>FWTZ_ RQSJ
+date
+服务停止_日期时间</title></a>
+  <a xlink:href='#S_SERVICE_RESOURCE.FWZC_RQSJ'><text id='GONGANYUN2.S_SERVICE_RESOURCE.FWZC_RQSJ' x='693' y='1027'>FWZC_RQSJ</text><text x='840' y='1027' text-anchor='end' class='colType'>date</text><title>FWZC_RQSJ
+date
+服务注册_日期时间</title></a>
+  <a xlink:href='#S_SERVICE_RESOURCE.FWTGZ_GAJGJGDM'><use id='idx' x='677' y='1031' xlink:href='#idx'/><title>idx_SERVICE_RESOURCE_0 ( FWTGZ_GAJGJGDM ) </title></a>
+<a xlink:href='#S_SERVICE_RESOURCE.FWTGZ_GAJGJGDM'><text id='GONGANYUN2.S_SERVICE_RESOURCE.FWTGZ_GAJGJGDM' x='693' y='1042'>FWTGZ_GAJGJGDM</text><text x='840' y='1042' text-anchor='end' class='colType'>varchar2</text><title>FWTGZ_GAJGJGDM
+varchar2
+服务提供者_标识
+
+用于唯一标识一个服务提供者，即服务提供者的公安机关机构代码；</title></a>
+  <a xlink:href='#S_SERVICE_RESOURCE.FWZTDM'><text id='GONGANYUN2.S_SERVICE_RESOURCE.FWZTDM' x='693' y='1057'>FWZTDM</text><text x='840' y='1057' text-anchor='end' class='colType'>varchar2</text><title>FWZTDM
+varchar2
+服务状态代码。
+
+服务的可用性状态。应符合第6章的规定；</title></a>
+  <a xlink:href='#S_SERVICE_RESOURCE.FWDZ_ID'><use id='idx' x='677' y='1061' xlink:href='#idx'/><title>idx_S_SERVICE_RESOURCE ( FWDZ_ID ) </title></a>
+<a xlink:href='#S_SERVICE_RESOURCE.FWDZ_ID'><text id='GONGANYUN2.S_SERVICE_RESOURCE.FWDZ_ID' x='693' y='1072' onmouseover="hghl(['S_SERVICE_RESOURCE_fk_S_SERVICE_RESOURCE'])" onmouseout="uhghl(['S_SERVICE_RESOURCE_fk_S_SERVICE_RESOURCE'])">FWDZ_ID</text><text x='840' y='1072' text-anchor='end' class='colType'>varchar2</text><title>FWDZ_ID
+varchar2
+服务地址ID</title></a>
+<a xlink:href='#S_SERVICE_RESOURCE.FWDZ_ID'><use id='fk' x='843' y='1061' xlink:href='#fk'/><title>References S_SERVICE_ADDRESS ( FWDZ_ID -&gt; ID ) </title></a>
+  <a xlink:href='#S_SERVICE_RESOURCE.STATUS'><text id='GONGANYUN2.S_SERVICE_RESOURCE.STATUS' x='693' y='1087'>STATUS</text><text x='840' y='1087' text-anchor='end' class='colType'>varchar2</text><title>STATUS
+varchar2
+状态，0已停用，1已启用，2已删除</title></a>
+
+<!-- ============= Table 'S_ASYNCHRONOUS_CACHE' ============= -->
+<rect class='table' x='1035' y='1133' width='195' height='225' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='1035.500000' y1='1159.500000' x2='1229.500000' y2='1159.500000'/>
+<line class='delim' x1='1050.500000' y1='1159.500000' x2='1050.500000' y2='1357.500000'/>
+<line class='delim' x1='1218.500000' y1='1159.500000' x2='1218.500000' y2='1357.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='1035.50' y1='1159.50' x2='1229.50' y2='1159.50'/>
+<a xlink:href='#S_ASYNCHRONOUS_CACHE'><text x='1058' y='1151'>S_ASYNCHRONOUS_CACHE</text><title>Table GONGANYUN2.S_ASYNCHRONOUS_CACHE
+异步请求缓存结果</title></a>
+  <use id='nn' x='1037' y='1167' xlink:href='#nn'/><a xlink:href='#S_ASYNCHRONOUS_CACHE.ID'><use id='pk' x='1037' y='1166' xlink:href='#pk'/><title>Pk Pk_ASYNCHRONOUS_CACHE_MESSAGE ( ID ) </title></a>
+<a xlink:href='#S_ASYNCHRONOUS_CACHE.ID'><text id='GONGANYUN2.S_ASYNCHRONOUS_CACHE.ID' x='1053' y='1177'>ID</text><text x='1215' y='1177' text-anchor='end' class='colType'>varchar2</text><title>ID
+* varchar2
+主键ID</title></a>
+  <use id='nn' x='1037' y='1182' xlink:href='#nn'/><a xlink:href='#S_ASYNCHRONOUS_CACHE.FWQQ_BWBH'><text id='GONGANYUN2.S_ASYNCHRONOUS_CACHE.FWQQ_BWBH' x='1053' y='1192'>FWQQ_BWBH</text><text x='1215' y='1192' text-anchor='end' class='colType'>varchar2</text><title>FWQQ_BWBH
+* varchar2
+服务请求报文编号</title></a>
+  <a xlink:href='#S_ASYNCHRONOUS_CACHE.FWQQ_RQSJ'><text id='GONGANYUN2.S_ASYNCHRONOUS_CACHE.FWQQ_RQSJ' x='1053' y='1207'>FWQQ_RQSJ</text><text x='1215' y='1207' text-anchor='end' class='colType'>date</text><title>FWQQ_RQSJ
+date
+服务请求日期时间</title></a>
+  <a xlink:href='#S_ASYNCHRONOUS_CACHE.FWQQ_BZ'><text id='GONGANYUN2.S_ASYNCHRONOUS_CACHE.FWQQ_BZ' x='1053' y='1222'>FWQQ_BZ</text><text x='1215' y='1222' text-anchor='end' class='colType'>varchar2</text><title>FWQQ_BZ
+varchar2
+服务请求内容
+
+应符合GA/T XX7-201X中4.1的规定</title></a>
+  <a xlink:href='#S_ASYNCHRONOUS_CACHE.XXCZRY_XM'><text id='GONGANYUN2.S_ASYNCHRONOUS_CACHE.XXCZRY_XM' x='1053' y='1237'>XXCZRY_XM</text><text x='1215' y='1237' text-anchor='end' class='colType'>varchar2</text><title>XXCZRY_XM
+varchar2
+信息操作人姓名</title></a>
+  <a xlink:href='#S_ASYNCHRONOUS_CACHE.XXCZRY_GMSFHM'><text id='GONGANYUN2.S_ASYNCHRONOUS_CACHE.XXCZRY_GMSFHM' x='1053' y='1252'>XXCZRY_GMSFHM</text><text x='1215' y='1252' text-anchor='end' class='colType'>varchar2</text><title>XXCZRY_GMSFHM
+varchar2
+信息操作人员编号</title></a>
+  <a xlink:href='#S_ASYNCHRONOUS_CACHE.YBQQ_BZDM'><text id='GONGANYUN2.S_ASYNCHRONOUS_CACHE.YBQQ_BZDM' x='1053' y='1267'>YBQQ_BZDM</text><text x='1215' y='1267' text-anchor='end' class='colType'>varchar2</text><title>YBQQ_BZDM
+varchar2
+异步请求标识
+
+判断标识数据元，符合DE00742的规定；该请求是否是异步请求的标识；</title></a>
+  <a xlink:href='#S_ASYNCHRONOUS_CACHE.JZQX'><text id='GONGANYUN2.S_ASYNCHRONOUS_CACHE.JZQX' x='1053' y='1282'>JZQX</text><text x='1215' y='1282' text-anchor='end' class='colType'>date</text><title>JZQX
+date
+截止期限
+
+若请求是异步请求，该请求的截止期限,即最长等候时间。单位：分钟；</title></a>
+  <a xlink:href='#S_ASYNCHRONOUS_CACHE.FWTGZTDM'><text id='GONGANYUN2.S_ASYNCHRONOUS_CACHE.FWTGZTDM' x='1053' y='1297'>FWTGZTDM</text><text x='1215' y='1297' text-anchor='end' class='colType'>varchar2</text><title>FWTGZTDM
+varchar2
+服务提供状态代码
+
+应符合GA/T XX6-201X中第5章的规定；</title></a>
+  <a xlink:href='#S_ASYNCHRONOUS_CACHE.FWTG_BZ'><text id='GONGANYUN2.S_ASYNCHRONOUS_CACHE.FWTG_BZ' x='1053' y='1312'>FWTG_BZ</text><text x='1215' y='1312' text-anchor='end' class='colType'>clob</text><title>FWTG_BZ
+clob
+服务提供内容
+
+应符合GA/T XX7-201X中4.2的规定。</title></a>
+  <a xlink:href='#S_ASYNCHRONOUS_CACHE.CONSUMER_ID'><use id='idx' x='1037' y='1316' xlink:href='#idx'/><title>idx_S_ASYNCHRONOUS_CACHE_0 ( CONSUMER_ID ) </title></a>
+<a xlink:href='#S_ASYNCHRONOUS_CACHE.CONSUMER_ID'><text id='GONGANYUN2.S_ASYNCHRONOUS_CACHE.CONSUMER_ID' x='1053' y='1327' onmouseover="hghl(['S_ASYNCHRONOUS_CACHE_fk_S_ASYNCHRONOUS_CACHE_0'])" onmouseout="uhghl(['S_ASYNCHRONOUS_CACHE_fk_S_ASYNCHRONOUS_CACHE_0'])">CONSUMER_ID</text><text x='1215' y='1327' text-anchor='end' class='colType'>varchar2</text><title>CONSUMER_ID
+varchar2
+请求者ID</title></a>
+<a xlink:href='#S_ASYNCHRONOUS_CACHE.CONSUMER_ID'><use id='fk' x='1218' y='1316' xlink:href='#fk'/><title>References S_SERVICE_CONSUMER ( CONSUMER_ID -&gt; ID ) </title></a>
+  <a xlink:href='#S_ASYNCHRONOUS_CACHE.SERVICE_RESOURCE_ID'><use id='idx' x='1037' y='1331' xlink:href='#idx'/><title>idx_S_ASYNCHRONOUS_CACHE ( SERVICE_RESOURCE_ID ) </title></a>
+<a xlink:href='#S_ASYNCHRONOUS_CACHE.SERVICE_RESOURCE_ID'><text id='GONGANYUN2.S_ASYNCHRONOUS_CACHE.SERVICE_RESOURCE_ID' x='1053' y='1342' onmouseover="hghl(['S_ASYNCHRONOUS_CACHE_fk_S_ASYNCHRONOUS_CACHE'])" onmouseout="uhghl(['S_ASYNCHRONOUS_CACHE_fk_S_ASYNCHRONOUS_CACHE'])">SERVICE_RESOURCE_ID</text><text x='1215' y='1342' text-anchor='end' class='colType'>integer</text><title>SERVICE_RESOURCE_ID
+integer
+服务资源ID</title></a>
+<a xlink:href='#S_ASYNCHRONOUS_CACHE.SERVICE_RESOURCE_ID'><use id='fk' x='1218' y='1331' xlink:href='#fk'/><title>References S_SERVICE_RESOURCE ( SERVICE_RESOURCE_ID -&gt; ID ) </title></a>
+
+<!-- ============= Table 'S_SERVICE_REQUEST_LOG' ============= -->
+<rect class='table' x='45' y='83' width='210' height='180' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='45.500000' y1='109.500000' x2='254.500000' y2='109.500000'/>
+<line class='delim' x1='60.500000' y1='109.500000' x2='60.500000' y2='262.500000'/>
+<line class='delim' x1='243.500000' y1='109.500000' x2='243.500000' y2='262.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='45.50' y1='109.50' x2='254.50' y2='109.50'/>
+<a xlink:href='#S_SERVICE_REQUEST_LOG'><text x='78' y='101'>S_SERVICE_REQUEST_LOG</text><title>Table GONGANYUN2.S_SERVICE_REQUEST_LOG
+服务请求日志</title></a>
+  <a xlink:href='#S_SERVICE_REQUEST_LOG.ID'><text id='GONGANYUN2.S_SERVICE_REQUEST_LOG.ID' x='63' y='127'>ID</text><text x='240' y='127' text-anchor='end' class='colType'>varchar2</text><title>ID
+varchar2
+主键ID</title></a>
+  <a xlink:href='#S_SERVICE_REQUEST_LOG.FWQQ_BWBH'><use id='unq' x='47' y='131' xlink:href='#unq'/><title>Unq Pk_S_SERVICE_REQUEST_LOG ( FWQQ_BWBH ) </title></a>
+<a xlink:href='#S_SERVICE_REQUEST_LOG.FWQQ_BWBH'><text id='GONGANYUN2.S_SERVICE_REQUEST_LOG.FWQQ_BWBH' x='63' y='142' onmouseover="hghl(['S_SERVICE_RESPONSE_LOG_fk_S_SERVICE_RESPONSE_LOG'])" onmouseout="uhghl(['S_SERVICE_RESPONSE_LOG_fk_S_SERVICE_RESPONSE_LOG'])">FWQQ_BWBH</text><text x='240' y='142' text-anchor='end' class='colType'>varchar2</text><title>FWQQ_BWBH
+varchar2
+服务请求报文编号</title></a>
+<a xlink:href='#S_SERVICE_REQUEST_LOG.FWQQ_BWBH'><use id='ref' x='243' y='131' xlink:href='#ref'/><title>Referred by S_SERVICE_RESPONSE_LOG ( FWQQ_BWBH ) </title></a>
+  <a xlink:href='#S_SERVICE_REQUEST_LOG.CONSUMER_ID'><text id='GONGANYUN2.S_SERVICE_REQUEST_LOG.CONSUMER_ID' x='63' y='157'>CONSUMER_ID</text><text x='240' y='157' text-anchor='end' class='colType'>varchar2</text><title>CONSUMER_ID
+varchar2
+服务请求者ID</title></a>
+  <a xlink:href='#S_SERVICE_REQUEST_LOG.FWQQZ_ZCXX'><text id='GONGANYUN2.S_SERVICE_REQUEST_LOG.FWQQZ_ZCXX' x='63' y='172'>FWQQZ_ZCXX</text><text x='240' y='172' text-anchor='end' class='colType'>varchar2</text><title>FWQQZ_ZCXX
+varchar2
+服务请求者_注册信息（冗余）</title></a>
+  <a xlink:href='#S_SERVICE_REQUEST_LOG.SERVICE_RESOURCE_ID'><text id='GONGANYUN2.S_SERVICE_REQUEST_LOG.SERVICE_RESOURCE_ID' x='63' y='187'>SERVICE_RESOURCE_ID</text><text x='240' y='187' text-anchor='end' class='colType'>varchar2</text><title>SERVICE_RESOURCE_ID
+varchar2
+服务资源ID</title></a>
+  <a xlink:href='#S_SERVICE_REQUEST_LOG.FWQQ_RQSJ'><text id='GONGANYUN2.S_SERVICE_REQUEST_LOG.FWQQ_RQSJ' x='63' y='202'>FWQQ_RQSJ</text><text x='240' y='202' text-anchor='end' class='colType'>date</text><title>FWQQ_RQSJ
+date
+服务请求_日期时间</title></a>
+  <a xlink:href='#S_SERVICE_REQUEST_LOG.FWQQ_BZ'><text id='GONGANYUN2.S_SERVICE_REQUEST_LOG.FWQQ_BZ' x='63' y='217'>FWQQ_BZ</text><text x='240' y='217' text-anchor='end' class='colType'>clob</text><title>FWQQ_BZ
+clob
+服务请求_内容</title></a>
+  <a xlink:href='#S_SERVICE_REQUEST_LOG.XXCZRY_XM'><text id='GONGANYUN2.S_SERVICE_REQUEST_LOG.XXCZRY_XM' x='63' y='232'>XXCZRY_XM</text><text x='240' y='232' text-anchor='end' class='colType'>date</text><title>XXCZRY_XM
+date
+信息操作人员_姓名</title></a>
+  <a xlink:href='#S_SERVICE_REQUEST_LOG.XXCZRY_GMSFHM'><text id='GONGANYUN2.S_SERVICE_REQUEST_LOG.XXCZRY_GMSFHM' x='63' y='247'>XXCZRY_GMSFHM</text><text x='240' y='247' text-anchor='end' class='colType'>date</text><title>XXCZRY_GMSFHM
+date
+信息操作人员_编号</title></a>
+
+<!-- ============= Table 'S_SERVICE_RESPONSE_LOG' ============= -->
+<rect class='table' x='45' y='293' width='165' height='165' rx='7' ry='7' style='fill:url(#tbg_c0d4f3);'/>
+<line class='delim' x1='45.500000' y1='319.500000' x2='209.500000' y2='319.500000'/>
+<line class='delim' x1='60.500000' y1='319.500000' x2='60.500000' y2='457.500000'/>
+<line class='delim' x1='198.500000' y1='319.500000' x2='198.500000' y2='457.500000'/>
+<line style='stroke:#d8b6b6;stroke-width:1;' x1='45.50' y1='319.50' x2='209.50' y2='319.50'/>
+<a xlink:href='#S_SERVICE_RESPONSE_LOG'><text x='52' y='311'>S_SERVICE_RESPONSE_LOG</text><title>Table GONGANYUN2.S_SERVICE_RESPONSE_LOG
+服务响应日志</title></a>
+  <use id='nn' x='47' y='327' xlink:href='#nn'/><a xlink:href='#S_SERVICE_RESPONSE_LOG.ID'><use id='pk' x='47' y='326' xlink:href='#pk'/><title>Pk Pk_S_SERVICE_RESPONSE_LOG ( ID ) </title></a>
+<a xlink:href='#S_SERVICE_RESPONSE_LOG.ID'><text id='GONGANYUN2.S_SERVICE_RESPONSE_LOG.ID' x='63' y='337'>ID</text><text x='195' y='337' text-anchor='end' class='colType'>varchar2</text><title>ID
+* varchar2
+主键ID</title></a>
+  <a xlink:href='#S_SERVICE_RESPONSE_LOG.FWTG_BWBH'><text id='GONGANYUN2.S_SERVICE_RESPONSE_LOG.FWTG_BWBH' x='63' y='352'>FWTG_BWBH</text><text x='195' y='352' text-anchor='end' class='colType'>varchar2</text><title>FWTG_BWBH
+varchar2
+服务提供_报文编号</title></a>
+  <a xlink:href='#S_SERVICE_RESPONSE_LOG.FWQQ_BWBH'><use id='idx' x='47' y='356' xlink:href='#idx'/><title>idx_S_SERVICE_RESPONSE_LOG ( FWQQ_BWBH ) </title></a>
+<a xlink:href='#S_SERVICE_RESPONSE_LOG.FWQQ_BWBH'><text id='GONGANYUN2.S_SERVICE_RESPONSE_LOG.FWQQ_BWBH' x='63' y='367' onmouseover="hghl(['S_SERVICE_RESPONSE_LOG_fk_S_SERVICE_RESPONSE_LOG'])" onmouseout="uhghl(['S_SERVICE_RESPONSE_LOG_fk_S_SERVICE_RESPONSE_LOG'])">FWQQ_BWBH</text><text x='195' y='367' text-anchor='end' class='colType'>varchar2</text><title>FWQQ_BWBH
+varchar2
+服务请求_报文编号</title></a>
+<a xlink:href='#S_SERVICE_RESPONSE_LOG.FWQQ_BWBH'><use id='fk' x='198' y='356' xlink:href='#fk'/><title>References S_SERVICE_REQUEST_LOG ( FWQQ_BWBH ) </title></a>
+  <a xlink:href='#S_SERVICE_RESPONSE_LOG.PROVIDER_ID'><text id='GONGANYUN2.S_SERVICE_RESPONSE_LOG.PROVIDER_ID' x='63' y='382'>PROVIDER_ID</text><text x='195' y='382' text-anchor='end' class='colType'>varchar2</text><title>PROVIDER_ID
+varchar2
+服务提供者ID</title></a>
+  <a xlink:href='#S_SERVICE_RESPONSE_LOG.CONSUMER_ID'><text id='GONGANYUN2.S_SERVICE_RESPONSE_LOG.CONSUMER_ID' x='63' y='397'>CONSUMER_ID</text><text x='195' y='397' text-anchor='end' class='colType'>varchar2</text><title>CONSUMER_ID
+varchar2
+服务请求者ID</title></a>
+  <a xlink:href='#S_SERVICE_RESPONSE_LOG.FWTG_RQSJ'><text id='GONGANYUN2.S_SERVICE_RESPONSE_LOG.FWTG_RQSJ' x='63' y='412'>FWTG_RQSJ</text><text x='195' y='412' text-anchor='end' class='colType'>date</text><title>FWTG_RQSJ
+date
+服务提供_日期时间</title></a>
+  <a xlink:href='#S_SERVICE_RESPONSE_LOG.FWTGZTDM'><text id='GONGANYUN2.S_SERVICE_RESPONSE_LOG.FWTGZTDM' x='63' y='427'>FWTGZTDM</text><text x='195' y='427' text-anchor='end' class='colType'>varchar2</text><title>FWTGZTDM
+varchar2
+服务提供状态代码</title></a>
+  <a xlink:href='#S_SERVICE_RESPONSE_LOG.FWTG_BZ'><text id='GONGANYUN2.S_SERVICE_RESPONSE_LOG.FWTG_BZ' x='63' y='442'>FWTG_BZ</text><text x='195' y='442' text-anchor='end' class='colType'>clob</text><title>FWTG_BZ
+clob
+服务提供_内容</title></a>
+
+<!-- ============= Callout ============= -->
+<rect class='callout' x='720' y='45' width='90' height='31' rx='15' ry='15'  />
+<text x='742' y='45'>
+    <tspan x='723' dx='7' dy='18'>总线基本信息</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='705' y='645' width='150' height='31' rx='15' ry='15'  />
+<text x='727' y='645'>
+    <tspan x='708' dx='7' dy='18'>服务提供者与资源映射表</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='1080' y='465' width='135' height='31' rx='15' ry='15'  />
+<text x='1102' y='465'>
+    <tspan x='1083' dx='7' dy='18'>请求者可访问资源关联</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='1110' y='615' width='90' height='31' rx='15' ry='15'  />
+<text x='1132' y='615'>
+    <tspan x='1113' dx='7' dy='18'>授权申请信息</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='1080' y='930' width='90' height='31' rx='15' ry='15'  />
+<text x='1102' y='930'>
+    <tspan x='1083' dx='7' dy='18'>临时授权结果</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='705' y='1125' width='90' height='31' rx='15' ry='15'  />
+<text x='727' y='1125'>
+    <tspan x='708' dx='7' dy='18'>服务地址信息</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='705' y='1305' width='120' height='31' rx='15' ry='15'  />
+<text x='727' y='1305'>
+    <tspan x='708' dx='7' dy='18'>服务地址参数集信息</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='1380' y='240' width='105' height='31' rx='15' ry='15'  />
+<text x='1402' y='240'>
+    <tspan x='1383' dx='7' dy='18'>服务访问时间规则</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='1650' y='240' width='105' height='31' rx='15' ry='15'  />
+<text x='1672' y='240'>
+    <tspan x='1653' dx='7' dy='18'>服务访问次数关联</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='1380' y='435' width='135' height='31' rx='15' ry='15'  />
+<text x='1402' y='435'>
+    <tspan x='1383' dx='7' dy='18'>服务访问时间规则映射</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='1635' y='405' width='105' height='31' rx='15' ry='15'  />
+<text x='1657' y='405'>
+    <tspan x='1638' dx='7' dy='18'>每日访问次数日志</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='1080' y='1110' width='105' height='31' rx='15' ry='15'  />
+<text x='1102' y='1110'>
+    <tspan x='1083' dx='7' dy='18'>异步请求缓存结果</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='360' y='855' width='150' height='31' rx='15' ry='15'  />
+<text x='382' y='855'>
+    <tspan x='363' dx='7' dy='18'>服务目录与服务资源映射</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='360' y='1395' width='90' height='31' rx='15' ry='15'  />
+<text x='382' y='1395'>
+    <tspan x='363' dx='7' dy='18'>目录编码规则</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='360' y='1245' width='90' height='31' rx='15' ry='15'  />
+<text x='382' y='1245'>
+    <tspan x='363' dx='7' dy='18'>服务目录字典</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='495' y='1245' width='90' height='31' rx='15' ry='15'  />
+<text x='517' y='1245'>
+    <tspan x='498' dx='7' dy='18'>服务资源要素</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='390' y='990' width='60' height='31' rx='15' ry='15'  />
+<text x='412' y='990'>
+    <tspan x='393' dx='7' dy='18'>服务目录</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='435' y='675' width='90' height='31' rx='15' ry='15'  />
+<text x='457' y='675'>
+    <tspan x='438' dx='7' dy='18'>服务组合关联</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='345' y='60' width='90' height='31' rx='15' ry='15'  />
+<text x='367' y='60'>
+    <tspan x='348' dx='7' dy='18'>服务注册日志</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='345' y='240' width='90' height='31' rx='15' ry='15'  />
+<text x='367' y='240'>
+    <tspan x='348' dx='7' dy='18'>服务注销日志</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='735' y='810' width='90' height='31' rx='15' ry='15'  />
+<text x='757' y='810'>
+    <tspan x='738' dx='7' dy='18'>服务资源信息</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='360' y='405' width='90' height='31' rx='15' ry='15'  />
+<text x='382' y='405'>
+    <tspan x='363' dx='7' dy='18'>服务更新日志</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='735' y='360' width='75' height='31' rx='15' ry='15'  />
+<text x='757' y='360'>
+    <tspan x='738' dx='7' dy='18'>服务提供者</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='1140' y='30' width='105' height='31' rx='15' ry='15'  />
+<text x='1162' y='30'>
+    <tspan x='1143' dx='7' dy='18'>服务请求者信息</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='105' y='60' width='90' height='31' rx='15' ry='15'  />
+<text x='127' y='60'>
+    <tspan x='108' dx='7' dy='18'>服务请求日志</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='90' y='270' width='90' height='31' rx='15' ry='15'  />
+<text x='112' y='270'>
+    <tspan x='93' dx='7' dy='18'>服务响应日志</tspan>
+</text>
+</g></svg>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_PROVIDER_RESOURCE_MAPPING'>Table S_PROVIDER_RESOURCE_MAPPING</a></th></tr>
+<tr><td colspan='3'>服务提供者与资源映射表 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='S_PROVIDER_RESOURCE_MAPPING.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_PROVIDER_RESOURCE_MAPPING.PROVIDER_ID'>PROVIDER&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 提供者主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_PROVIDER_RESOURCE_MAPPING.SERVICE_RESOURCE_ID'>SERVICE&#95;RESOURCE&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 服务资源ID </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>Pk&#95;S&#95;PROVIDER&#95;RESOURCE&#95;MAPPING</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;PROVIDER&#95;RESOURCE&#95;MAPPING</td>
+		<td> ON PROVIDER&#95;ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;PROVIDER&#95;RESOURCE&#95;MAPPING&#95;0</td>
+		<td> ON SERVICE&#95;RESOURCE&#95;ID</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_PROVIDER_RESOURCE_MAPPING</td>
+		<td > ( PROVIDER&#95;ID ) ref <a href='#S&#95;SERVICE&#95;PROVIDER'>S&#95;SERVICE&#95;PROVIDER</a> (ID) </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_PROVIDER_RESOURCE_MAPPING_0</td>
+		<td > ( SERVICE&#95;RESOURCE&#95;ID ) ref <a href='#S&#95;SERVICE&#95;RESOURCE'>S&#95;SERVICE&#95;RESOURCE</a> (ID) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_CONSUMER_SERVICE_MAPPING'>Table S_CONSUMER_SERVICE_MAPPING</a></th></tr>
+<tr><td colspan='3'>请求者可访问资源关联 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='S_CONSUMER_SERVICE_MAPPING.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_CONSUMER_SERVICE_MAPPING.CONSUMER_ID'>CONSUMER&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 请求者ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_CONSUMER_SERVICE_MAPPING.SERVICE_RESOURCE_ID'>SERVICE&#95;RESOURCE&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 服务资源ID </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>Pk&#95;S&#95;CONSUMER&#95;SERVICE&#95;MAPPING</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;CONSUMER&#95;SERVICE&#95;MAPPING</td>
+		<td> ON CONSUMER&#95;ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;CONSUMER&#95;SERVICE&#95;MAPPING&#95;0</td>
+		<td> ON SERVICE&#95;RESOURCE&#95;ID</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_CONSUMER_SERVICE_MAPPING</td>
+		<td > ( CONSUMER&#95;ID ) ref <a href='#S&#95;SERVICE&#95;CONSUMER'>S&#95;SERVICE&#95;CONSUMER</a> (ID) </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_CONSUMER_SERVICE_MAPPING_0</td>
+		<td > ( SERVICE&#95;RESOURCE&#95;ID ) ref <a href='#S&#95;SERVICE&#95;RESOURCE'>S&#95;SERVICE&#95;RESOURCE</a> (ID) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_AUTH_APPLY'>Table S_AUTH_APPLY</a></th></tr>
+<tr><td colspan='3'>授权申请信息 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='S_AUTH_APPLY.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>*</td>
+		<td><a name='S_AUTH_APPLY.SQSQ_BWBH'>SQSQ&#95;BWBH</a></td>
+		<td> varchar2   </td>
+		<td> 授权申请&#95;报文编号。
+
+用于唯一标识一条授权申请报文。应符合7&#46;1的规定； </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_AUTH_APPLY.SQSQ_RQSJ'>SQSQ&#95;RQSJ</a></td>
+		<td> date   </td>
+		<td> 授权申请&#95;日期时间 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_AUTH_APPLY.XXCZRY_XM'>XXCZRY&#95;XM</a></td>
+		<td> varchar2   </td>
+		<td> 信息操作人员&#95;姓名 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_AUTH_APPLY.XXCZRY_GMSFHM'>XXCZRY&#95;GMSFHM</a></td>
+		<td> varchar2   </td>
+		<td> 信息操作人员&#95;编号 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_AUTH_APPLY.XXCZRY_GAJGJGDM'>XXCZRY&#95;GAJGJGDM</a></td>
+		<td> varchar2   </td>
+		<td> 信息操作人员&#95;机构代码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_AUTH_APPLY.XXCZRY_ZWJBDM'>XXCZRY&#95;ZWJBDM</a></td>
+		<td> varchar2   </td>
+		<td> 信息操作人员&#95;职务级别代码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_AUTH_APPLY.XXCZRY_GWQJDM'>XXCZRY&#95;GWQJDM</a></td>
+		<td> varchar2   </td>
+		<td> 信息操作人员&#95;岗位权级代码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_AUTH_APPLY.XXCZRY_XZQHDM'>XXCZRY&#95;XZQHDM</a></td>
+		<td> varchar2   </td>
+		<td> 信息操作人员&#95;行政区划代码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_AUTH_APPLY.XXCZRY_MMDJDM'>XXCZRY&#95;MMDJDM</a></td>
+		<td> varchar2   </td>
+		<td> 信息操作人员&#95;秘密等级代码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_AUTH_APPLY.XXCZRY_JZDM'>XXCZRY&#95;JZDM</a></td>
+		<td> varchar2   </td>
+		<td> 信息操作人员&#95;警种（部门）代码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_AUTH_APPLY.SPZT'>SPZT</a></td>
+		<td> integer   </td>
+		<td> 审批状态 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_AUTH_APPLY.APPLY_TYPE'>APPLY&#95;TYPE</a></td>
+		<td> integer   </td>
+		<td> 授权申请类型。0表示永久授权，1表示临时授权。 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_AUTH_APPLY.CONSUMER_ID'>CONSUMER&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 请求者ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_AUTH_APPLY.SERVICE_RESOURCE_ID'>SERVICE&#95;RESOURCE&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 服务资源ID </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>Pk&#95;AUTH&#95;APPLY&#95;MESSAGE</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;AUTH&#95;APPLY&#95;MESSAGE</td>
+		<td> ON SERVICE&#95;RESOURCE&#95;ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;AUTH&#95;APPLY&#95;MESSAGE&#95;0</td>
+		<td> ON CONSUMER&#95;ID</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_AUTH_APPLY_MESSAGE</td>
+		<td > ( SERVICE&#95;RESOURCE&#95;ID ) ref <a href='#S&#95;SERVICE&#95;RESOURCE'>S&#95;SERVICE&#95;RESOURCE</a> (ID) </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_AUTH_APPLY_MESSAGE_0</td>
+		<td > ( CONSUMER&#95;ID ) ref <a href='#S&#95;SERVICE&#95;CONSUMER'>S&#95;SERVICE&#95;CONSUMER</a> (ID) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_AUTH_RESULT'>Table S_AUTH_RESULT</a></th></tr>
+<tr><td colspan='3'>临时授权结果 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='S_AUTH_RESULT.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>*</td>
+		<td><a name='S_AUTH_RESULT.SQ_BWBH'>SQ&#95;BWBH</a></td>
+		<td> varchar2   </td>
+		<td> 授权报文编号 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_AUTH_RESULT.SQ_RQSJ'>SQ&#95;RQSJ</a></td>
+		<td> date   </td>
+		<td> 授权&#95;日期时间 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_AUTH_RESULT.FWTGZTDM'>FWTGZTDM</a></td>
+		<td> varchar2   </td>
+		<td> 服务提供状态代码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_AUTH_RESULT.SQXX'>SQXX</a></td>
+		<td> varchar2   </td>
+		<td> 授权信息。
+
+由服务提供者生成，当服务请求者采用自主路由时需凭借此信息访问服务提供者的服务 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_AUTH_RESULT.APPLY_ID'>APPLY&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 授权申请ID </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>Pk&#95;S&#95;AUTH&#95;RESULT</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;AUTH&#95;RESULT</td>
+		<td> ON APPLY&#95;ID</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_AUTH_RESULT</td>
+		<td > ( APPLY&#95;ID ) ref <a href='#S&#95;AUTH&#95;APPLY'>S&#95;AUTH&#95;APPLY</a> (ID) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_SERVICE_ADDRESS'>Table S_SERVICE_ADDRESS</a></th></tr>
+<tr><td colspan='3'>服务地址信息 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='S_SERVICE_ADDRESS.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_ADDRESS.FW_IPDZ'>FW&#95;IPDZ</a></td>
+		<td> varchar2   </td>
+		<td> 服务&#95;入口地址 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_ADDRESS.FW_ZXDKHM'>FW&#95;ZXDKHM</a></td>
+		<td> varchar2   </td>
+		<td> 服务&#95;端口号 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_ADDRESS.FWNR_FFMC'>FWNR&#95;FFMC</a></td>
+		<td> varchar2   </td>
+		<td> 服务方法名称 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_ADDRESS.FWNR_RQC'>FWNR&#95;RQC</a></td>
+		<td> varchar2   </td>
+		<td> 服务请求参数集ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_ADDRESS.FWNR_CC'>FWNR&#95;CC</a></td>
+		<td> varchar2   </td>
+		<td> 返回结果集参数ID </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>Pk&#95;S&#95;SERVICE&#95;ADDRESS</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;SERVICE&#95;ADDRESS</td>
+		<td> ON FWNR&#95;RQC</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;SERVICE&#95;ADDRESS&#95;0</td>
+		<td> ON FWNR&#95;CC</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_SERVICE_ADDRESS</td>
+		<td > ( FWNR&#95;RQC ) ref <a href='#S&#95;SERVICE&#95;ADDR&#95;PARAM'>S&#95;SERVICE&#95;ADDR&#95;PARAM</a> (ID) </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_SERVICE_ADDRESS_0</td>
+		<td > ( FWNR&#95;CC ) ref <a href='#S&#95;SERVICE&#95;ADDR&#95;PARAM'>S&#95;SERVICE&#95;ADDR&#95;PARAM</a> (ID) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_SERVICE_ADDR_PARAM'>Table S_SERVICE_ADDR_PARAM</a></th></tr>
+<tr><td colspan='3'>服务地址参数集信息 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='S_SERVICE_ADDR_PARAM.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_ADDR_PARAM.MC'>MC</a></td>
+		<td> varchar2   </td>
+		<td> 名称 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_ADDR_PARAM.LX'>LX</a></td>
+		<td> varchar2   </td>
+		<td> 类型 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>Pk&#95;S&#95;SERVICE&#95;ADDR&#95;PARAM</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_SERVICE_TIME_RULE'>Table S_SERVICE_TIME_RULE</a></th></tr>
+<tr><td colspan='3'>服务访问时间规则 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='S_SERVICE_TIME_RULE.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_TIME_RULE.RULE_NAME'>RULE&#95;NAME</a></td>
+		<td> varchar   </td>
+		<td> 规则名称 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_TIME_RULE.TIME_CYCLE'>TIME&#95;CYCLE</a></td>
+		<td> varchar   </td>
+		<td> 访问时间。如1&#44;3&#44;5表示周一、三、五可以访问。 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_TIME_RULE.START_TIME'>START&#95;TIME</a></td>
+		<td> varchar   </td>
+		<td> 当天开始时间 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_TIME_RULE.END_TIME'>END&#95;TIME</a></td>
+		<td> varchar   </td>
+		<td> 当天结束时间 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_TIME_RULE.MEMO1'>MEMO1</a></td>
+		<td> varchar   </td>
+		<td> 备用字段1 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_TIME_RULE.MEMO2'>MEMO2</a></td>
+		<td> varchar   </td>
+		<td> 备用字段2 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>Pk&#95;S&#95;SERVICE&#95;VISIT&#95;TIME</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_SERVICE_VISIT_COUNT'>Table S_SERVICE_VISIT_COUNT</a></th></tr>
+<tr><td colspan='3'>服务访问次数关联 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='S_SERVICE_VISIT_COUNT.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_VISIT_COUNT.CONSUMER_ID'>CONSUMER&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 请求者ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_VISIT_COUNT.SERVICE_RESOURCE_ID'>SERVICE&#95;RESOURCE&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 服务资源ID </td>
+	</tr>
+	<tr>
+		<td>*</td>
+		<td><a name='S_SERVICE_VISIT_COUNT.VISIT_COUNT'>VISIT&#95;COUNT</a></td>
+		<td> int   </td>
+		<td> 每日限制访问次数 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>Pk&#95;S&#95;SERVICE&#95;VISIT&#95;COUNT</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>U</td><td>Pk&#95;S&#95;SERVICE&#95;VISIT&#95;COUNT&#95;0</td>
+		<td> ON CONSUMER&#95;ID</td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_SERVICE_TIME_MAPPING'>Table S_SERVICE_TIME_MAPPING</a></th></tr>
+<tr><td colspan='3'>服务访问时间规则映射 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='S_SERVICE_TIME_MAPPING.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_TIME_MAPPING.TIME_ID'>TIME&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 时间规则ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_TIME_MAPPING.SERVICE_ID'>SERVICE&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 服务资源ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_TIME_MAPPING.MEMO1'>MEMO1</a></td>
+		<td> varchar2   </td>
+		<td> 备用字段1 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_TIME_MAPPING.MEMO2'>MEMO2</a></td>
+		<td> varchar2   </td>
+		<td> 备用字段2 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_TIME_MAPPING.UPDATE_USER'>UPDATE&#95;USER</a></td>
+		<td> varchar2   </td>
+		<td> 更新用户 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_TIME_MAPPING.UPDATE_TIME'>UPDATE&#95;TIME</a></td>
+		<td> date   </td>
+		<td> 更新时间 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>Pk&#95;S&#95;SERVICE&#95;TIME&#95;MAPPING</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;SERVICE&#95;TIME&#95;MAPPING</td>
+		<td> ON TIME&#95;ID</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_SERVICE_TIME_MAPPING</td>
+		<td > ( TIME&#95;ID ) ref <a href='#S&#95;SERVICE&#95;TIME&#95;RULE'>S&#95;SERVICE&#95;TIME&#95;RULE</a> (ID) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_SERVICE_VISIT_COUNT_LOG'>Table S_SERVICE_VISIT_COUNT_LOG</a></th></tr>
+<tr><td colspan='3'>每日访问次数日志 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='S_SERVICE_VISIT_COUNT_LOG.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_VISIT_COUNT_LOG.VISIT_COUNT_ID'>VISIT&#95;COUNT&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 访问次数关联ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_VISIT_COUNT_LOG.VISITED_COUNT'>VISITED&#95;COUNT</a></td>
+		<td> varchar2   </td>
+		<td> 已访问次数 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_VISIT_COUNT_LOG.VISIT_DATE'>VISIT&#95;DATE</a></td>
+		<td> date   </td>
+		<td> 访问日期 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>Pk&#95;S&#95;SERVICE&#95;VISIT&#95;COUNT&#95;LOG</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;SERVICE&#95;VISIT&#95;COUNT&#95;LOG</td>
+		<td> ON VISIT&#95;COUNT&#95;ID</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_SERVICE_VISIT_COUNT_LOG</td>
+		<td > ( VISIT&#95;COUNT&#95;ID ) ref <a href='#S&#95;SERVICE&#95;VISIT&#95;COUNT'>S&#95;SERVICE&#95;VISIT&#95;COUNT</a> (CONSUMER&#95;ID) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_SERVICE_CATA_MAPPING'>Table S_SERVICE_CATA_MAPPING</a></th></tr>
+<tr><td colspan='3'>服务目录与服务资源映射 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CATA_MAPPING.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CATA_MAPPING.CATA_ID'>CATA&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 目录ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CATA_MAPPING.SERVICE_RESOURCE_ID'>SERVICE&#95;RESOURCE&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 服务资源ID </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;SERVICE&#95;CATA&#95;MAPPING</td>
+		<td> ON CATA&#95;ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;SERVICE&#95;CATA&#95;MAPPING&#95;0</td>
+		<td> ON SERVICE&#95;RESOURCE&#95;ID</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_SERVICE_CATA_MAPPING</td>
+		<td > ( CATA&#95;ID ) ref <a href='#S&#95;SERVICE&#95;CATA'>S&#95;SERVICE&#95;CATA</a> (ID) </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_SERVICE_CATA_MAPPING_0</td>
+		<td > ( SERVICE&#95;RESOURCE&#95;ID ) ref <a href='#S&#95;SERVICE&#95;RESOURCE'>S&#95;SERVICE&#95;RESOURCE</a> (ID) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_CATA_CODE_RULE'>Table S_CATA_CODE_RULE</a></th></tr>
+<tr><td colspan='3'>目录编码规则 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_CATA_CODE_RULE.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_CATA_CODE_RULE.RULE_NAME'>RULE&#95;NAME</a></td>
+		<td> varchar   </td>
+		<td> 规则名称 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_CATA_CODE_RULE.RULE_DESC'>RULE&#95;DESC</a></td>
+		<td> varchar   </td>
+		<td> 规则描述 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_CATA_CODE_RULE.CODE_LENGTH'>CODE&#95;LENGTH</a></td>
+		<td> varchar   </td>
+		<td> 编码长度 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_CATA_CODE_RULE.STAET_NUM'>STAET&#95;NUM</a></td>
+		<td> varchar   </td>
+		<td> 开始位置 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_CATA_CODE_RULE.END_NUM'>END&#95;NUM</a></td>
+		<td> varchar   </td>
+		<td> 结束位置 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>U</td><td>Pk&#95;S&#95;CATA&#95;CODE&#95;RULE</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_CATA_DICT'>Table S_CATA_DICT</a></th></tr>
+<tr><td colspan='3'>服务目录字典 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_CATA_DICT.ID'>ID</a></td>
+		<td> integer   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_CATA_DICT.CODE'>CODE</a></td>
+		<td> integer   </td>
+		<td> 编码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_CATA_DICT.DESC'>DESC</a></td>
+		<td> integer   </td>
+		<td> 描述 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_CATA_DICT.RULE_ID'>RULE&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 编码规则ID </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>U</td><td>Pk&#95;S&#95;CATA&#95;DICT</td>
+		<td> ON CODE</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;CATA&#95;DICT</td>
+		<td> ON RULE&#95;ID</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_CATA_DICT</td>
+		<td > ( RULE&#95;ID ) ref <a href='#S&#95;CATA&#95;CODE&#95;RULE'>S&#95;CATA&#95;CODE&#95;RULE</a> (ID) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_SERVICE_ELEMENT'>Table S_SERVICE_ELEMENT</a></th></tr>
+<tr><td colspan='3'>服务资源要素 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='S_SERVICE_ELEMENT.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_ELEMENT.CODE'>CODE</a></td>
+		<td> varchar2   </td>
+		<td> 要素编码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_ELEMENT.NAME'>NAME</a></td>
+		<td> varchar   </td>
+		<td> 要素名称 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_ELEMENT.MEMO1'>MEMO1</a></td>
+		<td> varchar   </td>
+		<td> 备用字段1 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_ELEMENT.MEMO2'>MEMO2</a></td>
+		<td> varchar   </td>
+		<td> 备用字段2 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>Pk&#95;S&#95;SERVICE&#95;ELEMENT</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>U</td><td>Pk&#95;S&#95;SERVICE&#95;ELEMENT&#95;0</td>
+		<td> ON CODE</td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_SERVICE_CATA'>Table S_SERVICE_CATA</a></th></tr>
+<tr><td colspan='3'>服务目录 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='S_SERVICE_CATA.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CATA.CATA_CODE'>CATA&#95;CODE</a></td>
+		<td> varchar2   </td>
+		<td> 目录编码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CATA.CATA_NAME'>CATA&#95;NAME</a></td>
+		<td> varchar   </td>
+		<td> 目录名称 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CATA.ZIP_CODE'>ZIP&#95;CODE</a></td>
+		<td> varchar   </td>
+		<td> 所属区域编码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CATA.SCOPE_CODE'>SCOPE&#95;CODE</a></td>
+		<td> varchar   </td>
+		<td> 行业编码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CATA.APP_CODE'>APP&#95;CODE</a></td>
+		<td> varchar   </td>
+		<td> 所属应用种类编码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CATA.BUSINESS_CODE'>BUSINESS&#95;CODE</a></td>
+		<td> varchar   </td>
+		<td> 所属业务类型编码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CATA.RESOURCE_CODE'>RESOURCE&#95;CODE</a></td>
+		<td> varchar   </td>
+		<td> 资源编码（流水号） </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CATA.ELEMENT_CODE'>ELEMENT&#95;CODE</a></td>
+		<td> varchar   </td>
+		<td> 所属要素编码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CATA.MEMO1'>MEMO1</a></td>
+		<td> varchar   </td>
+		<td> 备用字段1 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CATA.MEMO2'>MEMO2</a></td>
+		<td> varchar   </td>
+		<td> 备用字段2 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>Pk&#95;S&#95;SERVICE&#95;CATA</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;SERVICE&#95;CATA</td>
+		<td> ON ZIP&#95;CODE</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;SERVICE&#95;CATA&#95;0</td>
+		<td> ON SCOPE&#95;CODE</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;SERVICE&#95;CATA&#95;1</td>
+		<td> ON APP&#95;CODE</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;SERVICE&#95;CATA&#95;2</td>
+		<td> ON BUSINESS&#95;CODE</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;SERVICE&#95;CATA&#95;3</td>
+		<td> ON ELEMENT&#95;CODE</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_SERVICE_CATA</td>
+		<td > ( ZIP&#95;CODE ) ref <a href='#S&#95;CATA&#95;DICT'>S&#95;CATA&#95;DICT</a> (CODE) </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_SERVICE_CATA_0</td>
+		<td > ( SCOPE&#95;CODE ) ref <a href='#S&#95;CATA&#95;DICT'>S&#95;CATA&#95;DICT</a> (CODE) </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_SERVICE_CATA_1</td>
+		<td > ( APP&#95;CODE ) ref <a href='#S&#95;CATA&#95;DICT'>S&#95;CATA&#95;DICT</a> (CODE) </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_SERVICE_CATA_2</td>
+		<td > ( BUSINESS&#95;CODE ) ref <a href='#S&#95;CATA&#95;DICT'>S&#95;CATA&#95;DICT</a> (CODE) </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_SERVICE_CATA_3</td>
+		<td > ( ELEMENT&#95;CODE ) ref <a href='#S&#95;SERVICE&#95;ELEMENT'>S&#95;SERVICE&#95;ELEMENT</a> (CODE) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_SERVICE_GROUP_MAPPING'>Table S_SERVICE_GROUP_MAPPING</a></th></tr>
+<tr><td colspan='3'>服务组合关联 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_GROUP_MAPPING.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_GROUP_MAPPING.PARENT_SERVICE_ID'>PARENT&#95;SERVICE&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 父服务ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_GROUP_MAPPING.CHILD_SERVICE_ID'>CHILD&#95;SERVICE&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 子服务ID </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;SERVICE&#95;GROUP&#95;MAPPING</td>
+		<td> ON PARENT&#95;SERVICE&#95;ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;SERVICE&#95;GROUP&#95;MAPPING&#95;0</td>
+		<td> ON CHILD&#95;SERVICE&#95;ID</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_SERVICE_GROUP_MAPPING</td>
+		<td > ( PARENT&#95;SERVICE&#95;ID ) ref <a href='#S&#95;SERVICE&#95;RESOURCE'>S&#95;SERVICE&#95;RESOURCE</a> (ID) </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_SERVICE_GROUP_MAPPING_0</td>
+		<td > ( CHILD&#95;SERVICE&#95;ID ) ref <a href='#S&#95;SERVICE&#95;RESOURCE'>S&#95;SERVICE&#95;RESOURCE</a> (ID) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_SERVICE_REG_LOG'>Table S_SERVICE_REG_LOG</a></th></tr>
+<tr><td colspan='3'>服务注册日志 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='S_SERVICE_REG_LOG.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_REG_LOG.SERVICE_RESOURCE_ID'>SERVICE&#95;RESOURCE&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 服务主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_REG_LOG.SERVICE_PROVIDER_ID'>SERVICE&#95;PROVIDER&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 服务提供者ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_REG_LOG.XXCZRY_XM'>XXCZRY&#95;XM</a></td>
+		<td> varchar2   </td>
+		<td> 信息操作人员&#95;姓名 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_REG_LOG.XXCZRY_GMSFHM'>XXCZRY&#95;GMSFHM</a></td>
+		<td> varchar2   </td>
+		<td> 信息操作人员&#95;编号 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_REG_LOG.FWZC_RQSJ'>FWZC&#95;RQSJ</a></td>
+		<td> date   </td>
+		<td> 服务注册&#95;日期时间 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>Pk&#95;S&#95;SERVICE&#95;REG&#95;LOG</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_SERVICE_UNREG_LOG'>Table S_SERVICE_UNREG_LOG</a></th></tr>
+<tr><td colspan='3'>服务注销日志 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='S_SERVICE_UNREG_LOG.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_UNREG_LOG.FWZX_RQSJ'>FWZX&#95;RQSJ</a></td>
+		<td> date   </td>
+		<td> 服务注销&#95;日期时间 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_UNREG_LOG.SERVICE_PROVIDER_ID'>SERVICE&#95;PROVIDER&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 服务提供者ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_UNREG_LOG.SERVICE_RESOURCE_ID'>SERVICE&#95;RESOURCE&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 服务资源ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_UNREG_LOG.XXCZRY_XM'>XXCZRY&#95;XM</a></td>
+		<td> varchar2   </td>
+		<td> 信息操作人员&#95;姓名 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_UNREG_LOG.XXCZRY_GMSFHM'>XXCZRY&#95;GMSFHM</a></td>
+		<td> varchar2   </td>
+		<td> 信息操作人员&#95;编号 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>Pk&#95;S&#95;SERVICE&#95;UNREG&#95;LOG</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_SERVICE_UPDATE_LOG'>Table S_SERVICE_UPDATE_LOG</a></th></tr>
+<tr><td colspan='3'>服务更新日志 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_UPDATE_LOG.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_UPDATE_LOG.FWGX_RQSJ'>FWGX&#95;RQSJ</a></td>
+		<td> date   </td>
+		<td> 服务更新&#95;日期时间 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_UPDATE_LOG.JFW_ZCXX'>JFW&#95;ZCXX</a></td>
+		<td> varchar2   </td>
+		<td> 旧服务&#95;注册信息 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_UPDATE_LOG.XFW_ZCXX'>XFW&#95;ZCXX</a></td>
+		<td> varchar2   </td>
+		<td> 新服务注册信息 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_UPDATE_LOG.SERVICE_PROVIDER_ID'>SERVICE&#95;PROVIDER&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 服务提供者ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_UPDATE_LOG.SERVICE_RESOURCE_ID'>SERVICE&#95;RESOURCE&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 服务资源ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_UPDATE_LOG.XXCZRY_XM'>XXCZRY&#95;XM</a></td>
+		<td> varchar2   </td>
+		<td> 信息操作人员&#95;姓名 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_UPDATE_LOG.XXCZRY_GMSFHM'>XXCZRY&#95;GMSFHM</a></td>
+		<td> varchar2   </td>
+		<td> 信息操作人员&#95;编号 </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_SERVICE_BUS'>Table S_SERVICE_BUS</a></th></tr>
+<tr><td colspan='3'>总线基本信息 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_BUS.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_BUS.ZXBS'>ZXBS</a></td>
+		<td> varchar2   </td>
+		<td> 总线唯一标识 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_BUS.ZXMC'>ZXMC</a></td>
+		<td> varchar2   </td>
+		<td> 总线名称 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_BUS.GAJGMC'>GAJGMC</a></td>
+		<td> varchar2   </td>
+		<td> 总线所在的公安机关名称 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_BUS.ZX_GAJGJGDM'>ZX&#95;GAJGJGDM</a></td>
+		<td> varchar2   </td>
+		<td> 总线所在的公安机关机构代码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_BUS.ZX_IPDZ'>ZX&#95;IPDZ</a></td>
+		<td> varchar2   </td>
+		<td> 总线&#95;入口地址。统一用域名表示 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_BUS.ZX_ZXDKHM'>ZX&#95;ZXDKHM</a></td>
+		<td> varchar2   </td>
+		<td> 总线&#95;端口号 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_BUS.ZX_MS'>ZX&#95;MS</a></td>
+		<td> varchar2   </td>
+		<td> 总线&#95;描述。关于总线的功能、特性、开发公司等信息的说明性文字
+
+长度（1000&#41; </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_BUS.ZXCJ_RQ'>ZXCJ&#95;RQ</a></td>
+		<td> date   </td>
+		<td> 总线创建&#95;日期 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_BUS.ZXFZR_LXFS'>ZXFZR&#95;LXFS</a></td>
+		<td> varchar2   </td>
+		<td> 总线负责人&#95;联系方式 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_BUS.LXR_SM'>LXR&#95;SM</a></td>
+		<td> varchar2   </td>
+		<td> 描述总线负责人联系方式的说明性文字； </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_BUS.LXR_XM'>LXR&#95;XM</a></td>
+		<td> varchar2   </td>
+		<td> 联系人&#95;姓名 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_BUS.LXDH'>LXDH</a></td>
+		<td> varchar2   </td>
+		<td> 联系电话 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_BUS.DZXX'>DZXX</a></td>
+		<td> varchar2   </td>
+		<td> 电子信箱 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_BUS.TXDZ'>TXDZ</a></td>
+		<td> varchar2   </td>
+		<td> 通信地址 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_BUS.STATUS'>STATUS</a></td>
+		<td> varchar2   </td>
+		<td> 总线状态，0已停用，1已启用，2已删除 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>U</td><td>Pk&#95;SERVICE&#95;BUS</td>
+		<td> ON ZXBS</td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_SERVICE_CONSUMER'>Table S_SERVICE_CONSUMER</a></th></tr>
+<tr><td colspan='3'>服务请求者信息 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='S_SERVICE_CONSUMER.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>*</td>
+		<td><a name='S_SERVICE_CONSUMER.FWQQZBS'>FWQQZBS</a></td>
+		<td> varchar2   </td>
+		<td> 服务请求者标识。
+
+包括公安行业内服务请求者标识和公安行业外服务请求者标识。其中，行业内服务请求者标识应符合GA&#47;T XX2&#45;201X中7&#46;4的规定，行业外服务请求者标识应符合GA&#47;T XX2&#45;201X中7&#46;8的规定； </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CONSUMER.FWQQZMC'>FWQQZMC</a></td>
+		<td> varchar2   </td>
+		<td> 服务请求者名称 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CONSUMER.HYN_BZDM'>HYN&#95;BZDM</a></td>
+		<td> varchar2   </td>
+		<td> 表示服务请求者是否是公安行业内服务请求者的标识； </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CONSUMER.HYNFWQQZQJ'>HYNFWQQZQJ</a></td>
+		<td> varchar2   </td>
+		<td> 行业内服务请求者权级 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CONSUMER.ZWJBDM'>ZWJBDM</a></td>
+		<td> varchar2   </td>
+		<td> 职务级别代码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CONSUMER.GWQJDM'>GWQJDM</a></td>
+		<td> varchar2   </td>
+		<td> 岗位权级代码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CONSUMER.XZQHDM'>XZQHDM</a></td>
+		<td> varchar2   </td>
+		<td> 行政区划代码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CONSUMER.MMDJDM'>MMDJDM</a></td>
+		<td> varchar2   </td>
+		<td> 秘密等级代码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CONSUMER.JZDM'>JZDM</a></td>
+		<td> varchar2   </td>
+		<td> 警种代码（部门） </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CONSUMER.FWQQZRKDZLB'>FWQQZRKDZLB</a></td>
+		<td> varchar2   </td>
+		<td> 服务请求者入口地址列表 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CONSUMER.FWQQZ_IPDZ'>FWQQZ&#95;IPDZ</a></td>
+		<td> varchar2   </td>
+		<td> 服务请求者入口地址 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CONSUMER.FWQQZ_ZXDKHM'>FWQQZ&#95;ZXDKHM</a></td>
+		<td> integer   </td>
+		<td> 服务请求者&#95;端口号 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CONSUMER.FWQQZ_ZXBS'>FWQQZ&#95;ZXBS</a></td>
+		<td> varchar2   </td>
+		<td> 服务请求者总线标识 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CONSUMER.FWQQZ_MS'>FWQQZ&#95;MS</a></td>
+		<td> varchar2   </td>
+		<td> 服务请求者&#95;描述 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CONSUMER.FWQQZ_LXFS'>FWQQZ&#95;LXFS</a></td>
+		<td> varchar2   </td>
+		<td> 服务请求者&#95;联系方式 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CONSUMER.LXR_SM'>LXR&#95;SM</a></td>
+		<td> varchar2   </td>
+		<td> 联系人&#95;说明 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CONSUMER.LXR_XM'>LXR&#95;XM</a></td>
+		<td> varchar2   </td>
+		<td> 联系人&#95;姓名 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CONSUMER.LXDH'>LXDH</a></td>
+		<td> varchar2   </td>
+		<td> 联系电话 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CONSUMER.DZXX'>DZXX</a></td>
+		<td> varchar2   </td>
+		<td> 电子信箱 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CONSUMER.TXDZ'>TXDZ</a></td>
+		<td> varchar2   </td>
+		<td> 通信地址 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CONSUMER.LXR_GMSFHM'>LXR&#95;GMSFHM</a></td>
+		<td> varchar2   </td>
+		<td> 联系人&#95;身份证号 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_CONSUMER.STATUS'>STATUS</a></td>
+		<td> int   </td>
+		<td> 状态（0不可用，1可用，2删除） </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>Pk&#95;S&#95;SERVICE&#95;CONSUMER</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;SERVICE&#95;CONSUMER</td>
+		<td> ON FWQQZ&#95;ZXBS</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_SERVICE_CONSUMER</td>
+		<td > ( FWQQZ&#95;ZXBS ) ref <a href='#S&#95;SERVICE&#95;BUS'>S&#95;SERVICE&#95;BUS</a> (ZXBS) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_SERVICE_PROVIDER'>Table S_SERVICE_PROVIDER</a></th></tr>
+<tr><td colspan='3'>服务提供者 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='S_SERVICE_PROVIDER.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>*</td>
+		<td><a name='S_SERVICE_PROVIDER.FWTGZ_GAJGJGDM'>FWTGZ&#95;GAJGJGDM</a></td>
+		<td> varchar2   </td>
+		<td> 服务提供者标识 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_PROVIDER.FWTGZ_GAJGMC'>FWTGZ&#95;GAJGMC</a></td>
+		<td> varchar2   </td>
+		<td> 服务提供者名称 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_PROVIDER.FWTGZZC_IPDZ'>FWTGZZC&#95;IPDZ</a></td>
+		<td> varchar2   </td>
+		<td> 服务提供者注册&#95;入口地址 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_PROVIDER.FWTGZ_ZXBS'>FWTGZ&#95;ZXBS</a></td>
+		<td> varchar2   </td>
+		<td> 服务提供者&#95;总线标识 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_PROVIDER.FWTGZ_MS'>FWTGZ&#95;MS</a></td>
+		<td> varchar2   </td>
+		<td> 服务提供者描述 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_PROVIDER.FWTGZZC_RQSJ'>FWTGZZC&#95;RQSJ</a></td>
+		<td> varchar2   </td>
+		<td> 服务提供者注册时间 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_PROVIDER.FWTGZ_LXFS'>FWTGZ&#95;LXFS</a></td>
+		<td> varchar2   </td>
+		<td> 服务提供者联系方式 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_PROVIDER.LXR_SM'>LXR&#95;SM</a></td>
+		<td> varchar2   </td>
+		<td> 联系人说明 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_PROVIDER.LXR_XM'>LXR&#95;XM</a></td>
+		<td> varchar2   </td>
+		<td> 联系人姓名 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_PROVIDER.LXDH'>LXDH</a></td>
+		<td> varchar2   </td>
+		<td> 联系电话 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_PROVIDER.DZXX'>DZXX</a></td>
+		<td> varchar2   </td>
+		<td> 电子信箱 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_PROVIDER.TXDZ'>TXDZ</a></td>
+		<td> varchar2   </td>
+		<td> 通信地址 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_PROVIDER.STATUS'>STATUS</a></td>
+		<td> int   </td>
+		<td> 提供者状态（0不可用，1可用，2已删除） </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>Pk&#95;S&#95;SERVICE&#95;PROVIDER</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;SERVICE&#95;PROVIDER</td>
+		<td> ON FWTGZ&#95;ZXBS</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_SERVICE_PROVIDER</td>
+		<td > ( FWTGZ&#95;ZXBS ) ref <a href='#S&#95;SERVICE&#95;BUS'>S&#95;SERVICE&#95;BUS</a> (ZXBS) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_SERVICE_RESOURCE'>Table S_SERVICE_RESOURCE</a></th></tr>
+<tr><td colspan='3'>服务资源信息 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_RESOURCE.ID'>ID</a></td>
+		<td> integer   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>*</td>
+		<td><a name='S_SERVICE_RESOURCE.FWBS'>FWBS</a></td>
+		<td> varchar2   </td>
+		<td> 服务标识 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_RESOURCE.FWMC'>FWMC</a></td>
+		<td> varchar2   </td>
+		<td> 服务名称 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_RESOURCE.FW_MS'>FW&#95;MS</a></td>
+		<td> varchar2   </td>
+		<td> 服务&#95;描述
+
+关于服务的功能、特性、使用方式等信息的说明性文字； </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_RESOURCE.FWLXBM'>FWLXBM</a></td>
+		<td> varchar2   </td>
+		<td> 服务类型编码
+
+应符合GA&#47;T XX2&#45;201X中7&#46;7的规定； </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_RESOURCE.FW_XZQHDM'>FW&#95;XZQHDM</a></td>
+		<td> varchar2   </td>
+		<td> 服务&#95;行政区划代码。
+
+服务所提供资源覆盖的辖区范围 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_RESOURCE.FW_MMDJDM'>FW&#95;MMDJDM</a></td>
+		<td> varchar2   </td>
+		<td> 服务&#95;秘密等级代码；
+
+服务所提供资源的涉密级别； </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_RESOURCE.TGZ_ZDSYFW'>TGZ&#95;ZDSYFW</a></td>
+		<td> varchar2   </td>
+		<td> 提供者&#95;制定使用范围
+
+
+描述提供者制定的允许访问该服务的请求者范围，包括请求者的：
+1&#41;&#09;行政范围。职务级别代码应符合4&#46;3的规定；
+2&#41;&#09;岗位范围。岗位权级代码应符合4&#46;3的规定；
+3&#41;&#09;辖区范围。行政区划代码应符合4&#46;3的规定；
+4&#41;&#09;涉密范围。秘密等级代码应符合4&#46;3的规定；
+5&#41;&#09;警种范围。警种（部门）代码应符合4&#46;3的规定。
+以及不同权级对应获得的不同结果集。应符合第5章的规定；
+
+ </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_RESOURCE.ZX_ZDSYFW'>ZX&#95;ZDSYFW</a></td>
+		<td> varchar2   </td>
+		<td> 总线&#95;制定使用范围
+
+描述总线制定的允许访问该服务的请求者范围，包括请求者的：
+1&#41;&#09;行政范围。职务级别代码应符合4&#46;3的规定；
+2&#41;&#09;岗位范围。岗位权级代码应符合4&#46;3的规定；
+3&#41;&#09;辖区范围。行政区划代码应符合4&#46;3的规定；
+4&#41;&#09;涉密范围。秘密等级代码应符合4&#46;3的规定；
+5&#41;&#09;警种（部门）范围。警种（部门）代码应符合4&#46;3的规定。
+以及不同权级对应获得的不同结果集。应符合第5章的规定；
+ </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_RESOURCE.FWTZ_ RQSJ'>FWTZ&#95; RQSJ</a></td>
+		<td> date   </td>
+		<td> 服务停止&#95;日期时间 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_RESOURCE.FWZC_RQSJ'>FWZC&#95;RQSJ</a></td>
+		<td> date   </td>
+		<td> 服务注册&#95;日期时间 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_RESOURCE.FWTGZ_GAJGJGDM'>FWTGZ&#95;GAJGJGDM</a></td>
+		<td> varchar2   </td>
+		<td> 服务提供者&#95;标识
+
+用于唯一标识一个服务提供者，即服务提供者的公安机关机构代码； </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_RESOURCE.FWZTDM'>FWZTDM</a></td>
+		<td> varchar2   </td>
+		<td> 服务状态代码。
+
+服务的可用性状态。应符合第6章的规定； </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_RESOURCE.FWDZ_ID'>FWDZ&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 服务地址ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_RESOURCE.STATUS'>STATUS</a></td>
+		<td> varchar2   </td>
+		<td> 状态，0已停用，1已启用，2已删除 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>Pk&#95;SERVICE&#95;RESOURCE</td>
+		<td> ON FWBS</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;SERVICE&#95;RESOURCE&#95;0</td>
+		<td> ON FWTGZ&#95;GAJGJGDM</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>U</td><td>Pk&#95;S&#95;SERVICE&#95;RESOURCE</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;SERVICE&#95;RESOURCE</td>
+		<td> ON FWDZ&#95;ID</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_SERVICE_RESOURCE</td>
+		<td > ( FWDZ&#95;ID ) ref <a href='#S&#95;SERVICE&#95;ADDRESS'>S&#95;SERVICE&#95;ADDRESS</a> (ID) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_ASYNCHRONOUS_CACHE'>Table S_ASYNCHRONOUS_CACHE</a></th></tr>
+<tr><td colspan='3'>异步请求缓存结果 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='S_ASYNCHRONOUS_CACHE.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>*</td>
+		<td><a name='S_ASYNCHRONOUS_CACHE.FWQQ_BWBH'>FWQQ&#95;BWBH</a></td>
+		<td> varchar2   </td>
+		<td> 服务请求报文编号 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_ASYNCHRONOUS_CACHE.FWQQ_RQSJ'>FWQQ&#95;RQSJ</a></td>
+		<td> date   </td>
+		<td> 服务请求日期时间 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_ASYNCHRONOUS_CACHE.FWQQ_BZ'>FWQQ&#95;BZ</a></td>
+		<td> varchar2   </td>
+		<td> 服务请求内容
+
+应符合GA&#47;T XX7&#45;201X中4&#46;1的规定 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_ASYNCHRONOUS_CACHE.XXCZRY_XM'>XXCZRY&#95;XM</a></td>
+		<td> varchar2   </td>
+		<td> 信息操作人姓名 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_ASYNCHRONOUS_CACHE.XXCZRY_GMSFHM'>XXCZRY&#95;GMSFHM</a></td>
+		<td> varchar2   </td>
+		<td> 信息操作人员编号 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_ASYNCHRONOUS_CACHE.YBQQ_BZDM'>YBQQ&#95;BZDM</a></td>
+		<td> varchar2   </td>
+		<td> 异步请求标识
+
+判断标识数据元，符合DE00742的规定；该请求是否是异步请求的标识； </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_ASYNCHRONOUS_CACHE.JZQX'>JZQX</a></td>
+		<td> date   </td>
+		<td> 截止期限
+
+若请求是异步请求，该请求的截止期限&#44;即最长等候时间。单位：分钟； </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_ASYNCHRONOUS_CACHE.FWTGZTDM'>FWTGZTDM</a></td>
+		<td> varchar2   </td>
+		<td> 服务提供状态代码
+
+应符合GA&#47;T XX6&#45;201X中第5章的规定； </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_ASYNCHRONOUS_CACHE.FWTG_BZ'>FWTG&#95;BZ</a></td>
+		<td> clob   </td>
+		<td> 服务提供内容
+
+应符合GA&#47;T XX7&#45;201X中4&#46;2的规定。 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_ASYNCHRONOUS_CACHE.CONSUMER_ID'>CONSUMER&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 请求者ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_ASYNCHRONOUS_CACHE.SERVICE_RESOURCE_ID'>SERVICE&#95;RESOURCE&#95;ID</a></td>
+		<td> integer   </td>
+		<td> 服务资源ID </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>Pk&#95;ASYNCHRONOUS&#95;CACHE&#95;MESSAGE</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;ASYNCHRONOUS&#95;CACHE</td>
+		<td> ON SERVICE&#95;RESOURCE&#95;ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;ASYNCHRONOUS&#95;CACHE&#95;0</td>
+		<td> ON CONSUMER&#95;ID</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_ASYNCHRONOUS_CACHE</td>
+		<td > ( SERVICE&#95;RESOURCE&#95;ID ) ref <a href='#S&#95;SERVICE&#95;RESOURCE'>S&#95;SERVICE&#95;RESOURCE</a> (ID) </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_ASYNCHRONOUS_CACHE_0</td>
+		<td > ( CONSUMER&#95;ID ) ref <a href='#S&#95;SERVICE&#95;CONSUMER'>S&#95;SERVICE&#95;CONSUMER</a> (ID) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_SERVICE_REQUEST_LOG'>Table S_SERVICE_REQUEST_LOG</a></th></tr>
+<tr><td colspan='3'>服务请求日志 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_REQUEST_LOG.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_REQUEST_LOG.FWQQ_BWBH'>FWQQ&#95;BWBH</a></td>
+		<td> varchar2   </td>
+		<td> 服务请求报文编号 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_REQUEST_LOG.CONSUMER_ID'>CONSUMER&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 服务请求者ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_REQUEST_LOG.FWQQZ_ZCXX'>FWQQZ&#95;ZCXX</a></td>
+		<td> varchar2   </td>
+		<td> 服务请求者&#95;注册信息（冗余） </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_REQUEST_LOG.SERVICE_RESOURCE_ID'>SERVICE&#95;RESOURCE&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 服务资源ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_REQUEST_LOG.FWQQ_RQSJ'>FWQQ&#95;RQSJ</a></td>
+		<td> date   </td>
+		<td> 服务请求&#95;日期时间 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_REQUEST_LOG.FWQQ_BZ'>FWQQ&#95;BZ</a></td>
+		<td> clob   </td>
+		<td> 服务请求&#95;内容 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_REQUEST_LOG.XXCZRY_XM'>XXCZRY&#95;XM</a></td>
+		<td> date   </td>
+		<td> 信息操作人员&#95;姓名 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_REQUEST_LOG.XXCZRY_GMSFHM'>XXCZRY&#95;GMSFHM</a></td>
+		<td> date   </td>
+		<td> 信息操作人员&#95;编号 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>U</td><td>Pk&#95;S&#95;SERVICE&#95;REQUEST&#95;LOG</td>
+		<td> ON FWQQ&#95;BWBH</td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='S_SERVICE_RESPONSE_LOG'>Table S_SERVICE_RESPONSE_LOG</a></th></tr>
+<tr><td colspan='3'>服务响应日志 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='S_SERVICE_RESPONSE_LOG.ID'>ID</a></td>
+		<td> varchar2   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_RESPONSE_LOG.FWTG_BWBH'>FWTG&#95;BWBH</a></td>
+		<td> varchar2   </td>
+		<td> 服务提供&#95;报文编号 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_RESPONSE_LOG.FWQQ_BWBH'>FWQQ&#95;BWBH</a></td>
+		<td> varchar2   </td>
+		<td> 服务请求&#95;报文编号 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_RESPONSE_LOG.PROVIDER_ID'>PROVIDER&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 服务提供者ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_RESPONSE_LOG.CONSUMER_ID'>CONSUMER&#95;ID</a></td>
+		<td> varchar2   </td>
+		<td> 服务请求者ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_RESPONSE_LOG.FWTG_RQSJ'>FWTG&#95;RQSJ</a></td>
+		<td> date   </td>
+		<td> 服务提供&#95;日期时间 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_RESPONSE_LOG.FWTGZTDM'>FWTGZTDM</a></td>
+		<td> varchar2   </td>
+		<td> 服务提供状态代码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='S_SERVICE_RESPONSE_LOG.FWTG_BZ'>FWTG&#95;BZ</a></td>
+		<td> clob   </td>
+		<td> 服务提供&#95;内容 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>Pk&#95;S&#95;SERVICE&#95;RESPONSE&#95;LOG</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;S&#95;SERVICE&#95;RESPONSE&#95;LOG</td>
+		<td> ON FWQQ&#95;BWBH</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_S_SERVICE_RESPONSE_LOG</td>
+		<td > ( FWQQ&#95;BWBH ) ref <a href='#S&#95;SERVICE&#95;REQUEST&#95;LOG'>S&#95;SERVICE&#95;REQUEST&#95;LOG</a> (FWQQ&#95;BWBH) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+</body></html>

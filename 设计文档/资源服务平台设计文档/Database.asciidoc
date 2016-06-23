@@ -1,0 +1,32 @@
+= 数据库设计
+:imagesdir: images
+
+== 表结构图概览
+
+.表结构图概览
+image::database.png[]
+
+link:images/database.svg[svg图]
+
+link:images/database.html[详细数据库图]
+
+== 表结构图详细描述
+
+=== 总线基本信息表
+
+image::s_service_bus.png[]
+
+=== 服务提供者信息表
+
+image::S_SERVICE_PROVIDER.png[]
+
+=== 服务请求者信息表
+
+image::S_SERVICE_CONSUMER.png[]
+
+=== 服务资源信息表
+
+image::S_SERVICE_RESOURCE.png[]
+
+=== 其它
+更多表信息，见 link:images/database.html[详细数据库图]

@@ -1,0 +1,54 @@
+= 服务资源平台系统设计
+张雄彪 <zxb@dameng.com>
+version 1.0, 2016-06-03
+:stem: latexmath
+:title: 服务资源平台系统设计
+:description: aaaaaaaaaaaaaaaaaaaaa
+:toc: right
+:toclevels: 2
+:url-issue: http://www.baidu.com
+:mail-list: http://www.baidu.com
+:IRC: http://www.baidu.com
+:url-issues: https://github.com/asciidoctor/asciidoctor.org/issues
+:url-tilt: https://github.com/rtomayko/tilt
+:doctype: book
+:compat-mode:
+:page-layout!:
+:sectanchors:
+:sectlinks:
+:sectnums:
+:linkattrs:
+:icons: font
+:source-highlighter: coderay
+:source-language: asciidoc
+:experimental:
+:stem:
+:idprefix:
+:idseparator: -
+:ast: &ast;
+:dagger: pass:normal[^&dagger;^]
+:y: icon:check[role="green"]
+:n: icon:times[role="red"]
+:c: icon:file-text-o[role="blue"]
+:table-caption!:
+:example-caption!:
+:figure-caption!:
+:imagesdir: ./images
+:iconsdir: ./images/icons
+:includedir: _includes
+:underscore: _
+:appendix-caption: 附录
+:numbered:
+
+
+include::Introduction.asciidoc[]
+
+include::Architecture.asciidoc[]
+
+include::Flow.asciidoc[]
+
+include::Database.asciidoc[]
+
+include::Detail.asciidoc[]
+
+include::Appendix.asciidoc[]
