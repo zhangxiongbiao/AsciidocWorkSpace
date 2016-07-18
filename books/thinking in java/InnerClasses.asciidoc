@@ -447,6 +447,41 @@ public class Parcel6 {
 
 == Anonymous inner classes
 
+语法
+[source,java]
+----
+new 父类构造器（参数列表）|实现接口（）    // <1>
+   {
+    //匿名内部类的类体部分
+   }
+----
+<1> 注意，匿名内部类可以是直接 new 父类或接口哦。
+
+.示例
+[source,java]
+----
+LinkedHashMap map = new LinkedHashMap<K, V>(hashTableCapacity, hashTableLoadFactor, true) {
+            // (an anonymous inner class)
+            private static final long serialVersionUID = 1;
+
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+                return size() > LRUCache.this.cacheSize;
+            }
+        };  // <1>
+
+Map map = new Map() {  // <2>
+    public int size() {
+        return 0;
+    }
+}
+----
+<1> 这就是直接 _new_ 父类构造器
+<2> 这就是直接 _new_ 接口
+
+
+
+
 下面的例子可能看起来让人困惑。
 
 === 作为返回值返回匿名内部类
@@ -1090,4 +1125,3 @@ LocallnnerClass.class
 <1> 内部类，则直接在外部类后面加一个 _$_ ，匿名内部类没有名字就自动产生了一个序号1
 <2> 这个是方法内的内部类，和外部类中间多了一个S1。我理解的可能是方法的常量值？
 <3> 嵌套多个内部类的话，则依次加 _$_
-

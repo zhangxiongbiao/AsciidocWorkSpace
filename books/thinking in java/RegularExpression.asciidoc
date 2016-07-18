@@ -1,0 +1,883 @@
+= RegularExpression
+:imagesdir: images
+
+正则表达式
+
+一个正则表达式，通常即一个 _String_ ，必须先编译为 _java.util.Pattern_ 的一个实例。 _Pattern_ 实例可以用来创建 _Matcher_ 对象， _Matcher_ 对象可以用来匹配字符串，匹配到的信息等全部保存在该对象中。
+
+.示例1
+[source,java]
+----
+Pattern p = Pattern.compile("a*b");
+Matcher m = p.matcher("aaaaab");
+boolean b = m.matches();
+----
+
+.示例2
+[source,java]
+----
+boolean b = Pattern.matches("a*b", "aaaaab"); //<1>
+----
+<1> 这是示例1的简写形式，只有当正则表达式不需要复用时使用，因为它每次都要重新创建 _Pattern_ 实例。
+
+[NOTE]
+====
+*Pattern* 类是不可变的，并且是多线程下安全的。
+
+*Matcher* 是多线程下非安全的。
+====
+
+== 基本使用
+
+=== String.Matches
+.String.matches
+[source,java]
+----
+package strings;//: strings/IntegerMatch.java
+
+public class IntegerMatch {
+    public static void main(String[] args) {
+        System.out.println("-1234".matches("-?\\d+")); // <1>
+        System.out.println("5678".matches("-?\\d+"));
+        System.out.println("+911".matches("-?\\d+"));
+        System.out.println("+911".matches("(-|\\+)?\\d+"));
+    }
+} /* Output:
+true
+true
+false
+true
+*///:~
+----
+<1> _String.matches()_ 实际是调用的 _Pattern.matches()_ 方法
+
+=== String.split
+_String_ 的 _split_ 方法中参数实际上即是正则，也就是说其拆分符为正则。
+
+.示例
+[source,java]
+----
+package strings;//: strings/Splitting.java
+
+import java.util.Arrays;
+
+public class Splitting {
+    public static String knights =
+            "Then, when you have found the shrubbery, you must " +
+                    "cut down the mightiest tree in the forest... " +
+                    "with... a herring!";
+
+    public static void split(String regex) {
+        System.out.println(
+                Arrays.toString(knights.split(regex)));
+    }
+
+    public static void main(String[] args) {
+        split(" "); // Doesn't have to contain regex chars
+        split("\\W+"); // Non-word characters
+        split("n\\W+"); // 'n' followed by non-word characters
+    }
+} /* Output:
+[Then,, when, you, have, found, the, shrubbery,, you, must, cut, down, the, mightiest, tree, in, the, forest..., with..., a, herring!]
+[Then, when, you, have, found, the, shrubbery, you, must, cut, down, the, mightiest, tree, in, the, forest, with, a, herring]
+[The, whe, you have found the shrubbery, you must cut dow, the mightiest tree i, the forest... with... a herring!]
+*///:~
+----
+
+== 正则规则
+
+image::pattern_1.png[]
+image::pattern_2.png[]
+image::pattern_3.png[]
+image::pattern_4.png[]
+image::pattern_5.png[]
+
+== 转义符
+转义符 *\* 用来将特殊字符转义，但是在 _java_ 中 *\* 本身也是特殊字符，所以需要继续对 *\* 进行转义。
+
+.示例
+|===
+|字符|转义|java中转义
+|`\`|`\\`|`\\\`
+|{|\{|\\{
+|(hello)|\(hello\)|\\(hello\\)
+|===
+
+== 字符类
+当正则的字符区间之间通过 _&&_ 等进行关联时，就需要考虑各字符类之间的优先级了。
+
+.优先级
+|===
+|优先级别序号|名称|示例
+|1|字符转义|\x
+|2|分组|()
+|3|字符区间|a-z
+|4|字符区间并集|[a-e][i-u]
+|5|字符区间交集|[a-z&&[aeiou]]
+|===
+
+== 行终止符
+
+行终止符一般为1-2个字符，用于标记一行的结束。以下字符被定义为行终止符。
+
+|===
+|字符|说明
+|\n|换行符
+|\r\n|回车换行符
+|\r|标准回车符
+|\u0085|下一行
+|\u2028|行分隔符
+|\u2029|段落分隔符
+|===
+
+[TIP]
+====
+如果 _Uninx Lines_ 模式启用的话，则只有 \n 是支持的。
+====
+
+[NOTE]
+====
+正则中 *.* 默认是匹配所有字符，除了行终止符。 如果 _DOTALL_ 标记启用的话，那么 *.* 也会匹配行终止符。
+====
+
+[NOTE]
+====
+默认情况下， *^* 与 *$* 在正则中只会匹配一行的开头和结尾，不会匹配到行终止符。如果 _MULTLINE_ 模式启用后，那么 *^* 与 *$* 会匹配到行终止符，即匹配输入字符串的开头与结尾（哪怕输入字符串是多行的）。
+====
+
+== 分组与捕捉
+=== 分组序号
+分组序号根据分组的括号从左到右数的，如下所示。
+
+.正则((A)(B(C)))
+|===
+|序号|分组|
+|1|((A)(B(C)))
+|2|(A)
+|3|(B(C))
+|4|(C)
+|===
+
+[TIP]
+====
+分组序号中 _0_ 总是表示该正则表达式。
+====
+
+[NOTE]
+====
+这里保存分组序号是因为表达式中可能会用到，或者通过 _back reference_ 引用到。
+====
+
+=== 分组名称
+一个分组也可以使用一个 _name_ 来标记。取名的规范如下：
+
+.分组名称命名规范
+. 必须以字母开头
+. 大小写字母均可以
+. 数字0-9也可以
+
+[TIP]
+====
+以 _name_ 标记分组后，其序号依然是有效的。
+====
+
+(?<name>X) 即可指定分组名称
+
+[CAUTION]
+====
+_non-capturing_ 将取消分组命名， *同时会取消其分组序号* 。
+
+image::non-capturing.png[]
+====
+
+== 回溯引用
+
+back reference(回溯引用)指在正则表达式中，后面的引用前面的分组。
+引用方式有如下两种
+
+.语法
+image::back-reference.png[]
+
+.示例-匹配h1-h6标签
+[source,html]
+----
+<body>
+
+    <h1>Welcome to my page</H1> Content is divided into twosections:
+    <br>
+
+    <h2>Introduction</h2> Information about me.
+
+    <H2>Hobby</H2> Information about my hobby.
+
+    <h2>This is invalid HTML</h3>
+</body>
+----
+
+> 匹配正则为：`<([hH][1-6])>.*?<\/\1>`
+
+上述正则中，后面的 `\1` 就是引用前面的分组内容([hH][1-6])。
+
+.最终效果
+image::back-reference-count.png[]
+
+
+=== 使用示例
+image::back-reference-case.png[]
+
+== 零宽断言（预搜索、预匹配）
+
+.语法
+image::look-syntax.png[]
+
+=== 使用示例
+image::look.png[]
+
+
+== 量词
+量词分为贪婪、勉强、占有模式
+
+image::greedy.png[]
+
+贪婪模式::
+  贪婪模式下正则表达式会 *尽可能长* 地去匹配符合规则的字符串，且会 *回溯*
+勉强模式::
+  勉强模式下正则表达式会 *尽可能短* 地去匹配符合规则的字符串。
+占有模式::
+  同贪婪模式一样匹配最长， *尽可能长* 地去匹配字符串，一旦匹配不成功就立即结束，且 *不会回溯* 。
+
+
+.示例
+[source,java]
+----
+package strings;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * @author zxb
+ * @version 1.0.0
+ *          2016年07月01日 16:55
+ * @since Jdk1.6
+ */
+public class Greedy {
+
+    public static void main(String[] args) throws Exception {
+        String str = "<ol><li>张雄彪</li><br/><li>你好哇嘿</li></ol>";
+        String greedyPattern = "<li>.*</li>";
+        String reluctantPattern = "<li>.*?</li>";
+        String possessivePattern = "<li>.*+</li>";
+
+        System.out.println("贪婪模式===");
+        print(str, greedyPattern);
+        System.out.println();
+
+        System.out.println("勉强模式===");
+        print(str, reluctantPattern);
+        System.out.println();
+
+        System.out.println("占有模式===");
+        print(str, possessivePattern);
+    }
+
+    private static void print(String str, String patternStr) {
+        Pattern pattern = Pattern.compile(patternStr);
+        Matcher matcher = pattern.matcher(str);
+        while (matcher.find()) {
+            System.out.println(matcher.group() + ",start:" + matcher.start() + ",end:" + matcher.end());
+        }
+    }
+}
+/*
+贪婪模式===
+<li>张雄彪</li><br/><li>你好哇嘿</li>,start:4,end:34
+
+勉强模式===
+<li>张雄彪</li>,start:4,end:16
+<li>你好哇嘿</li>,start:21,end:34
+
+占有模式===
+
+ */
+----
+
+=== 使用示例
+image::quantifiers.png[]
+
+== 行终止符
+
+.语法
+image::line-terminal-syntax.png[]
+
+=== 使用示例
+==== \b
+image::word.png[]
+
+==== 其它终止符
+image::line-terminal.png[]
+
+== 逻辑操作符
+
+.语法
+image::logic-operator.png[]
+
+=== 使用示例
+image::or.png[]
+
+
+== CharSequence
+
+._CharSequence_ 接口
+[source,java]
+----
+interface CharSequence {
+  charAt(int i);
+  length();
+  subSequence(int start,| int end);
+  toString();
+}
+----
+
+image::diagram.png[]
+
+[NOTE]
+====
+大多数正则表达式的方法采用 _CharSequence_ 作为方法参数
+====
+
+== Pattern and Matcher
+
+通常情况下，你一般会创建出正则表达式的 _Pattern_ 对象，而非使用 _String_ 的正则匹配方法。因为通过 _Pattern_ 能复用正则对象。
+
+_Pattern.compile(String pattern)_ 将返回一个 _Pattern_ 对象。
+
+_Pattern_ 对象的 _matcher(String input)_ 将返回一个 _Matcher_ 对象。
+
+'''
+
+.*Matcher* 对象通常有以下3种匹配方式
+_boolean matches()_::
+  将尝试将整个输入内容与正则 _pattern_ 进行匹配。当前仅当整个输入被 _pattern_ 匹配到时才为 _true_ 。
+
+_boolean lookingAt()_::
+  将尝试用正则 _pattern_ 去匹配输入的开头，如果匹配到了就返回 _true_
+
+_boolean find()_::
+  将遍历扫描输入，用正则尝试匹配输入的每一个子序列。
++
+----
+  尝试查找与该模式匹配的输入序列的下一个子序列。
+
+  此方法从匹配器区域的开头开始，如果该方法的前一次调用成功了并且从那时开始匹配器没有被重置，则从以前匹配操作没有匹配的第一个字符开始。
+
+  如果匹配成功，则可以通过 start、end 和 group 方法获取更多信息。
+
+  返回：
+
+  当且仅当输入序列的子序列匹配此匹配器的模式时才返回 true。
+----
+
+
+=== Matches() 与 LookingAt()
+
+.示例
+[source,java]
+----
+package strings;
+
+import java.util.regex.Pattern;
+
+/**
+ * @author zxb
+ * @version 1.0.0
+ *          2016年07月01日 23:21
+ * @since Jdk1.6
+ */
+public class MatchesAndLookingAt {
+
+    public static void main(String[] args) throws Exception {
+        String input = "This is my first Car";
+
+        String pattern = "This\\s+";
+        System.out.println("matches:" + Pattern.compile(pattern).matcher(input).matches()); // 无法完整匹配到整个字符串，false
+        System.out.println("lookingAt:" + Pattern.compile(pattern).matcher(input).lookingAt());// 已经匹配到字符串开头，true
+
+        System.out.println();
+
+        pattern = "This[\\s\\S]+";
+        System.out.println("matches:" + Pattern.compile(pattern).matcher(input).matches());//可匹配到整个字符串，true
+        System.out.println("lookingAt:" + Pattern.compile(pattern).matcher(input).lookingAt());//已经匹配到字符串开头，true
+    }
+}
+/*
+Output:
+matches:false
+lookingAt:true
+
+matches:true
+lookingAt:true
+ */
+----
+
+[TIP]
+====
+. matches()需要完整匹配整个字符串，才为 _true_
+. lookingAt()只需要匹配字符串开头，就为 _true_
+====
+
+=== find()
+用正则尝试匹配输入的每一个子序列
+
+
+.示例
+[source,java]
+----
+package strings;//: strings/Finding.java
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static java.util.regex.Pattern.compile;
+import static net.mindview.util.Print.print;
+import static net.mindview.util.Print.printnb;
+
+public class Finding {
+    public static void main(String[] args) {
+        Matcher m = compile("\\w+")
+                .matcher("Evening is full of the linnet's wings");
+        while (m.find()) {
+            printnb(m.group() + ",start:" + m.start() + ",end:" + m.end() + " ");
+            System.out.println();
+        }
+        print();
+        int i = 0;
+        while (m.find(i)) { // <1>
+            printnb(m.group() + " ");
+            i++;
+        }
+
+        System.out.println();
+        m = Pattern.compile("(a(b)?)+").matcher("ababc");
+        while (m.find()) {
+            printnb(m.group() + ",start:" + m.start() + ",end:" + m.end());
+            System.out.println();
+            System.out.println(m.group(1) + ",start:" + m.start(1) + ",end:" + m.end(1));  // <2>
+            System.out.println(m.group(2) + ",start:" + m.start(2) + ",end:" + m.end(2));
+        }
+    }
+} /* Output:
+Evening,start:0,end:7
+is,start:8,end:10
+full,start:11,end:15
+of,start:16,end:18
+the,start:19,end:22
+linnet,start:23,end:29
+s,start:30,end:31
+wings,start:32,end:37
+
+Evening vening ening ning ing ng g is is s full full ull ll l of of f the the he e linnet linnet innet nnet net et t s s wings wings ings ngs gs s
+abab,start:0,end:4
+ab,start:2,end:4  // <3>
+b,start:3,end:4
+*///:~
+----
+<1> 重置 _Matcher_ ，然后从输入内容的指定位置 _i_ 处开始匹配。
+<2> _group(int x)_ 中取的总是最近一次匹配中的 _match_
+<3> 注意，此处 _group(1)_ 拿的位置
+
+[TIP]
+====
+* 分组() 捕获的内容(保存的子序列) 总是该 _group_ *最近一次匹配到的内容* 。
+
+* 如果分组() 因为有量词再次进行匹配时，其前一次匹配保存的子序列内容将会被放弃。
+
+* 如果再次匹配失败的话，那么前一次匹配的内容（子序列）还会继续保存。
+====
+
+=== Groups
+_Groups_ 就是用 () 包括的正则表达式，而且 _group_ 可以通过它的编号进行回溯引用。
+
+_Group 0_ 对应的就是整个表达式匹配到的内容， _Group 1_ 就是第一组 () ，依此类推。
+
+ A(B(C))D
+
+[horizontal]
+group 0 :: ABCD
+group 1 :: BC
+group 2 :: C
+
+
+.方法列表
+****
+
+[source,java]
+----
+public int groupCount()
+----
+返回 _match_ 到的 _group_ 数量， _group 0_ 不算在此列。
+
+'''
+
+[source,java]
+----
+pubic String group()
+----
+返回上一匹配操作（如 find()） 匹配到的内容
+
+'''
+
+[source,java]
+----
+public String group(int i)
+----
+返回上一匹配操作中指定的序号的 _group_ 内容。如果匹配到了，但是指定的序列号不对，将抛出 _IndexOutOfBoundsException_
+
+'''
+
+[source,java]
+----
+public int start(int group)
+----
+返回上一匹配操作中的指定序号的 _group_ 在输入内容中匹配到的子序列的开始位置
+
+'''
+
+
+[source,java]
+----
+public int end(int group)
+----
+返回上一匹配操作中的指定序号的 _group_ 在输入内容中匹配到的子序列的结束位置
+
+****
+
+.示例
+[source,java]
+----
+package strings;//: strings/Groups.java
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static net.mindview.util.Print.print;
+import static net.mindview.util.Print.printnb;
+
+public class Groups {
+    static public final String POEM =
+            "Twas brillig, and the slithy toves\n" +
+                    "Did gyre and gimble in the wabe.\n" +
+                    "All mimsy were the borogoves,\n" +
+                    "And the mome raths outgrabe.\n\n" +
+                    "Beware the Jabberwock, my son,\n" +
+                    "The jaws that bite, the claws that catch.\n" +
+                    "Beware the Jubjub bird, and shun\n" +
+                    "The frumious Bandersnatch.";
+
+    public static void main(String[] args) {
+        Matcher m =
+                Pattern.compile("(?m)(\\S+)\\s+((\\S+)\\s+(\\S+))$")
+                        .matcher(POEM);  // <1>
+        while (m.find()) {
+            for (int j = 0; j <= m.groupCount(); j++)
+                printnb("[" + m.group(j) + "]");
+            print();
+        }
+    }
+} /* Output:
+[the slithy toves][the][slithy toves][slithy][toves]
+[in the wabe.][in][the wabe.][the][wabe.]
+[were the borogoves,][were][the borogoves,][the][borogoves,]
+[mome raths outgrabe.][mome][raths outgrabe.][raths][outgrabe.]
+[Jabberwock, my son,][Jabberwock,][my son,][my][son,]
+[claws that catch.][claws][that catch.][that][catch.]
+[bird, and shun][bird,][and shun][and][shun]
+[The frumious Bandersnatch.][The][frumious Bandersnatch.][frumious][Bandersnatch.]
+*///:~
+----
+<1> (?m) 表示多行匹配
+
+=== start() , end()
+
+.示例
+[source,java]
+----
+package strings;//: strings/StartEnd.java
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static net.mindview.util.Print.print;
+
+public class StartEnd {
+    public static String input =
+            "As long as there is injustice, whenever a\n" +
+                    "Targathian baby cries out, wherever a distress\n" +
+                    "signal sounds among the stars ... We'll be there.\n" +
+                    "This fine ship, and this fine crew ...\n" +
+                    "Never give up! Never surrender!";
+
+    static void examine(String s, String regex) {
+        Display d = new Display(regex);
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(s);
+        while (m.find())
+            d.display("find() '" + m.group() +
+                    "' start = " + m.start() + " end = " + m.end());
+        if (m.lookingAt()) // No reset() necessary
+            d.display("lookingAt() start = "
+                    + m.start() + " end = " + m.end());
+        if (m.matches()) // No reset() necessary
+            d.display("matches() start = "
+                    + m.start() + " end = " + m.end());
+    }
+
+    public static void main(String[] args) {
+        for (String in : input.split("\n")) {
+            print("input : " + in);
+            for (String regex : new String[]{"\\w*ere\\w*",
+                    "\\w*ever", "T\\w+", "Never.*?!"})
+                examine(in, regex);
+        }
+    }
+
+    private static class Display {
+        private boolean regexPrinted = false;
+        private String regex;
+
+        Display(String regex) {
+            this.regex = regex;
+        }
+
+        void display(String message) {
+            if (!regexPrinted) {
+                print(regex);
+                regexPrinted = true;
+            }
+            print(message);
+        }
+    }
+} /* Output:
+input : As long as there is injustice, whenever a
+\w*ere\w*
+find() 'there' start = 11 end = 16
+\w*ever
+find() 'whenever' start = 31 end = 39
+input : Targathian baby cries out, wherever a distress
+\w*ere\w*
+find() 'wherever' start = 27 end = 35
+\w*ever
+find() 'wherever' start = 27 end = 35
+T\w+
+find() 'Targathian' start = 0 end = 10
+lookingAt() start = 0 end = 10
+input : signal sounds among the stars ... We'll be there.
+\w*ere\w*
+find() 'there' start = 43 end = 48
+input : This fine ship, and this fine crew ...
+T\w+
+find() 'This' start = 0 end = 4
+lookingAt() start = 0 end = 4
+input : Never give up! Never surrender!
+\w*ever
+find() 'Never' start = 0 end = 5
+find() 'Never' start = 15 end = 20
+lookingAt() start = 0 end = 5
+Never.*?!
+find() 'Never give up!' start = 0 end = 14
+find() 'Never surrender!' start = 15 end = 31
+lookingAt() start = 0 end = 14
+matches() start = 0 end = 31
+*///:~
+----
+
+== match flags
+匹配的标记，模式。
+
+image::flags.png[]
+
+'''
+
+目前有如下2种写法：
+
+.写法一
+image::matchflags.png[]
+
+.写法二
+image::matchflags2.png[]
+
+.示例
+[source,java]
+----
+package strings;//: strings/ReFlags.java
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class ReFlags {
+    public static void main(String[] args) {
+        Pattern p = Pattern.compile("^java",
+                Pattern.CASE_INSENSITIVE | Pattern.MULTILINE); // <1>
+        Matcher m = p.matcher(
+                "java has regex\nJava has regex\n" +
+                        "JAVA has pretty good regular expressions\n" +
+                        "Regular expressions are in Java");
+        while (m.find())
+            System.out.println(m.group());
+    }
+} /* Output:
+java
+Java
+JAVA
+*///:~
+----
+<1> 指定了多行及忽略大小写匹配
+
+[TIP]
+====
+_group()_ 默认只输出 _find()_ 匹配到的内容
+====
+
+== Split()
+
+_split()_ 将输入内容按照指定的正则表达式拆分为字符串数组。
+
+[source,java]
+----
+String [] split(CharSequence input)
+String [] split(CharSequence input, int limit) // <1>
+----
+<1> _limit_ 限制了拆分出来的份数
+
+.示例
+[source,java]
+----
+package strings;//: strings/SplitDemo.java
+
+import java.util.Arrays;
+import java.util.regex.Pattern;
+
+import static net.mindview.util.Print.print;
+
+public class SplitDemo {
+    public static void main(String[] args) {
+        String input =
+                "This!!unusual use!!of exclamation!!points";
+        print(Arrays.toString(
+                Pattern.compile("!!").split(input)));
+        // Only do the first three:
+        print(Arrays.toString(
+                Pattern.compile("!!").split(input, 3)));
+    }
+} /* Output:
+[This, unusual use, of exclamation, points]
+[This, unusual use, of exclamation!!points]
+*///:~
+----
+
+== Replace
+字符串正则替换
+
+.追加替换内容
+[source,java]
+----
+public Matcher appendReplacement(StringBuffer sb, String replacement)
+----
+.这个方法执行以下三个步骤：
+. 读取输入内容，将从前一次 _append_ 的位置开始，到上一匹配的开始位置（start()-1）处的内容追加至 _StringBuffer_
+. 追加替换的内容至 _StringBuffer_
+. 设置 _append_ 位置为上一匹配的 _end()_ 位置
+
+image::appendReplacement.jpg[]
+
+.示例
+[source,java]
+----
+package strings;//: strings/TheReplacements.java
+
+import net.mindview.util.TextFile;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static net.mindview.util.Print.print;
+
+/*! Here's a block of text to use as input to
+    the regular expression matcher. Note that we'll
+    first extract the block of text by looking for
+    the special delimiters, then process the
+    extracted block. !*/
+
+public class TheReplacements {
+    public static void main(String[] args) throws Exception {
+        String s = TextFile.read("TheReplacements.java");
+        // Match the specially commented block of text above:
+        Matcher mInput =
+                Pattern.compile("/\\*!(.*)!\\*/", Pattern.DOTALL)
+                        .matcher(s);
+        if (mInput.find())
+            s = mInput.group(1); // Captured by parentheses
+        // Replace two or more spaces with a single space:
+        s = s.replaceAll(" {2,}", " ");
+        // Replace one or more spaces at the beginning of each
+        // line with no spaces. Must enable MULTILINE mode:
+        s = s.replaceAll("(?m)^ +", "");
+        print(s);
+        s = s.replaceFirst("[aeiou]", "(VOWEL1)");
+        StringBuffer sbuf = new StringBuffer();
+        Pattern p = Pattern.compile("[aeiou]");
+        Matcher m = p.matcher(s);
+        // Process the find information as you
+        // perform the replacements:
+        while (m.find())
+            m.appendReplacement(sbuf, m.group().toUpperCase());
+        // Put in the remainder of the text:
+        m.appendTail(sbuf);
+        print(sbuf);
+    }
+} /* Output:
+Here's a block of text to use as input to
+the regular expression matcher. Note that we'll
+first extract the block of text by looking for
+the special delimiters, then process the
+extracted block.
+H(VOWEL1)rE's A blOck Of tExt tO UsE As InpUt tO
+thE rEgUlAr ExprEssIOn mAtchEr. NOtE thAt wE'll
+fIrst ExtrAct thE blOck Of tExt by lOOkIng fOr
+thE spEcIAl dElImItErs, thEn prOcEss thE
+ExtrActEd blOck.
+*///:~
+----
+
+[TIP]
+====
+_replaceAll()_ 及 _replaceFirst()_ 等实际上均为调用 _appendReplacement()_ 与 _appendTail()_ 。
+====
+
+== reset
+一个已经使用过的 _Matcher_ 对象，可以通过调用 _reset()_ 方法再去用于匹配新的字符串。
+
+.示例
+[source,java]
+----
+package strings;//: strings/Resetting.java
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Resetting {
+    public static void main(String[] args) throws Exception {
+        Matcher m = Pattern.compile("[frb][aiu][gx]")
+                .matcher("fix the rug with bags");
+        while (m.find())
+            System.out.print(m.group() + " ");
+        System.out.println();
+        m.reset("fix the rig with rags");
+        while (m.find())
+            System.out.print(m.group() + " ");
+    }
+} /* Output:
+fix rug bag
+fix rig rag
+*///:~
+----

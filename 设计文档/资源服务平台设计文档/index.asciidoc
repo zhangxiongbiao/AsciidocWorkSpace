@@ -51,4 +51,8 @@ include::Database.asciidoc[]
 
 include::Detail.asciidoc[]
 
+include::Apply.asciidoc[]
+
+include::ServiceType.asciidoc[]
+
 include::Appendix.asciidoc[]

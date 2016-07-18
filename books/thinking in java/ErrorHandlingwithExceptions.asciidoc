@@ -1,3 +1,97 @@
 = Error Handling with Exceptions
 
 == Concepts
+
+== finally
+
+.finally不执行的时机
+. finally在使用label标记的代码块跳出时（GOTO)不会被执行。
+. finally在使用System.exit(0)时不会被执行。
+
+=== 异常丢失情况
+
+.异常丢失在finally的throw Exception
+[source,java]
+----
+package exceptions;//: exceptions/LostMessage.java
+// How an exception can be lost.
+
+class VeryImportantException extends Exception {
+    public String toString() {
+        return "A very important exception!";
+    }
+}
+
+class HoHumException extends Exception {
+    public String toString() {
+        return "A trivial exception";
+    }
+}
+
+public class LostMessage {
+    public static void main(String[] args) {
+        try {
+            LostMessage lm = new LostMessage();
+            try {
+                lm.f();
+            } finally {
+                lm.dispose(); // <1>
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    void f() throws VeryImportantException {
+        throw new VeryImportantException();
+    }
+
+    void dispose() throws HoHumException {
+        throw new HoHumException();
+    }
+} /* Output:
+A trivial exception
+*///:~
+----
+<1> finally块中又抛出了异常， _try_ 块中的异常被丢失，无法被上层捕捉
+
+.try-finally中return沉默异常
+[source,java]
+----
+package exceptions;//: exceptions/ExceptionSilencer.java
+
+public class ExceptionSilencer {
+    public static void main(String[] args) {
+        try {
+            throw new RuntimeException();
+        } finally {
+            // Using 'return' inside the finally block
+            // will silence any thrown exception.
+            return;
+        }
+    }
+} ///:~
+----
+
+== Exception restrictions
+
+. 覆写方法时，子类不能抛出比父类更多的异常
+. 覆写方法时，子类可以抛出比父类少的异常或者不抛出异常
+. 覆写方法时，子类可以抛出与父类相同的异常
+
+
+== Constuctors
+
+== Exception GuideLines
+
+以下情况下使用异常
+
+.异常使用指南
+. 在适当的级别处理异常。千万不要在你不知道如何处理这个异常时去捕捉这个异常。
+. 处理问题
+. 修补程序并继续执行程序
+. 在当前 _context_ 下处理一些事，并且将 _Exception_ 继续向上抛
+. 在当前 _context_ 下处理一些事，并且向上抛出一个不一样的类型的 _Exception_
+. 终止程序
+. 简化程序
+. 使程序更安全，拙壮

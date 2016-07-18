@@ -1,0 +1,623 @@
+= Strings
+
+== Immutable Strings
+
+_String_ 对象是不可变的。
+
+== Overloading ‘+’ vs. StringBuilder
+
+使用`'+`'可以用来拼接字符串
+
+.示例1
+[source,java]
+----
+package strings;//: strings/Concatenation.java
+
+public class Concatenation {
+    public static void main(String[] args) {
+        String mango = "mango";
+        String s = "abc" + mango + "def" + 47;
+        System.out.println(s);
+    }
+} /* Output:
+abcmangodef47
+*///:~
+----
+
+此时可以使用 `javap -c Concatenation.class` 看反汇编后的代码，通过这个即看具体的实现细节。
+
+.示例1细节
+[source,java]
+----
+Compiled from "Concatenation.java"
+public class strings.Concatenation {
+  public strings.Concatenation();
+    Code:
+       0: aload_0
+       1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+       4: return
+
+  public static void main(java.lang.String[]);
+    Code:
+       0: ldc           #2                  // String mango
+       2: astore_1
+       3: new           #3                  // class java/lang/StringBuilder
+       6: dup
+       7: invokespecial #4                  // Method java/lang/StringBuilder."<init>":()V
+      10: ldc           #5                  // String abc
+      12: invokevirtual #6                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      15: aload_1
+      16: invokevirtual #6                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      19: ldc           #7                  // String def
+      21: invokevirtual #6                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      24: bipush        47
+      26: invokevirtual #8                  // Method java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+      29: invokevirtual #9                  // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+      32: astore_2
+      33: getstatic     #10                 // Field java/lang/System.out:Ljava/io/PrintStream;
+      36: aload_2
+      37: invokevirtual #11                 // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+      40: return
+}
+----
+
+[TIP]
+====
+由此可见， “+” 追加字符串实际上是用 _StringBuilder_ 来 _append_ 的。
+====
+
+''''''
+
+然而在 _for_ 循环时，使用 `+` （隐式使用 _StringBuilder_ ） 与 `StringBuilder` 还是有区别的。
+
+.示例2
+[source,java]
+----
+package strings;//: strings/WhitherStringBuilder.java
+
+public class WhitherStringBuilder {
+    public String implicit(String[] fields) {
+        String result = "";
+        for (int i = 0; i < fields.length; i++)
+            result += fields[i];  // <1>
+        return result;
+    }
+
+    public String explicit(String[] fields) {
+        StringBuilder result = new StringBuilder(); // <2>
+        for (int i = 0; i < fields.length; i++)
+            result.append(fields[i]);
+        return result.toString();
+    }
+} ///:~
+----
+<1> 隐式使用 StringBuilder
+<2> 显式使用 StringBuilder
+
+>  javap -c WitherStringBuilder.class
+
+[source,java]
+----
+public class strings.WhitherStringBuilder {
+  public strings.WhitherStringBuilder();
+    Code:
+       0: aload_0
+       1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+       4: return
+
+  public java.lang.String implicit(java.lang.String[]);
+    Code:
+       0: ldc           #2                  // String
+       2: astore_2
+       3: iconst_0
+       4: istore_3
+       5: iload_3
+       6: aload_1
+       7: arraylength
+       8: if_icmpge     38
+      11: new           #3                  // class java/lang/StringBuilder
+      14: dup
+      15: invokespecial #4                  // Method java/lang/StringBuilder."<init>":()V  // <1>
+      18: aload_2
+      19: invokevirtual #5                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      22: aload_1
+      23: iload_3
+      24: aaload
+      25: invokevirtual #5                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      28: invokevirtual #6                  // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+      31: astore_2
+      32: iinc          3, 1
+      35: goto          5
+      38: aload_2
+      39: areturn
+
+  public java.lang.String explicit(java.lang.String[]);
+    Code:
+       0: new           #3                  // class java/lang/StringBuilder
+       3: dup
+       4: invokespecial #4                  // Method java/lang/StringBuilder."<init>":()V
+       7: astore_2
+       8: iconst_0
+       9: istore_3
+      10: iload_3
+      11: aload_1
+      12: arraylength
+      13: if_icmpge     30
+      16: aload_2
+      17: aload_1
+      18: iload_3
+      19: aaload
+      20: invokevirtual #5                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      23: pop
+      24: iinc          3, 1
+      27: goto          10
+      30: aload_2
+      31: invokevirtual #6                  // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+      34: areturn
+}
+----
+<1> _implicit_ 方法中 `'+`' 的隐式创建 _StringBuilder_ 是在 _for_ 循环中完成的。
+
+
+[NOTE]
+====
+_for_ 循环中不要使用 `+` 来追加字符串，因为每次都在重新 _new_ 一个 _StringBuilder_ 。
+====
+
+
+[TIP]
+====
+与 _StringBuilder_ 类似的是 _StringBuffer_ ， _StringBuffer_ 为线程安全的。
+====
+
+
+== Unintended recursion
+
+.无限递归
+[source,java]
+----
+package strings;//: strings/InfiniteRecursion.java
+// Accidental recursion.
+// {RunByHand}
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class InfiniteRecursion {
+    public static void main(String[] args) {
+        List<InfiniteRecursion> v =
+                new ArrayList<InfiniteRecursion>();
+        for (int i = 0; i < 10; i++)
+            v.add(new InfiniteRecursion());
+        System.out.println(v);
+    }
+
+    public String toString() {
+        return " InfiniteRecursion address: " + this + "\n"; // <1>
+    }
+} ///:~
+----
+<1> 注意，此处 "+" 连接 _this_ 会造成递归调用 _toString()_ 方法
+
+
+== String.intern()
+
+.intern
+****
+public   String   intern()返回字符串对象的规范化表示形式。
+一个初始时为空的字符串池，它由类   String   私有地维护。
+
+当调用   intern   方法时，如果池已经包含一个等于此   String   对象的字符串（该对象由   equals(Object)   方法确定），则返回池中的字符串。否则，将此   String   对象添加到池中，并且返回此   String   对象的引用。
+它遵循对于任何两个字符串   s   和   t，当且仅当   s.equals(t)   为   true   时，s.intern()   ==   t.intern()   才为   true。
+所有字面值字符串和字符串赋值常量表达式都是内部的。字符串字面值在《Java   Language   Specification》的   §3.10.5   中已定义。
+
+返回：
+一个字符串，内容与此字符串相同，但它保证来自字符串池中。
+****
+
+.示例
+[source,java]
+----
+package strings;
+
+/**
+ * String.intern()说明
+ *
+ * @author zxb
+ * @version 1.0.0
+ *          2016年06月24日 14:34
+ * @since Jdk1.6
+ */
+public class Intern {
+
+    public static void main(String[] args) throws Exception {
+        String myName = "zxb";
+        String myNameObj = new String("zxb");
+        System.out.printf("myName==myNameObj:%s", myName == myNameObj); // <1>
+
+        System.out.println();
+        String myNameIntern = "zxb".intern();
+        System.out.printf("myNameIntern==myName:%s", myName == myNameIntern);// <2>
+
+        System.out.println();
+        String myNameAppend = "zx" + "b";// <3>
+        myNameIntern = myNameAppend.intern();
+        System.out.printf("myNameAppend==myNameIntern:%s", myNameAppend == myNameIntern);
+
+        System.out.println();
+        String myNameAppendObj = "zx";
+        myNameAppend = myNameAppendObj + "b"; // <4>
+        myNameIntern = myNameAppend.intern();
+        System.out.printf("myNameAppend==myNameIntern:%s", myNameAppend == myNameIntern);
+    }
+}
+/*
+myName==myNameObj:false
+myNameIntern==myName:true
+myNameAppend==myNameIntern:true
+myNameAppend==myNameIntern:false
+*/
+----
+<1> 一个在常量池中，一个在堆上
+<2> _intern_ 直接从常量池中取值了
+<3> 此处两个字符串直接相加，并没有走StringBuilder.append()，而是直接优化为了常量值中的 "zxb"
+<4> 此处走了StringBuilder.append()，在堆上创建的并返回了新对象。而其 _intern()_ 则是从常量池中拿的值。
+
+
+== Formating output
+
+=== Formatter class
+_System.out.format();_ 及 _System.out.printf()_ 都是通过调用 _Formatter_ 的 _format_ 方法完成格式化的。
+
+=== Format specifiers
+
+> %[argument_index$][flags][width][.precision]conversion
+
+argument_index::
+  参数下标，从1开始。此处指定要使用的替换参数
+flags::
+  标记，默认格式化输出是右对齐，此处指定 `-` 则为左对齐
+width::
+  指定格式化输出的字符串宽度
+precision::
+  精度
+conversion::
+  即下面的 _Formatter conversions_
+
+.示例
+[source,java]
+----
+package strings;//: strings/Receipt.java
+import java.util.*;
+
+public class Receipt {
+  private double total = 0;
+  private Formatter f = new Formatter(System.out);
+  public void printTitle() {
+    f.format("%2$-15s %2$5s %3$10s\n", "Item", "Qty", "Price");
+    f.format("%-15s %5s %10s\n", "----", "---", "-----");
+  }
+  public void print(String name, int qty, double price) {
+    f.format("%-15.15s %5d %10.2f\n", name, qty, price);
+    total += price;
+  }
+  public void printTotal() {
+    f.format("%-15s %5s %10.2f\n", "Tax", "", total*0.06);
+    f.format("%-15s %5s %10s\n", "", "", "-----");
+    f.format("%-15s %5s %10.2f\n", "Total", "",
+      total * 1.06);
+  }
+  public static void main(String[] args) {
+    Receipt receipt = new Receipt();
+    receipt.printTitle();
+    receipt.print("Jack's Magic Beans", 4, 4.25);
+    receipt.print("Princess Peas", 3, 5.1);
+    receipt.print("Three Bears Porridge", 1, 14.29);
+    receipt.printTotal();
+  }
+} /* Output:
+Item              Qty      Price
+
+Jack's Magic Be     4       4.25
+Princess Peas       3       5.10
+Three Bears Por     1      14.29
+Tax                         1.42
+                           -----
+Total                      25.06
+*///:~
+----
+
+=== Formatter conversions
+.Conversion Characters
+|===
+|d |Integral (as decimal)
+|c |Unicode character
+|b |Boolean value
+|s |String
+|f |Floating point (as decimal)
+|e |Floating point (in scientific notation)
+|x |Integral (as hex)
+|h |Hash code (as hex)
+|% |Literal "%"
+|===
+
+
+=== String.format()
+
+_String.format()_ 接收与 _Formatter 的 format()_ 相同的参数，但是返回 _String_ 对象。如果只使用一次 _format_ ，可以直接使用 _String.format()_ 方法，否则还是建议使用 _Formatter_ 来格式化。
+
+==== A hex dump tool
+使用 _format_ 作一个 _hex_ 工具。当需要将 _byte[]_ 转换 _hex_ 输出时。
+
+.Hex Tool
+[source,java]
+----
+//: net/mindview/util/Hex.java
+package net.mindview.util;
+
+import java.io.File;
+
+public class Hex {
+    public static String format(byte[] data) {
+        StringBuilder result = new StringBuilder();
+        int n = 0;
+        for (byte b : data) {
+            if (n % 16 == 0)
+                result.append(String.format("%05X: ", n));
+            result.append(String.format("%02X ", b));
+            n++;
+            if (n % 16 == 0) result.append("\n");
+        }
+        result.append("\n");
+        return result.toString();
+    }
+
+    public static void main(String[] args) throws Exception {
+        if (args.length == 0)
+            // Test by displaying this class file:
+            System.out.println(
+                    format(BinaryFile.read("Hex.class")));
+        else
+            System.out.println(
+                    format(BinaryFile.read(new File(args[0]))));
+    }
+} /* Output: (Sample)
+00000: CA FE BA BE 00 00 00 31 00 52 0A 00 05 00 22 07
+00010: 00 23 0A 00 02 00 22 08 00 24 07 00 25 0A 00 26
+00020: 00 27 0A 00 28 00 29 0A 00 02 00 2A 08 00 2B 0A
+00030: 00 2C 00 2D 08 00 2E 0A 00 02 00 2F 09 00 30 00
+00040: 31 08 00 32 0A 00 33 00 34 0A 00 15 00 35 0A 00
+00050: 36 00 37 07 00 38 0A 00 12 00 39 0A 00 33 00 3A
+...
+*///:~
+----
+
+
+== Scanning Input
+直到现在从一个普通文档读取内容还是相当麻烦的。
+
+.示例
+[source,java]
+----
+package strings;//: strings/SimpleRead.java
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+
+public class SimpleRead {
+    public static BufferedReader input = new BufferedReader(
+            new StringReader("Sir Robin of Camelot\n22 1.61803"));
+
+    public static void main(String[] args) {
+        try {
+            System.out.println("What is your name?");
+            String name = input.readLine();
+            System.out.println(name);
+            System.out.println(
+                    "How old are you? What is your favorite double?");
+            System.out.println("(input: <age> <double>)");
+            String numbers = input.readLine();
+            System.out.println(numbers);
+            String[] numArray = numbers.split(" ");
+            int age = Integer.parseInt(numArray[0]);
+            double favorite = Double.parseDouble(numArray[1]);
+            System.out.format("Hi %s.\n", name);
+            System.out.format("In 5 years you will be %d.\n",
+                    age + 5);
+            System.out.format("My favorite double is %f.",
+                    favorite / 2);
+        } catch (IOException e) {
+            System.err.println("I/O exception");
+        }
+    }
+} /* Output:
+What is your name?
+Sir Robin of Camelot
+How old are you? What is your favorite double?
+(input: <age> <double>)
+22 1.61803
+Hi Sir Robin of Camelot.
+In 5 years you will be 27.
+My favorite double is 0.809015.
+*///:~
+----
+
+[TIP]
+====
+使用 _BufferedReader_ 包装是因为这个类有 _readLine()_ 方法。
+====
+
+
+J2SE~5~ 中 *Scanner* 类的出现，极大地简化了普通文本扫描读取的烦恼，它能使用正则表达式解析基本类型与 _String_ 类型。
+
+[NOTE]
+====
+*Scanner* 是多线程下非安全的，需要程序员自己进行额外的同步操作。
+====
+
+.示例
+[source,java]
+----
+package strings;//: strings/BetterRead.java
+
+import java.util.Scanner;
+
+public class BetterRead {
+    public static void main(String[] args) {
+        Scanner stdin = new Scanner(SimpleRead.input);
+        System.out.println("What is your name?");
+        String name = stdin.nextLine();
+        System.out.println(name);
+        System.out.println(
+                "How old are you? What is your favorite double?");
+        System.out.println("(input: <age> <double>)");
+        int age = stdin.nextInt();
+        double favorite = stdin.nextDouble();
+        System.out.println(age);
+        System.out.println(favorite);
+        System.out.format("Hi %s.\n", name);
+        System.out.format("In 5 years you will be %d.\n",
+                age + 5);
+        System.out.format("My favorite double is %f.",
+                favorite / 2);
+    }
+} /* Output:
+What is your name?
+Sir Robin of Camelot
+How old are you? What is your favorite double?
+(input: <age> <double>)
+22
+1.61803
+Hi Sir Robin of Camelot.
+In 5 years you will be 27.
+My favorite double is 0.809015.
+*///:~
+----
+
+=== Scanner Delimiters
+
+默认情况下， _Scanner_ 以 _whitespace_ (_Character.isWhitespace 来判断_) 作为分隔符，当然你也可以使用你指定的正则来作为分隔符。
+
+[TIP]
+====
+_scanner.reset()_ 方法将重置 _Scanner_ 的状态为默认值，即以  _useDelimiter, useLocale, or useRadix_ 等方法改变的状态。
+====
+
+.示例
+[source,java]
+----
+package strings;//: strings/ScannerDelimiter.java
+
+import java.util.Scanner;
+
+public class ScannerDelimiter {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner("12, 42, 78, 99, 42");
+        scanner.useDelimiter("\\s*,\\s*");
+        while (scanner.hasNextInt())
+            System.out.println(scanner.nextInt());
+    }
+} /* Output:
+12
+42
+78
+99
+42
+*///:~
+----
+
+[TIP]
+====
+_scanner.delimiter()_ 方法将返回当前使用的 _delimiter_
+====
+
+=== Scanning with regular expressions
+_Scanner_ 不仅可以通过 _next(), nextInt()_ 等方法解析基本类型，还可以使用正则解析复杂的数据。
+
+.示例
+[source,java]
+----
+package strings;//: strings/ThreatAnalyzer.java
+
+import java.util.Scanner;
+import java.util.regex.MatchResult;
+
+public class ThreatAnalyzer {
+    static String threatData =
+            "58.27.82.161@02/10/2005\n" +
+                    "204.45.234.40@02/11/2005\n" +
+                    "58.27.82.161@02/11/2005\n" +
+                    "58.27.82.161@02/12/2005\n" +
+                    "58.27.82.161@02/12/2005\n" +
+                    "[Next log section with different data format]";
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(threatData);
+        String pattern = "(\\d+[.]\\d+[.]\\d+[.]\\d+)@" +
+                "(\\d{2}/\\d{2}/\\d{4})";
+        while (scanner.hasNext(pattern)) {
+            scanner.next(pattern);
+            MatchResult match = scanner.match();
+            String ip = match.group(1);
+            String date = match.group(2);
+            System.out.format("Threat on %s from %s\n", date, ip);
+        }
+    }
+} /* Output:
+Threat on 02/10/2005 from 58.27.82.161
+Threat on 02/11/2005 from 204.45.234.40
+Threat on 02/11/2005 from 58.27.82.161
+Threat on 02/12/2005 from 58.27.82.161
+Threat on 02/12/2005 from 58.27.82.161
+*///:~
+----
+
+.示例2
+[source,java]
+----
+String input = "1 fish 2 fish red fish blue fish";
+     Scanner s = new Scanner(input);
+     s.findInLine("(\\d+) fish (\\d+) fish (\\w+) fish (\\w+)");
+     MatchResult result = s.match();
+     for (int i=1; i<=result.groupCount(); i++)
+         System.out.println(result.group(i));
+     s.close();
+----
+
+== StringTokenizer
+
+在 J2SE~4~ 出来以前，只能通过 _StringTokenizer_ 的 _tokenize_  方法拆分字符串。
+
+.示例
+[source,java]
+----
+package strings;//: strings/ReplacingStringTokenizer.java
+
+import java.util.Arrays;
+import java.util.Scanner;
+import java.util.StringTokenizer;
+
+public class ReplacingStringTokenizer {
+    public static void main(String[] args) {
+        String input = "But I'm not dead yet! I feel happy!";
+        StringTokenizer stoke = new StringTokenizer(input);
+        while (stoke.hasMoreElements())
+            System.out.print(stoke.nextToken() + " ");
+        System.out.println();
+        System.out.println(Arrays.toString(input.split(" ")));
+        Scanner scanner = new Scanner(input);
+        while (scanner.hasNext())
+            System.out.print(scanner.next() + " ");
+    }
+} /* Output:
+But I'm not dead yet! I feel happy!
+[But, I'm, not, dead, yet!, I, feel, happy!]
+But I'm not dead yet! I feel happy!
+*///:~
+----
+
+[TIP]
+====
+事实证明，现在已经没有必要使用 _StringTokenizer_ 了，现有的 _Scanner_ 等更加强大。
+====

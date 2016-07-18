@@ -941,6 +941,57 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#服务资源编目">24. 服务资源编目</a></li>
 </ul>
 </li>
+<li><a href="#服务方-请求方申请审批">服务方、请求方申请审批</a>
+<ul class="sectlevel1">
+<li><a href="#请求方申请审批">25. 请求方申请审批</a>
+<ul class="sectlevel2">
+<li><a href="#流程图">25.1. 流程图</a></li>
+<li><a href="#数据库表设计">25.2. 数据库表设计</a></li>
+<li><a href="#详细说明">25.3. 详细说明</a>
+<ul class="sectlevel3">
+<li><a href="#用户申请">25.3.1. 用户申请</a></li>
+<li><a href="#管理员审核">25.3.2. 管理员审核</a></li>
+<li><a href="#页面说明">25.3.3. 页面说明</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#服务方申请审批">26. 服务方申请审批</a>
+<ul class="sectlevel2">
+<li><a href="#流程图-2">26.1. 流程图</a></li>
+<li><a href="#详细说明-2">26.2. 详细说明</a></li>
+</ul>
+</li>
+<li><a href="#数据库表设计-2">27. 数据库表设计</a></li>
+<li><a href="#服务方发布服务申请">28. 服务方发布服务申请</a>
+<ul class="sectlevel2">
+<li><a href="#流程图-3">28.1. 流程图</a></li>
+</ul>
+</li>
+<li><a href="#请求方服务访问授权申请">29. 请求方服务访问授权申请</a>
+<ul class="sectlevel2">
+<li><a href="#流程图-4">29.1. 流程图</a></li>
+<li><a href="#详细说明-3">29.2. 详细说明</a>
+<ul class="sectlevel3">
+<li><a href="#查看可用服务列表">29.2.1. 查看可用服务列表</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#服务类型管理">服务类型管理</a>
+<ul class="sectlevel1">
+<li><a href="#服务类型管理-2">30. 服务类型管理</a>
+<ul class="sectlevel2">
+<li><a href="#数据库表">30.1. 数据库表</a></li>
+<li><a href="#数据示例">30.2. 数据示例</a></li>
+<li><a href="#最终效果">30.3. 最终效果</a></li>
+</ul>
+</li>
+<li><a href="#服务分类展示">31. 服务分类展示</a></li>
+</ul>
+</li>
 <li><a href="#附录">附录</a>
 <ul class="sectlevel1">
 <li><a href="#编号编制规则">附录 A: 编号编制规则</a>
@@ -2215,6 +2266,544 @@ table.CodeRay td.code>pre{padding:0}
 
 </div>
 </div>
+<h1 id="服务方-请求方申请审批" class="sect0"><a class="anchor" href="#服务方-请求方申请审批"></a>服务方、请求方申请审批</h1>
+<div class="sect1">
+<h2 id="请求方申请审批"><a class="anchor" href="#请求方申请审批"></a>25. 请求方申请审批</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>请求方的申请审批即前台用户需要手动注册请求方信息，经其上级（后台）管理员审核通过后，方可完成请求方信息的注册。</p>
+</div>
+<div class="sect2">
+<h3 id="流程图"><a class="anchor" href="#流程图"></a>25.1. 流程图</h3>
+<div class="imageblock">
+<div class="content">
+<img src="images/consumer_reg.jpg" alt="consumer reg">
+</div>
+<div class="title">请求方注册申请流程图</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="数据库表设计"><a class="anchor" href="#数据库表设计"></a>25.2. 数据库表设计</h3>
+<div class="imageblock">
+<div class="content">
+<img src="images/consumer_reg.png" alt="consumer reg">
+</div>
+<div class="title">请求方注册申请单</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/apply_history.png" alt="apply history">
+</div>
+<div class="title">申请单历史记录</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="详细说明"><a class="anchor" href="#详细说明"></a>25.3. 详细说明</h3>
+<div class="sect3">
+<h4 id="用户申请"><a class="anchor" href="#用户申请"></a>25.3.1. 用户申请</h4>
+<div class="paragraph">
+<p>前台用户经过指定的请求方注册申请应用图标进入请求方注册申请页面后，需要手动录入请求方信息。</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">请求方信息列说明</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">列名称</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">说明</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">是否必填</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">备注</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">主键ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><img src="./images/icons/times.png" alt="times"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">后台自动生成</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FWQQZBS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">服务请求者标识</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><img src="./images/icons/times.png" alt="times"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">待审核通过生成请求方信息后再回写</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FWQQZMC</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">服务请求者名称</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon green"><img src="./images/icons/check.png" alt="check"></span></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REGION_CODE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">请求方所属区域代码</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon green"><img src="./images/icons/check.png" alt="check"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">由用户选择下所辖的部门</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REGION_NAME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">请求方所属区域名称</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon green"><img src="./images/icons/check.png" alt="check"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">由用户选择下所辖的部门</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">APPLY_USER_CODE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">申请人账号</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><img src="./images/icons/times.png" alt="times"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">由系统读取当前登陆用户账号</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">APPLY_USER_NAME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">申请人姓名</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><img src="./images/icons/times.png" alt="times"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">由系统读取当前登陆用户姓名</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">APPLY_TIME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">申请时间</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><img src="./images/icons/times.png" alt="times"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">由系统自动生成</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AUDIT_USER_CODE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">审核人账号</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><img src="./images/icons/times.png" alt="times"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">由系统获取最后一次审核的人员账号</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AUDIT_USER_NAME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">审核人姓名</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><img src="./images/icons/times.png" alt="times"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">由系统获取最后一次审核的人员姓名</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AUDIT_STATUS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">审核状态</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><img src="./images/icons/times.png" alt="times"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">由系统获取申请单的最后一次审核状态</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AUDIT_SUGGESTION</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">审核意见</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><img src="./images/icons/times.png" alt="times"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">由系统获取申请单的最后一次审核意见</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AUDIT_TIME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">审核时间</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><img src="./images/icons/times.png" alt="times"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">由系统读取最后一次审核时间</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LXR_XM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">联系人姓名</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><img src="./images/icons/times.png" alt="times"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">页面需要提供，如果用户没有填写，则读取其账号姓名</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LXDH</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">联系人电话</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><img src="./images/icons/times.png" alt="times"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">页面需要提供，如果用户没有填写，则读取其账户的电话</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TXDZ</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">通讯地址</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><img src="./images/icons/times.png" alt="times"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">页面需要提供</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LXR_GMSFHM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">联系人公民身份证号码</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><img src="./images/icons/times.png" alt="times"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">页面需要提供，如果页面没有填写，则读取其账户的身份证号</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FWQQZ_IPDZ</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">服务请求者IP地址</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon green"><img src="./images/icons/check.png" alt="check"></span></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FWQQZ_DKHM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">服务请求方机器IP端口号</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon green"><img src="./images/icons/check.png" alt="check"></span></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<img src="./images/icons/tip.png" alt="Tip">
+</td>
+<td class="content">
+<div class="paragraph">
+<p>用户填写申请单后，需要在 <strong>用户与申请单关联表</strong> 表中添加一行关联信息。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="管理员审核"><a class="anchor" href="#管理员审核"></a>25.3.2. 管理员审核</h4>
+<div class="paragraph">
+<p>管理员可进行的操作：</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>审核通过</p>
+</li>
+<li>
+<p>驳回，驳回时必须写意见</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>当管理员进行审核时，需要管理员继续填写请求方的一些信息，方可进行审核通过。</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">列信息</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">代码</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">名称</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">是否必填</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">说明</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ZWJBDM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">请求方职务级别</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><img src="./images/icons/times.png" alt="times"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">请求方的职务级别</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GWQJDM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">岗位权级</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><img src="./images/icons/times.png" alt="times"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">岗位权级</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XZQHDM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">行政区划</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><img src="./images/icons/times.png" alt="times"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">行政区划代码</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MMDJDM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">秘密等级</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon green"><img src="./images/icons/check.png" alt="check"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">请求方的秘密等级代码</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JZDM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">警种代码</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><img src="./images/icons/times.png" alt="times"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">请求方的警种代码</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>审核通过后，将上述提交的信息及请求方注册的信息写入到 S_SERVICE_CONSUMER 表，并同时写入 S_CONSUMER_APPLY_MAPPING 关联记录。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<img src="./images/icons/note.png" alt="Note">
+</td>
+<td class="content">
+<div class="paragraph">
+<p>每一次的审核信息，都需要写入到 <code>S_APPLY_HISOTRY</code> 表中。当多次重复提交审核时，或多个不同人审核时，可以查看历史审核记录。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="页面说明"><a class="anchor" href="#页面说明"></a>25.3.3. 页面说明</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>进入页面
+进入页面时，应显示用户已经提交的申请单信息，可供用户查看申请单状态等。</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="服务方申请审批"><a class="anchor" href="#服务方申请审批"></a>26. 服务方申请审批</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>服务方的申请审批即前台用户需要手动注册请求方信息，经其上级（后台）管理员审核通过后，方可完成服务方信息的注册。</p>
+</div>
+<div class="sect2">
+<h3 id="流程图-2"><a class="anchor" href="#流程图-2"></a>26.1. 流程图</h3>
+<div class="imageblock">
+<div class="content">
+<img src="images/provider_reg.jpg" alt="provider reg">
+</div>
+<div class="title">服务方注册申请流程图</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="详细说明-2"><a class="anchor" href="#详细说明-2"></a>26.2. 详细说明</h3>
+<div class="paragraph">
+<p>基本同上面的请求方注册申请类似</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="数据库表设计-2"><a class="anchor" href="#数据库表设计-2"></a>27. 数据库表设计</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="images/apply_database.html">详细表设计</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="服务方发布服务申请"><a class="anchor" href="#服务方发布服务申请"></a>28. 服务方发布服务申请</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>当前台用户经过申请成为服务提供方后，便可进行服务的发布。服务的发布前同样需要经过管理员审批后方可发布出来。</p>
+</div>
+<div class="sect2">
+<h3 id="流程图-3"><a class="anchor" href="#流程图-3"></a>28.1. 流程图</h3>
+<div class="imageblock">
+<div class="content">
+<img src="images/service_apply.jpg" alt="service apply">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="请求方服务访问授权申请"><a class="anchor" href="#请求方服务访问授权申请"></a>29. 请求方服务访问授权申请</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>当请求方注册成功后，如果需要访问其它提供方的服务，此时需要申请授权访问。</p>
+</div>
+<div class="sect2">
+<h3 id="流程图-4"><a class="anchor" href="#流程图-4"></a>29.1. 流程图</h3>
+<div class="imageblock">
+<div class="content">
+<img src="images/consumer_apply_service.jpg" alt="consumer apply service">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="详细说明-3"><a class="anchor" href="#详细说明-3"></a>29.2. 详细说明</h3>
+<div class="sect3">
+<h4 id="查看可用服务列表"><a class="anchor" href="#查看可用服务列表"></a>29.2.1. 查看可用服务列表</h4>
+<div class="paragraph">
+<p>用户通过请求方的操作区按钮，即可进行已被允许访问的服务列表界面。</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h1 id="服务类型管理" class="sect0"><a class="anchor" href="#服务类型管理"></a>服务类型管理</h1>
+<div class="openblock partintro">
+<div class="content">
+服务类型管理主要为完成对服务类型的增删改查。
+</div>
+</div>
+<div class="sect1">
+<h2 id="服务类型管理-2"><a class="anchor" href="#服务类型管理-2"></a>30. 服务类型管理</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>完成目标：完成对服务类型的增删改查，服务类型可按树型结果进行展示。</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<img src="./images/icons/tip.png" alt="Tip">
+</td>
+<td class="content">
+<div class="paragraph">
+<p>可参考服务目录的实现</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="数据库表"><a class="anchor" href="#数据库表"></a>30.1. 数据库表</h3>
+<div class="imageblock">
+<div class="content">
+<img src="images/servicetype.png" alt="servicetype">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="数据示例"><a class="anchor" href="#数据示例"></a>30.2. 数据示例</h3>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">S_SERVICE_TYPE_RULE</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.667%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RULE_NAME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CODE_DESC</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CODE_LENGTH</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">START_NUM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">END_NUM</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">操作类型</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">操作类型</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">操作对象</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">流水号</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">9</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">操作内容</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">流水号</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">14</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">信息内容</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">流水号</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">15</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">20</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">S_SERVICE_TYPE_CODE</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2858%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CODE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PARENT_CODE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INTEGRITY_CODE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CODE_DESC</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RULE_ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SORT_NUM</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XXCX</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XXCX0000000000000000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">信息查询</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XXCX00001</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XXCX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XXCX0000100000000000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">人员信息查询</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XXCX00002</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XXCX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XXCX0000200000000000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">案事件信息查询</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="最终效果"><a class="anchor" href="#最终效果"></a>30.3. 最终效果</h3>
+<div class="paragraph">
+<p>参考服务目录管理</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/type_rule.png" alt="type rule">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/type.png" alt="type">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="服务分类展示"><a class="anchor" href="#服务分类展示"></a>31. 服务分类展示</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>可将现有已经发布的服务，按照服务类型进行展示。</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<img src="./images/icons/tip.png" alt="Tip">
+</td>
+<td class="content">
+<div class="paragraph">
+<p>可参考服务目录</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/types.png" alt="types">
+</div>
+</div>
+</div>
+</div>
 <h1 id="附录" class="sect0"><a class="anchor" href="#附录"></a>附录</h1>
 <div class="sect1">
 <h2 id="编号编制规则"><a class="anchor" href="#编号编制规则"></a>附录 A: 编号编制规则</h2>
@@ -3092,7 +3681,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br>
-Last updated 2016-06-06 13:56:04 中国标准时间
+Last updated 2016-07-01 12:42:15 中国标准时间
 </div>
 </div>
 <script type="text/x-mathjax-config">

@@ -22,4 +22,14 @@ include::Polymorphism.asciidoc[]
 
 include::Interfaces.asciidoc[]
 
+include::InnerClasses.asciidoc[]
+
+include::HoldingYourObjects.asciidoc[]
+
 include::ErrorHandlingwithExceptions.asciidoc[]
+
+include::String.asciidoc[]
+
+include::RegularExpression.asciidoc[]
+
+include::TypeInformation.asciidoc[]

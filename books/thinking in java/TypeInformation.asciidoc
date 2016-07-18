@@ -1,0 +1,403 @@
+= Type Information
+:imagesdir: images
+
+
+== The need for RTTI
+
+使用泛型，可以在编译时就检查类型。
+
+== The Class object
+
+每当你编译一个 _java_ 文件时，都会对应产生一个 _class_ 文件在你的硬盘上。当 _class_ 文件被加载入 _jvm_ 中时，就对应创建了一个该类型的 _Class_ 对象，而 _Class_ 对象则用于创建该类型的所有普通对象。
+
+.类的生命周期
+image::class_load.png[]
+
+[TIP]
+====
+只有进入了初始化阶段，该类才会被初始化。否则只是有一个 _Class_ 对象，而没有初始化。
+====
+
+
+[source,java]
+----
+package typeinfo;//: typeinfo/SweetShop.java
+// Examination of the way the class loader works.
+
+import static net.mindview.util.Print.print;
+
+class Candy {
+    static {
+        print("Loading Candy");
+    }
+}
+
+class Gum {
+    static {
+        print("Loading Gum");
+    }
+}
+
+class Cookie {
+    static {
+        print("Loading Cookie");
+    }
+}
+
+public class SweetShop {
+    public static void main(String[] args) {
+        print("inside main");
+        new Candy();
+        print("After creating Candy");
+        try {
+            Class.forName("Gum");
+        } catch (ClassNotFoundException e) {
+            print("Couldn't find Gum");
+        }
+        print("After Class.forName(\"Gum\")");
+        new Cookie();
+        print("After creating Cookie");
+    }
+} /* Output:
+inside main
+Loading Candy
+After creating Candy
+Loading Gum
+After Class.forName("Gum")
+Loading Cookie
+After creating Cookie
+*///:~
+----
+
+_Candy_ ，_Gum_ ，_Cookie_ 等都有一个静态代码块，这些静态代码块会在该类第一次初始化时执行。
+
+每一个 _Class_ 对象都只在它需要的时候被加载，然后对应的静态代码块会执行。
+
+[source,java]
+----
+Class.forName("Gum")
+----
+
+所有的 _Class_ 对象都隶属于 _Class_ 类。所以 _Class_ 对象也可以像其它对象一样让你持有一个引用并操作它。获取一个 _Class_ 对象引用有以下几种方法：
+
+.获取 _Class_ 对象引用
+[source,java]
+----
+1. Class.forName("Gum"); // <1>
+2. gum.getClass(); // <2>
+3. Gum.class; // <3>
+----
+<1> 该方法会尝试加载对应的类文件（如果不存在），并返回引用。此方法好处在于只需要一个字符串参数就行了。
+<2> 如果你已经有该类型的对象了，那么直接 _getClass()_ 吧
+<3> 如果你可以直接访问该类，那么通过 _类名.class_ 也可以访问该类 _Class_ 引用
+
+=== Class Literals
+_Java_ 提供了另外一种方式来访问 _Class Object_ ： _class literal_ 。
+[quote]
+____
+FancyToy.class
+____
+
+它不止更简洁，而且它是在编译时就会检查类型的，所以它不需要像 _Class.forName()_ 一样需要使用 _Try-Catch_ 块，而且它是 *更有效率的* 。
+
+[horizontal]
+Class Literal::
+首选应使用它来获取 _Class Object_
+Class.forName::
+它主要用于框架中，不能明确要获取的 _Class_ 类型时使用
+
+'''
+
+Class Literal 不仅仅适用于常规的 _Class_ 也适用于 _Interface_ 、 _arrays_ 、 _primitive types_ 。
+基本类型的包装类都有一个 _Type_ 属性可以获取其对应的基本类型的 _Class Object_ 。
+
+.两边是相等的
+|===
+|boolean.class|Boolean.TYPE|
+|char.class|Character.TYPE|
+|byte.class|Byte.TYPE|
+|short.class|Short.TYPE|
+|int.class|Integer.TYPE|
+|long.class|Long.TYPE|
+|float.class|Float.TYPE|
+|double.class|Double.TYPE|
+|void.class|Void.TYPE|
+|===
+
+'''
+一般有三个步骤用于准备 _class_ 来使用。
+
+Loading::
+由 _ClassLoader_ 加载 _bytecode_ （本地/网络上的class文件），然后再创建一个 _Class Object_
+Linking::
+链接阶段将校验 _bytecode_ 是否合法，然后分配空间给静态字段。如果可以的话，还会 _resolve_ 这个类里的所有引用。
+Initialization::
+初始化。如果有父类，则初始化父类。然后执行静态初始化和静态代码块初始化。
+
+[TIP]
+====
+_.class_ 的方式不会执行初始化阶段
+====
+
+[NOTE]
+====
+初始化一般会尽可能地延迟，直到该类的静态方法（构造函数是隐式的静态方法）或非常量的静态字段被引用时才会开始初始化。
+====
+
+.示例
+[source,java]
+----
+package typeinfo;//: typeinfo/ClassInitialization.java
+
+import java.util.Random;
+
+class Initable {
+    static final int staticFinal = 47;
+    static final int staticFinal2 =
+            ClassInitialization.rand.nextInt(1000);
+
+    static {
+        System.out.println("Initializing Initable");
+    }
+}
+
+class Initable2 {
+    static int staticNonFinal = 147;
+
+    static {
+        System.out.println("Initializing Initable2");
+    }
+}
+
+class Initable3 {
+    static int staticNonFinal = 74;
+
+    static {
+        System.out.println("Initializing Initable3");
+    }
+}
+
+public class ClassInitialization {
+    public static Random rand = new Random(47);
+
+    public static void main(String[] args) throws Exception {
+        Class initable = Initable.class;
+        System.out.println("After creating Initable ref");
+        // Does not trigger initialization:
+        System.out.println(Initable.staticFinal);
+        // Does trigger initialization:
+        System.out.println(Initable.staticFinal2);  // <1>
+        // Does trigger initialization:
+        System.out.println(Initable2.staticNonFinal); // <2>
+        Class initable3 = Class.forName("Initable3"); // <3>
+        System.out.println("After creating Initable3 ref");
+        System.out.println(Initable3.staticNonFinal);
+    }
+} /* Output:
+After creating Initable ref
+47
+Initializing Initable
+258
+Initializing Initable2
+147
+Initializing Initable3
+After creating Initable3 ref
+74
+*///:~
+----
+<1> 因为这个静态常量是非编译时的静态常量（需要运行时计算的），所以这里才会执行初始化
+<2> 引用非 _final_ 的 _static_ 字段，会立马初始化
+<3> 使用 _Class.forName()_ 也是会立即初始化
+
+=== Generic class references
+JavaSE~5~ 之后，可以使用泛型语法来指定类型。
+
+[source,java]
+----
+package typeinfo;//: typeinfo/GenericClassReferences.java
+
+public class GenericClassReferences {
+    public static void main(String[] args) {
+        Class intClass = int.class;
+        Class<Integer> genericIntClass = int.class;
+        genericIntClass = Integer.class; // Same thing
+        intClass = double.class;  // <1>
+        // genericIntClass = double.class; // Illegal // <2>
+    }
+} ///:~
+----
+<1> 原始的非泛型的引用，可以随意指向其它类型
+<2> 泛型引用指向其它类型时，会在编译时进行检查
+
+.使用泛型中的通配符来代替传统的类型引用
+[source,java]
+----
+package typeinfo;//: typeinfo/WildcardClassReferences.java
+
+public class WildcardClassReferences {
+  public static void main(String[] args) {
+    Class<?> intClass = int.class; // <1>
+    intClass = double.class;
+  }
+} ///:~
+----
+<1> _?_ 在这里指 _anything_
+
+[TIP]
+====
+在 JavaSE~5~ 中，Class<?> 用于代替传统的普通Class引用。
+====
+
+'''
+使用 <? extends > 语法，可以指定某类及其子类型
+[source,java]
+----
+package typeinfo;//: typeinfo/BoundedClassReferences.java
+
+public class BoundedClassReferences {
+    public static void main(String[] args) {
+        Class<? extends Number> bounded = int.class;
+        bounded = double.class;
+        bounded = Number.class;
+        // Or anything else derived from Number.
+    }
+} ///:~
+----
+
+[TIP]
+====
+在 _Class_ 上使用泛型语法的原因在于提供一个编译时的检查。如果使用传统的 _Class_ 来引用的话，恐怕只能到运行时出错进才能知道会有类型问题。
+====
+
+'''
+.使用<? super > 语法来指定其类型及其父类型
+[source,java]
+----
+//: typeinfo/toys/GenericToyTest.java
+// Testing class Class.
+package typeinfo.toys;
+
+public class GenericToyTest {
+    public static void main(String[] args) throws Exception {
+        Class<FancyToy> ftClass = FancyToy.class;
+        // Produces exact type:
+        FancyToy fancyToy = ftClass.newInstance();
+        Class<? super FancyToy> up = ftClass.getSuperclass();
+        // This won't compile:
+        // Class<Toy> up2 = ftClass.getSuperclass();
+        // Only produces Object:
+        Object obj = up.newInstance();
+    }
+} ///:~
+----
+
+=== New Cast Syntax
+JavaSE~5~ 又推出了新的类型转换方法，使用 _Class Object_ 的 _cast()_ 方法即可。
+
+[source,java]
+----
+package typeinfo;//: typeinfo/ClassCasts.java
+
+class Building {
+}
+
+class House extends Building {
+}
+
+public class ClassCasts {
+    public static void main(String[] args) {
+        Building b = new House();
+        Class<House> houseType = House.class;
+        House h = houseType.cast(b);
+        h = (House) b; // ... or just do this.
+    }
+} ///:~
+----
+
+[TIP]
+====
+这种 _cast()_ 类型转换主要应该用于编写框架时，在无法确定地知道要强转的类型时使用的。
+====
+
+== Checking Before a cast
+
+[TIP]
+====
+在做类型强转前，使用先使用 _instance of_ 来判断一下，以确保强转是能通过的。
+====
+
+
+=== Dynamic instance of
+_Class Object_ 有一个 _isInstance()_ 方法可以用于动态检测某一个对象是否为该类型。
+
+=== Count recursively
+
+[TIP]
+====
+_isAssignableFrom()_ 可以用来判断某一类型是否为其类型或子类型。
+
+用法::
+    baseType.isAssignableFrom(subType);
+====
+
+== Dynamic Proxy
+动态代理
+
+.示例
+[source,java]
+----
+package typeinfo;//: typeinfo/SimpleDynamicProxy.java
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
+class DynamicProxyHandler implements InvocationHandler {
+    private Object proxied;
+
+    public DynamicProxyHandler(Object proxied) {
+        this.proxied = proxied;
+    }
+
+    public Object
+    invoke(Object proxy, Method method, Object[] args)
+            throws Throwable {
+        System.out.println("**** proxy: " + proxy.getClass() +
+                ", method: " + method + ", args: " + args);
+        if (args != null)
+            for (Object arg : args)
+                System.out.println("  " + arg);
+        return method.invoke(proxied, args);
+    }
+}
+
+class SimpleDynamicProxy {
+    public static void consumer(Interface iface) {
+        iface.doSomething();
+        iface.somethingElse("bonobo");
+    }
+
+    public static void main(String[] args) {
+        RealObject real = new RealObject();
+        consumer(real);
+        // Insert a proxy and call again:
+        Interface proxy = (Interface) Proxy.newProxyInstance(
+                Interface.class.getClassLoader(),
+                new Class[]{Interface.class},
+                new DynamicProxyHandler(real));
+        consumer(proxy);
+    }
+} /* Output: (95% match)
+doSomething
+somethingElse bonobo
+**** proxy: class $Proxy0, method: public abstract void Interface.doSomething(), args: null
+doSomething
+**** proxy: class $Proxy0, method: public abstract void Interface.somethingElse(java.lang.String), args: [Ljava.lang.Object;@42e816
+  bonobo
+somethingElse bonobo
+*///:~
+----
+
+== Null Objects
+
+=== Mock Objects

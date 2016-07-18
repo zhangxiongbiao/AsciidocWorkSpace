@@ -338,13 +338,13 @@ label2:
 outer-iteration {
   inner-iteration {
     //...
-    break; // (1)
+    break; // <1>
     //...
-    continue; // (2)
+    continue; // <2>
     //...
-    continue label1; // (3)
+    continue label1; // <3>
     //...
-    break label1; // (4)
+    break label1; // <4>
   }
 }
 ----

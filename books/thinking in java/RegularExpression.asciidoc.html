@@ -381,172 +381,219 @@
     <body>
       <div id="wrapper">
         <div class="article">
-          <h1>服务方、请求方申请审批</h1>
-<div class="sect1">
-<h2 id="__">1. 请求方申请审批</h2>
+          <h1>RegularExpression</h1>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>请求方的申请审批即前台用户需要手动注册请求方信息，经其上级（后台）管理员审核通过后，方可完成请求方信息的注册。</p>
+<p>正则表达式</p>
 </div>
-<div class="sect2">
-<h3 id="___2">1.1. 流程图</h3>
-<div class="imageblock">
-<div class="content">
-<img src="E:\15-AsciiWorkSpace\设计文档\资源服务平台设计文档\images\consumer_reg.jpg" alt="consumer reg.jpg">
-</div>
-<div class="title">Figure 1. 请求方注册申请流程图</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="___3">1.2. 数据库表设计</h3>
-<div class="imageblock">
-<div class="content">
-<img src="E:\15-AsciiWorkSpace\设计文档\资源服务平台设计文档\images\consumer_reg.png" alt="consumer reg.png">
-</div>
-<div class="title">Figure 2. 请求方注册申请单</div>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="E:\15-AsciiWorkSpace\设计文档\资源服务平台设计文档\images\apply_history.png" alt="apply history.png">
-</div>
-<div class="title">Figure 3. 申请单历史记录</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="___4">1.3. 详细说明</h3>
-<div class="sect3">
-<h4 id="___5">1.3.1. 用户申请</h4>
 <div class="paragraph">
-<p>前台用户经过指定的请求方注册申请应用图标进入请求方注册申请页面后，需要手动录入请求方信息。</p>
+<p>一个正则表达式，通常即一个 <em>String</em> ，必须先编译为 <em>java.util.Pattern</em> 的一个实例。 <em>Pattern</em> 实例可以用来创建 <em>Matcher</em> 对象， <em>Matcher</em> 对象可以用来匹配字符串，匹配到的信息等全部保存在该对象中。</p>
+</div>
+<div class="listingblock">
+<div class="title">示例1</div>
+<div class="content">
+<pre class="editor-colors lang-java"><div class="line"><span class="source java"><span class="storage type java"><span>Pattern</span></span><span>&nbsp;p&nbsp;</span><span class="keyword operator assignment java"><span>=</span></span><span>&nbsp;</span><span class="storage type java"><span>Pattern</span></span><span class="keyword operator dereference java"><span>.</span></span><span class="meta method-call java"><span class="meta method java"><span>compile</span></span><span class="punctuation definition method-parameters begin java"><span>(</span></span><span class="string quoted double java"><span class="punctuation definition string begin java"><span>"</span></span><span>a*b</span><span class="punctuation definition string end java"><span>"</span></span></span><span class="punctuation definition method-parameters end java"><span>)</span></span></span><span class="punctuation terminator java"><span>;</span></span></span></div><div class="line"><span class="source java"><span class="storage type java"><span>Matcher</span></span><span>&nbsp;m&nbsp;</span><span class="keyword operator assignment java"><span>=</span></span><span>&nbsp;p</span><span class="keyword operator dereference java"><span>.</span></span><span class="meta method-call java"><span class="meta method java"><span>matcher</span></span><span class="punctuation definition method-parameters begin java"><span>(</span></span><span class="string quoted double java"><span class="punctuation definition string begin java"><span>"</span></span><span>aaaaab</span><span class="punctuation definition string end java"><span>"</span></span></span><span class="punctuation definition method-parameters end java"><span>)</span></span></span><span class="punctuation terminator java"><span>;</span></span></span></div><div class="line"><span class="source java"><span class="storage type primitive array java"><span>boolean</span></span><span>&nbsp;b&nbsp;</span><span class="keyword operator assignment java"><span>=</span></span><span>&nbsp;m</span><span class="keyword operator dereference java"><span>.</span></span><span class="meta method-call java"><span class="meta method java"><span>matches</span></span><span class="punctuation definition method-parameters begin java"><span>(</span></span><span class="punctuation definition method-parameters end java"><span>)</span></span></span><span class="punctuation terminator java"><span>;</span></span></span></div></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">示例2</div>
+<div class="content">
+<pre class="editor-colors lang-java"><div class="line"><span class="source java"><span class="storage type primitive array java"><span>boolean</span></span><span>&nbsp;b&nbsp;</span><span class="keyword operator assignment java"><span>=</span></span><span>&nbsp;</span><span class="storage type java"><span>Pattern</span></span><span class="keyword operator dereference java"><span>.</span></span><span class="meta method-call java"><span class="meta method java"><span>matches</span></span><span class="punctuation definition method-parameters begin java"><span>(</span></span><span class="string quoted double java"><span class="punctuation definition string begin java"><span>"</span></span><span>a*b</span><span class="punctuation definition string end java"><span>"</span></span></span><span class="punctuation definition seperator parameter java"><span>,</span></span><span>&nbsp;</span><span class="string quoted double java"><span class="punctuation definition string begin java"><span>"</span></span><span>aaaaab</span><span class="punctuation definition string end java"><span>"</span></span></span><span class="punctuation definition method-parameters end java"><span>)</span></span></span><span class="punctuation terminator java"><span>;</span></span><span>&nbsp;</span><span>(</span><span class="constant numeric java"><span>1</span></span><span>)</span></span></div></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tbody><tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>这是示例1的简写形式，只有当正则表达式不需要复用时使用，因为它每次都要重新创建 <em>Pattern</em> 实例。</td>
+</tr>
+</tbody></table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Pattern</strong> 类是不可变的，并且是多线程下安全的。</p>
+</div>
+<div class="paragraph">
+<p><strong>Matcher</strong> 是多线程下非安全的。</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#__">1. 正则规则</a></li>
+<li><a href="#___2">2. 转义符</a></li>
+<li><a href="#___3">3. 字符类</a></li>
+<li><a href="#___4">4. 行终止符</a></li>
+<li><a href="#___5">5. 分组与捕捉</a></li>
+</ul>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__">1. 正则规则</h2>
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="E:\15-AsciiWorkSpace\books\thinking in java\images\pattern_1.png" alt="pattern 1.png">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="E:\15-AsciiWorkSpace\books\thinking in java\images\pattern_2.png" alt="pattern 2.png">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="E:\15-AsciiWorkSpace\books\thinking in java\images\pattern_3.png" alt="pattern 3.png">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="E:\15-AsciiWorkSpace\books\thinking in java\images\pattern_4.png" alt="pattern 4.png">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="E:\15-AsciiWorkSpace\books\thinking in java\images\pattern_5.png" alt="pattern 5.png">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="___2">2. 转义符</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>转义符 <strong>\</strong> 用来将特殊字符转义，但是在 <em>java</em> 中 <strong>\</strong> 本身也是特殊字符，所以需要继续对 <strong>\</strong> 进行转义。</p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 1. 请求方信息列说明</caption>
+<caption class="title">Table 1. 示例</caption>
 <colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
+<col style="width: 33%;">
+<col style="width: 33%;">
+<col style="width: 33%;">
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">列名称</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">字符</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">转义</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java中转义</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>\</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>\\</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>\\\</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">{</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\{</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\\{</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(hello)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\(hello\)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\\(hello\\)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="___3">3. 字符类</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>当正则的字符区间之间通过 <em>&amp;&amp;</em> 等进行关联时，就需要考虑各字符类之间的优先级了。</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 2. 优先级</caption>
+<colgroup>
+<col style="width: 33%;">
+<col style="width: 33%;">
+<col style="width: 33%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">优先级别序号</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">名称</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">示例</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">字符转义</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">分组</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">()</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">字符区间</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a-z</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">字符区间并集</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[a-e][i-u]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">字符区间交集</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[a-z&amp;&amp;[aeiou]]</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="___4">4. 行终止符</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>行终止符一般为1-2个字符，用于标记一行的结束。以下字符被定义为行终止符。</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">字符</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">说明</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">是否必填</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">备注</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ID</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">主键ID</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">后台自动生成</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\n</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">换行符</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">FWQQZBS</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">服务请求者标识</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">待审核通过生成请求方信息后再回写</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\r\n</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">回车换行符</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">FWQQZMC</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">服务请求者名称</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon green"><i class="fa fa-check"></i></span></p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\r</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">标准回车符</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">REGION_CODE</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">请求方所属区域代码</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon green"><i class="fa fa-check"></i></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">由用户选择下所辖的部门</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\u0085</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">下一行</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">REGION_NAME</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">请求方所属区域名称</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon green"><i class="fa fa-check"></i></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">由用户选择下所辖的部门</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\u2028</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">行分隔符</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">APPLY_USER_CODE</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">申请人账号</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">由系统读取当前登陆用户账号</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">APPLY_USER_NAME</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">申请人姓名</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">由系统读取当前登陆用户姓名</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">APPLY_TIME</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">申请时间</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">由系统自动生成</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AUDIT_USER_CODE</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">审核人账号</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">由系统获取最后一次审核的人员账号</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AUDIT_USER_NAME</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">审核人姓名</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">由系统获取最后一次审核的人员姓名</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AUDIT_STATUS</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">审核状态</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">由系统获取申请单的最后一次审核状态</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AUDIT_SUGGESTION</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">审核意见</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">由系统获取申请单的最后一次审核意见</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AUDIT_TIME</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">审核时间</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">由系统读取最后一次审核时间</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LXR_XM</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">联系人姓名</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">页面需要提供，如果用户没有填写，则读取其账号姓名</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LXDH</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">联系人电话</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">页面需要提供，如果用户没有填写，则读取其账户的电话</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">TXDZ</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">通讯地址</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">页面需要提供</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LXR_GMSFHM</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">联系人公民身份证号码</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">页面需要提供，如果页面没有填写，则读取其账户的身份证号</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">FWQQZ_IPDZ</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">服务请求者IP地址</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon green"><i class="fa fa-check"></i></span></p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">FWQQZ_DKHM</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">服务请求方机器IP端口号</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon green"><i class="fa fa-check"></i></span></p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\u2029</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">段落分隔符</p></td>
 </tr>
 </tbody>
 </table>
@@ -558,80 +605,11 @@
 </td>
 <td class="content">
 <div class="paragraph">
-<p>用户填写申请单后，需要在 <strong>用户与申请单关联表</strong> 表中添加一行关联信息。</p>
+<p>如果 <em>Uninx Lines</em> 模式启用的话，则只有 \n 是支持的。</p>
 </div>
 </td>
 </tr>
 </tbody></table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="___6">1.3.2. 管理员审核</h4>
-<div class="paragraph">
-<p>管理员可进行的操作：</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>审核通过</p>
-</li>
-<li>
-<p>驳回，驳回时必须写意见</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>当管理员进行审核时，需要管理员继续填写请求方的一些信息，方可进行审核通过。</p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 2. 列信息</caption>
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">代码</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">名称</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">是否必填</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">说明</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ZWJBDM</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">请求方职务级别</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">请求方的职务级别</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">GWQJDM</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">岗位权级</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">岗位权级</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">XZQHDM</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">行政区划</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">行政区划代码</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">MMDJDM</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">秘密等级</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon green"><i class="fa fa-check"></i></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">请求方的秘密等级代码</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">JZDM</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">警种代码</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">请求方的警种代码</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>审核通过后，将上述提交的信息及请求方注册的信息写入到 S_SERVICE_CONSUMER 表，并同时写入 S_CONSUMER_APPLY_MAPPING 关联记录。</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -641,48 +619,32 @@
 </td>
 <td class="content">
 <div class="paragraph">
-<p>每一次的审核信息，都需要写入到 <code>S_APPLY_HISOTRY</code> 表中。当多次重复提交审核时，或多个不同人审核时，可以查看历史审核记录。</p>
+<p>正则中 <strong>.</strong> 默认是匹配所有字符，除了行终止符。 如果 <em>DOTALL</em> 标记启用的话，那么 <strong>.</strong> 也会匹配行终止符。</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>默认情况下， <strong>^</strong> 与 <strong>$</strong> 在正则中只会匹配一行的开头和结尾，不会匹配到行终止符。如果 <em>MULTLINE</em> 模式启用后，那么 <strong>^</strong> 与 <strong>$</strong> 会匹配到行终止符，即匹配输入字符串的开头与结尾（哪怕输入字符串是多行的）。</p>
 </div>
 </td>
 </tr>
 </tbody></table>
 </div>
 </div>
-<div class="sect3">
-<h4 id="___7">1.3.3. 页面说明</h4>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>进入页面
-进入页面时，应显示用户已经提交的申请单信息，可供用户查看申请单状态等。</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-</div>
 </div>
 <div class="sect1">
-<h2 id="___8">2. 服务方申请审批</h2>
+<h2 id="___5">5. 分组与捕捉</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>服务方的申请审批即前台用户需要手动注册请求方信息，经其上级（后台）管理员审核通过后，方可完成服务方信息的注册。</p>
-</div>
-<div class="sect2">
-<h3 id="___9">2.1. 流程图</h3>
-<div class="imageblock">
-<div class="content">
-<img src="E:\15-AsciiWorkSpace\设计文档\资源服务平台设计文档\images\provider_reg.jpg" alt="provider reg.jpg">
-</div>
-<div class="title">Figure 4. 服务方注册申请流程图</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="___10">2.2. 详细说明</h3>
-<div class="paragraph">
-<p>基本同上面的请求方注册申请类似</p>
-</div>
-</div>
+
 </div>
 </div>
         </div>
