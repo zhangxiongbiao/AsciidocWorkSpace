@@ -1,0 +1,419 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"do",
+				"done"
+			],
+			[
+				"el",
+				"elasticsearch"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "evernote",
+		"selected_items":
+		[
+			[
+				"evernote",
+				"Evernote: Send to Evernote as new note"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"as",
+				"Set Syntax: AsciiDoc (Asciidoctor)"
+			],
+			[
+				"package",
+				"Package Control: Install Package"
+			],
+			[
+				"mark",
+				"Set Syntax: Markdown"
+			],
+			[
+				"package install",
+				"Package Control: Install Package"
+			],
+			[
+				"asciidoc",
+				"Set Syntax: AsciiDoc (Asciidoctor)"
+			],
+			[
+				"asciidoctor",
+				"Set Syntax: AsciiDoc (Asciidoctor)"
+			],
+			[
+				"json",
+				"Indent JSON"
+			],
+			[
+				"ma",
+				"OmniMarkupPreviewer: Preview Current Markup in Browser"
+			],
+			[
+				"mak",
+				"Set Syntax: MultiMarkdown"
+			],
+			[
+				"xml",
+				"Indent XML"
+			]
+		],
+		"width": 432.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/E/15-AsciiWorkSpace"
+	],
+	"file_history":
+	[
+		"/D/OpenSourceCode/junit/junit4/doc/ReleaseNotes4.4.md",
+		"/C/Users/zxb/AppData/Roaming/Sublime Text 3/Packages/User/Evernote.sublime-settings",
+		"/C/Users/zxb/AppData/Roaming/Sublime Text 3/Packages/Evernote/Evernote.sublime-settings",
+		"/D/Program Files/Httrack/httrack/templates/index-body.html",
+		"/E/15-AsciiWorkSpace/配置文档/cat/客户端集成.adoc",
+		"/D/Program Files/Httrack/httrack/readme",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/beans-provider.xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/beans-consumer.xml",
+		"/C/Users/zxb/Desktop/iptables.txt",
+		"/C/Users/zxb/AppData/Local/Temp/7zO44A160F6/iptables.rule",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/iptables [2].rule",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/iptables.rule",
+		"/C/Users/zxb/AppData/Local/Temp/7zO4AB34438/check.sh",
+		"/E/15-AsciiWorkSpace/books/thinking in java/EverythingIsAnObject.asciidoc",
+		"/C/Users/zxb/AppData/Roaming/Sublime Text 3/Packages/User/OmniMarkupPreviewer.sublime-settings",
+		"/C/Users/zxb/AppData/Roaming/Sublime Text 3/Packages/OmniMarkupPreviewer/OmniMarkupPreviewer.sublime-settings",
+		"/E/15-AsciiWorkSpace/books/thinking in java/ErrorHandlingwithExceptions.asciidoc",
+		"/E/15-AsciiWorkSpace/基本配置/渲染命令.asciidoc",
+		"/C/Users/zxb/AppData/Roaming/Sublime Text 3/Packages/Asciidoctor/Asciidoctor.sublime-settings",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/resolv [3].conf",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/resolv [2].conf",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/resolv.conf",
+		"/E/15-AsciiWorkSpace/books/mongodb/reference/data model/example/store_parent_id.txt",
+		"/E/15-AsciiWorkSpace/books/mongodb/reference/data model/example/store_child_id.txt",
+		"/E/15-AsciiWorkSpace/books/mongodb/reference/data model/example/store_ancestors.txt",
+		"/E/15-AsciiWorkSpace/books/mongodb/reference/data model/example/store_path.txt",
+		"/E/15-AsciiWorkSpace/books/mongodb/reference/data model/example/store_nestsets.txt",
+		"/C/Users/zxb/Desktop/黄梅珍",
+		"/C/Users/zxb/Desktop/jmx.txt",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/tomcat",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/elasticsearch",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/S85mongodb",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/mongodb",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/mongod [3].conf",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/mongod [2].conf",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/mongodb [2].sh",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/mongod.conf",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/mongodb.sh",
+		"/C/Users/zxb/AppData/Local/Temp/7zOCAD1A7B7/MemoryAnalyzer.ini",
+		"/C/Users/zxb/Desktop/person.json",
+		"/D/Program Files/you-get/test.bat",
+		"/I/test.xml",
+		"/E/text.txt",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/server.xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/task-synchronized-indextable.xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/dubbo [3].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/jdbc.properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/logjdbc [2].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/logjdbc.properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/dubbo [2].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/dubbo.properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/server [2].xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/web [3].xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/context.xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/web [2].xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/web.xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/dubbo [6].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/beans-core [5].xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/jdbc [10].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/logjdbc [9].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/logjdbc [8].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/dubbo [5].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/beans-core [4].xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/logjdbc [7].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/jdbc [9].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/jdbc [8].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/dubbo [4].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/logjdbc [6].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/beans-cas [2].xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/jdbc [7].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/server [5].xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/beans-core [3].xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/jdbc [6].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/logjdbc [5].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/logjdbc [4].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/beans-core [2].xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/jdbc [5].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/jdbc [4].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/beans-core.xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/beans-logconfig.xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/beans-core-mvc.xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/beans-cas.xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/server [3].xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/server [4].xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/jdbc [2].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/jdbc [3].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/logjdbc [3].properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/elasticsearch.yml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/init_config.sh",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/init.sh",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/monitrc",
+		"/C/Users/zxb/Desktop/abc.json",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/primer-dataset.json",
+		"/C/Users/zxb/Desktop/新建文本文档 (2).txt",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/monitrc [4]",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/monit.log",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/monitrc [5]",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/monitrc [3]",
+		"/C/Users/zxb/Desktop/text.txt",
+		"/E/02-develop/03_open_source_jar/01-java/15-others/02-memcached/memcached/memcached-linux/memcached-1.2.2/memcached-1.2.2/doc/threads.txt",
+		"/E/02-develop/03_open_source_jar/01-java/15-others/02-memcached/memcached/memcached-linux/memcached-1.2.2/memcached-1.2.2/doc/protocol.txt",
+		"/C/zxbProgramFiles/workdir/java/apache-maven-3.3.3/conf/settings_company.xml",
+		"/C/zxbProgramFiles/workdir/project/ZXB/oaut_example/readme.txt",
+		"/C/Users/zxb/Desktop/新建文本文档.txt",
+		"/E/bytecodeViewer/_install BCV.bat",
+		"/E/xiangyange/src/com/wat/common/WatJedisManager.java",
+		"/C/zxbProgramFiles/program32/shadowsockets/pac.txt",
+		"/C/Users/zxb/Desktop/cas_login_WebService(v1.1)/login.js",
+		"/C/Users/zxb/Desktop/cas_login_WebService(v1.1)/cas登陆接口2.0.docx",
+		"/E/02-develop/03_open_source_jar/01-java/16-webservice/01-apache_cxf/apache-cxf-3.1.0/samples/oauth/README.txt",
+		"/I/2016-11-11/thirdPartyConfig.xml",
+		"/C/zxbProgramFiles/workdir/project/code/DM-GAHYB-CODE/product/dmga-monitor/3.0.1/trunk/pom.xml",
+		"/C/Users/zxb/Desktop/Mesos",
+		"/C/Users/zxb/Desktop/数据库大盘.txt",
+		"/C/zxbProgramFiles/program32/shadowsockets/user-rule.txt",
+		"/C/data/applogs/cat/cat_20161111.log",
+		"/C/Users/zxb/Desktop/ipMsg/src/ipmsg/etc/Command.java",
+		"/C/Users/zxb/Desktop/ipMsg/build.xml",
+		"/C/Users/zxb/Desktop/cat优雅停机.txt",
+		"/C/Users/zxb/Desktop/mvn-install.txt",
+		"/C/data/appdatas/cat/mail.xml",
+		"/C/data/appdatas/cat/datasources.xml",
+		"/C/data/appdatas/cat/server.xml",
+		"/C/data/appdatas/cat/client.xml",
+		"/C/data/applogs/cat/cat_20161110.log",
+		"/I/新建文件夹 (1)/site.list",
+		"/I/新建文件夹 (1)/site_add.list",
+		"/I/新建文件夹 (1)/ajax_request.list"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 90.0,
+		"where_history":
+		[
+			"<current file>",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"evernote",
+			"NNET",
+			"INIF",
+			"EXTIF",
+			"CONF",
+			"href=\"(.*)\"",
+			"公安部全文检索",
+			"(do\")",
+			".do\"",
+			"Edraw Max http://www  edrawsoft  com",
+			"\\.+",
+			"\\\\.*",
+			"\\.*",
+			"*.shtml",
+			"ssi",
+			"2812",
+			"2181",
+			"Restart",
+			"then",
+			"restart",
+			"reboot",
+			"onreboot",
+			"GROUP",
+			"group",
+			"every",
+			"set mailserver",
+			"mail-format",
+			"mail",
+			"email",
+			"set alert",
+			"alert",
+			"check System",
+			"System",
+			"\\.+",
+			"\\.*",
+			",",
+			" = ",
+			",",
+			" = ",
+			"'",
+			"=",
+			".*-DgroupId(=[a-zA-Z\\.]+)\\s+-DartifactId=([[a-zA-Z0-9\\-]+)\\s+-Dversion=([0-9\\.]+).*",
+			"-DgroupId(=[a-zA-Z\\.]+)\\s+-DartifactId=([[a-zA-Z0-9\\-]+)\\s+-Dversion=([0-9\\.]+)",
+			"-DgroupId=(.*)\\s",
+			"intellij"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+			"$1 alertChannel=\"PublicSecurityFullTextSearch\"",
+			"",
+			"  ",
+			"\\S",
+			"  ",
+			"\\S",
+			" ",
+			"),",
+			"(",
+			"),",
+			")",
+			"(",
+			"''",
+			"",
+			"<dependency><groupId>$1</groupId><artifactId>$2</artifactId><version>$3</version></dependency>",
+			"gbbbb"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 34.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "AsciiDocWorkSpace.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"渲染",
+				"基本配置\\渲染命令.asciidoc"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 250.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

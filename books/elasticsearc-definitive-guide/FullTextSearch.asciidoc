@@ -1,0 +1,556 @@
+= 全文检索
+
+到目前为止，我们介绍了一些结构化检索的简单案例，现在该介绍一些全文检索了。如何在全文字段中找到匹配度最高的文档呢。
+
+全文检索最重要的两个方面是：
+
+Relevance::
+用于描述结果相对于指定的查询的相关度。相关度的算法有 TF/IDF，地理位置计算中的proximity算法,fuzzy similarity以及其它一些算法。
+
+Analysis::
+它主要用于将字段的文本内容转换为唯一的、标准的词，以便构造成倒排索引方便检索。
+
+## 基于词的查询 与 全文查询
+虽然所有的搜索查询（非过滤查询）都会执行相关度评分计算，但是不是所有的搜索查询都有分词阶段。像一些特殊的查询如 `bool` 和 `function_score` 查询，根本都不会对字符文本进行处理。而那些会对文本进行处理的搜索查询会分成两大类：
+
+基于词的查询::
+像 `term` 和 `fuzzy` 查询都是 `low-level` 查询，是没有分词阶段。这种查询是直接针对词进行操作的。 `term` 查询是直接在倒排索引中精确匹配对应的词并且根据 TF/IDF 计算每一个包含该词的文档的 `_score` 。
+
+全文查询::
+像 `match` 和 `query-string` 这种查询是高级别的查询，它们会根据 _filed_ 的 _mapping_ 设置来处理查询。
+* 如果你用这两个查询去查询 `date` 和 `interger` 字段，它会将查询关键字当作 date和integer处理。
+* 如果你查询一个 `string` 字段的准确的值（ `not_analyzed` ），它将把整个查询关键字当作单个词来处理。
+* 如果你查询了一个全文字段（`analyzed`），它将先把查询关键字通过该字段对应的分词器处理成相就的一组词后，再使用相就的低级别的查询进行查询。
+
+
+[NOTE]
+====
+如果你想在一个 `not_analyzed` 字段上使用查询的话，此时你应该考虑是否需要使用 `scoring` 查询？或许 `non-scroing` 查询会更好。
+
+单个词的查询通常也就是 `yes/no` 查询，此时应该用 `filter` 查询，方便缓存。
+
+[source,js]
+----
+GET /_search
+{
+    "query": {
+        "constant_score": {
+            "filter": {
+                "term": { "gender": "female" }
+            }
+        }
+    }
+}
+----
+====
+
+## match 查询
+`match` 查询是高级别的全文查询，因为它知道如何处理全文或精确值查询。
+_match_ 查询的主要用途是全文查询。
+
+### 添加一些数据
+
+使用 _bulk_ API先添加一些测试数据。
+
+[source,js]
+----
+DELETE /my_index // <1>
+
+PUT /my_index
+{ "settings": { "number_of_shards": 1 }} // <2>
+
+POST /my_index/my_type/_bulk
+{ "index": { "_id": 1 }}
+{ "title": "The quick brown fox" }
+{ "index": { "_id": 2 }}
+{ "title": "The quick brown fox jumps over the lazy dog" }
+{ "index": { "_id": 3 }}
+{ "title": "The quick brown fox jumps over the quick dog" }
+{ "index": { "_id": 4 }}
+{ "title": "Brown fox brown dog" }
+----
+<1> 删除该索引是防止该索引已经存在了
+<2> 在本章最后章节，将介绍为什么这里只设置一个主分片
+
+### 单个word的查询
+
+第一个例子是使用 `match` 在一个全文字段上查询单个word。
+[source,js]
+----
+GET /my_index/my_type/_search
+{
+    "query": {
+        "match": {
+            "title": "QUICK!"
+        }
+    }
+}
+----
+
+_Elasticsearch_ 执行 `match` 查询顺序如下：
+
+1. 检查field类型
++
+`title` 字段为全文的 `string` 字段，也就是说这个查询关键字需要先分词。
+
+2. 分析查询关键字
++
+查询关键字 `QUICK!` 通过 `标准分词器` 分词，将产生为词 `quick` 。因为这里是单个词，所以 `match` 查询最终以低级别的 `term` 查询来执行。
+
+3. 查找匹配的文档
++
+`term` 查询从倒排索引中找 `quick` ，然后把所有包含该词的文档找出来，这里是文档1，2和3
+
+4. 对每个文档评分
++
+`term` 查询对每个匹配的文档做相关度评分。它基于 `term frequency` （quick这个词在每个文档中的title字段出现的频率），及 `inverse document frequency` （在整个索引的所有文档的title字段中，quick出现的频率），以及每个字段的长度（字段内容长度越短，评分越高）。
+
+
+上述查询的返回结果如下：
+[source,js]
+----
+"hits": [
+ {
+    "_id":      "1",
+    "_score":   0.5, // <1>
+    "_source": {
+       "title": "The quick brown fox"
+    }
+ },
+ {
+    "_id":      "3",
+    "_score":   0.44194174, // <2>
+    "_source": {
+       "title": "The quick brown fox jumps over the quick dog"
+    }
+ },
+ {
+    "_id":      "2",
+    "_score":   0.3125, // <2>
+    "_source": {
+       "title": "The quick brown fox jumps over the lazy dog"
+    }
+ }
+]
+----
+<1> 文档1最匹配是因为 `title` 字段内容最短，也就是说 _quick_ 这个词在该字段内容中占比大
+<2> 文档3比文档2更匹配是因为 quick 出现了2次
+
+## Multiword查询
+`match` 查询可以同时查多个 _word_
+
+[source,js]
+----
+GET /my_index/my_type/_search
+{
+    "query": {
+        "match": {
+            "title": "BROWN DOG!"
+        }
+    }
+}
+----
+
+上面查询的返回结果：
+[source,js]
+----
+{
+  "hits": [
+     {
+        "_id":      "4",
+        "_score":   0.73185337, // <1>
+        "_source": {
+           "title": "Brown fox brown dog"
+        }
+     },
+     {
+        "_id":      "2",
+        "_score":   0.47486103, // <2>
+        "_source": {
+           "title": "The quick brown fox jumps over the lazy dog"
+        }
+     },
+     {
+        "_id":      "3",
+        "_score":   0.47486103, // <2>
+        "_source": {
+           "title": "The quick brown fox jumps over the quick dog"
+        }
+     },
+     {
+        "_id":      "1",
+        "_score":   0.11914785, // <3>
+        "_source": {
+           "title": "The quick brown fox"
+        }
+     }
+  ]
+}
+----
+<1> 文档4最匹配是因为它包含 `brown` 两次， `dog` 一次。
+<2> 文档2和3都包含 `brown` 和 `dog` 一次。并且字段内容长度一样。
+<3> 文档1只包含了 `brown`　，不包含 `dog`
+
+其实 `match` 查询内部将两个词 _brown_ 和 _dog_ 拆分为两个 `term` 查询，使用 _bool_ 查询的should组合起来的。
+
+### 提升匹配精度
+在上面的查询中，只要匹配了 _brown_ 或 _dog_ 两个词中的任何一个都会被返回。有时我们可能希望这两个词同时被命中才返回。也就是这两个词不再用 _OR_ 的关系，而用 _AND_ 的关系。
+
+`match` 查询可以接收一个 `operator` 参数，默认值为 `or` ，你可以改为 `and` 。
+
+[source,js]
+----
+GET /my_index/my_type/_search
+{
+    "query": {
+        "match": {
+            "title": {      // <1>
+                "query":    "BROWN DOG!",
+                "operator": "and"
+            }
+        }
+    }
+}
+----
+<1> 稍微改动下原先的查询，添加一个 `operator` 参数就可以了。
+
+### 控制精度
+上面介绍的 _AND_ 和 _OR_ 匹配有时显得太绝对了，能不能做到如 `3/4` 匹配这种呢。
+
+`match` 查询接收 `minimum_should_match` 参数，这个参数可以指定一个指定数值（需要几个词命中），不过通常会指定为一个百分比。
+
+[source,js]
+----
+GET /my_index/my_type/_search
+{
+  "query": {
+    "match": {
+      "title": {
+        "query":                "quick brown dog",
+        "minimum_should_match": "75%"
+      }
+    }
+  }
+}
+
+上面指定了 `minimum_should_match` 为 `75%`　，不过由于这里只有3个词，所以这个百分比会被约等于为 `66.6%`　（因为这里是控制几个词命中来算的百分比），或者可以说是 `2/3` 。
+
+为了充分了解 `match` 查询是如何处理多word的查询，我们需要看下 `bool` 查询是如何组合多个查询的。
+----
+
+## 组合查询
+
+在组合过滤章节介绍了如何使用 _bool_ 过滤将多个过滤器按 _and_ 、 _or_ 、 _not_ 的逻辑组合在一起。
+
+与 _bool_ 过滤一样， _bool_ 查询接受 `must` 、`must_not` 、 `should` 、 `filter` 等参数。例如：
+
+[source,js]
+----
+GET /my_index/my_type/_search
+{
+  "query": {
+    "bool": {
+      "must":     { "match": { "title": "quick" }},
+      "must_not": { "match": { "title": "lazy"  }},
+      "should": [
+                  { "match": { "title": "brown" }},
+                  { "match": { "title": "dog"   }}
+      ]
+    }
+  }
+}
+----
+
+### 评分计算
+一个 _bool_ 查询得分的计算规则是：将每所有的 _must_ 和　_should_ 的得分加起来，然后除以 _must_ 和 _should_ 的总数。
+
+`must_not` 不会影响得分，它只是用于排序文档的。
+
+### 控制精确度
+所有的 `must` 子句表示必须匹配，所有的 `must_not` 表示必须不匹配。而 `should` 子句则应多少匹配呢。默认情况下，所有的 `should` 子句都可以不匹配，除非一个 `must` 子句都没有时需要至少匹配一个 `should` 子句。
+
+使用 `minimum_should_match` 参数可以控制 `should` 的匹配精度。
+
+[source,js]
+----
+GET /my_index/my_type/_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        { "match": { "title": "brown" }},
+        { "match": { "title": "fox"   }},
+        { "match": { "title": "dog"   }}
+      ],
+      "minimum_should_match": 2 // <1>
+    }
+  }
+}
+----
+<1> 这里也可以填写百分比
+
+## 如何使用 _bool_ 查询进行匹配
+到目前为止，你可能意识到 _multiword match queries_ 只是简单的将词查询包装到一个bool查询中且使用默认的 `or` 操作符。每一个 `term` 查询作为一个 `should` 子句添加进来的，所以必须至少一个匹配上。下面两个查询是相等的：
+
+[source,js]
+----
+{
+    "match": { "title": "brown fox"}
+}
+----
+
+[source,js]
+----
+{
+  "bool": {
+    "should": [
+      { "term": { "title": "brown" }},
+      { "term": { "title": "fox"   }}
+    ]
+  }
+}
+----
+
+如果使用的是 `and` 操作符，那所有的 _term_ 查询都会放到 `must` 子句中。下面两个查询是相等的。
+
+[source,js]
+----
+{
+    "match": {
+        "title": {
+            "query":    "brown fox",
+            "operator": "and"
+        }
+    }
+}
+----
+
+[source,js]
+----
+{
+  "bool": {
+    "must": [
+      { "term": { "title": "brown" }},
+      { "term": { "title": "fox"   }}
+    ]
+  }
+}
+----
+
+如果 `minimum_should_match` 参数已经指定了，那么以下两个查询是相等的。
+
+[source,js]
+----
+{
+    "match": {
+        "title": {
+            "query":                "quick brown fox",
+            "minimum_should_match": "75%"
+        }
+    }
+}
+----
+
+[source,js]
+----
+{
+  "bool": {
+    "should": [
+      { "term": { "title": "brown" }},
+      { "term": { "title": "fox"   }},
+      { "term": { "title": "quick" }}
+    ],
+    "minimum_should_match": 2 
+  }
+}
+----
+
+## Query子句加权
+`bool` 查询不是限制只能组合 `match` 查询。它可以组合任何其它查询，包括其它的 `bool` 查询。
+
+
+_bool_ 查询允许我们组成复杂的逻辑。
+
+[source,js]
+----
+GET /_search
+{
+    "query": {
+        "bool": {
+            "must": {
+                "match": {
+                    "content": {
+                        "query":    "full text search",
+                        "operator": "and"
+                    }
+                }
+            },
+            "should": [ 
+                { "match": { "content": "Elasticsearch" }},
+                { "match": { "content": "Lucene"        }}
+            ]
+        }
+    }
+}
+----
+
+`should` 中的子查询，匹配的越多，表示匹配度越高。
+
+如果我们需要给某一子查询加权的话，示例如下：
+[source,js]
+----
+GET /_search
+{
+    "query": {
+        "bool": {
+            "must": {
+                "match": {  // <1>
+                    "content": {
+                        "query":    "full text search",
+                        "operator": "and"
+                    }
+                }
+            },
+            "should": [
+                { "match": {
+                    "content": {
+                        "query": "Elasticsearch",
+                        "boost": 3 // <2>
+                    }
+                }},
+                { "match": {
+                    "content": {
+                        "query": "Lucene",
+                        "boost": 2 
+                    }
+                }}
+            ]
+        }
+    }
+}
+----
+<1> 这个子句使用默认的 _boost_ ，值为1
+<2> 这个子句最重要，权重最大
+
+[NOTE]
+====
+_boost_ 参数用来增加子句的权重（设置 x > 1　的值），而降低权重则是减少 _boost_ 值（设置 0 < x < 1 的值），但是增加或减少权重对评分的影响不是线性的，换句话说， _boost_ 设置为2不表示它的评分 * 2
+
+这里新设置的 _boost_ 参数是在新的评分计算前应用到表达式上的。每一种类型的 _query_ 都有它独有的评分算法。这里只能说 _boost_ 值越大，评分就越高。
+
+如果你实现了自己的评分算法，而非使用 TF/IDF 算法。你可以使用 `function_score` 操作文档的 boost 值并省略计算 `normalization` 这一步。
+====
+
+## 控制分词
+Queries只能找到那些在倒排索引上实际存在的词，所以这里就必须保证索引文档和搜索文档时使用同样的分析器，这样才能保证搜索的时候分析出来的词能匹配到索引时分的评词。
+
+尽管我们在说 _document_ ，分析器却是直接作用在每一个 _field_　上的。每一个字段都可以有不同的分析器，可以在字段上配置一个分析器，也可以使用类型、索引、Node级别的默认分析器配置。在索引数据时，字段值会采用指定的分析器或默认的分析器来分词。
+
+作为示例，添加一个新的字段到 my_index
+[source,js]
+----
+PUT /my_index/_mapping/my_type
+{
+    "my_type": {
+        "properties": {
+            "english_title": {
+                "type":     "string",
+                "analyzer": "english"
+            }
+        }
+    }
+}
+----
+
+现在可以通过 `analyze` API来比较 `english_title` 与 `title` 字段在索引数据阶段如何分词的。
+
+[source,js]
+----
+GET /my_index/_analyze
+{
+  "field": "my_type.title",   // <1>
+  "text": "Foxes"
+}
+
+GET /my_index/_analyze
+{
+  "field": "my_type.english_title",   // <2>
+  "text": "Foxes"
+}
+----
+<1> `title` 字段，将使用默认的标准分词器，这里会返回词 _foxs_
+<2> `english_title` 字段，将使用 `english` 分词器，这里会返回 _fox_
+
+这也就意味着，如果我们使用低级别的 `term` 查询词 `fox` ，`english_title` 字段将返回值，而 `title` 字段则不会返回值。
+
+高级别的 `match` 查询会根据字段指定的分析器对查询关键字先分词后再检索。可以使用 _validate_ API看一下。
+
+[source,js]
+----
+GET /my_index/my_type/_validate/query?explain
+{
+    "query": {
+        "bool": {
+            "should": [
+                { "match": { "title":         "Foxes"}},
+                { "match": { "english_title": "Foxes"}}
+            ]
+        }
+    }
+}
+----
+
+以下解释如下：
+[source,js]
+----
+(title:foxes english_title:fox)
+----
+
+### 默认的分析器
+虽然我们可以为字段专门指定一个分析器，然而我们如何知道字段没有指定分析器时它用的是哪个分析器呢。
+
+分析器可以在3个级别上指定：每一个字段上，每一个索引上，全局默认。 _Elasticsearch_ 会逐级找分析器直到找到。
+
+在索引数据阶段，查找分析器顺序是：
+
+* field mapping中定义为 `analyze` 的分析器
+* 在索引设置中分析器名称为 `default` 的分析器，默认为 `standard` 分析器。
+* 标准分析器
+
+在搜索数据阶段，顺序有点不一样：
+
+* 在 _query_ 子句中定义的分析器
+* 在 field mapping 中定义的search_analyzer
+* 在 field mapping 中定义的analyzer
+* 在索引设置中定义为 `default_search` 的分析器
+* 在索引设置中分析器名称为 `default` 的分析器，默认为 `standard` 分析器。
+* 标准分析器
+
+### 配置分析器实践
+
+建议在 _index_ 级别配置一个默认的分词器用于所有的全文字段，然后指定的字段再在字段级别上配置其它的分词器。
+
+[NOTE]
+====
+如日志类的索引创建通常是一天一个，这里可以使用 `index template` 来配置。
+====
+
+## 打破评分规则
+在先前介绍时，创建的测试索引 `my_index` 只创建一个主分片，为什么呢？
+
+假设我们有10个文档，其它6个文档包含词 _foo_ ，如果我们有2个主分片，每个分片上有3个包含词 _foo_ 的文档。
+
+我们先前介绍过， _ES_ 中默认使用的相关度评分算法为 TF/IDF ，TF计算我们在当前文档中查询的字段上该词出现的次数，该词出现次数越多，相关度越高。而 IDF 则表示索引上所有文档中该词出现的频率，IDF中该词出现越频率，相关度越低。
+
+出于性能考虑， _Elasticsearch_ 并没有在整个索引的所有文档中计算 IDF ，而是只在每一个分片上计算了一个 本地IDF 。
+
+因为我们的文档分布的很好，所以每一个分片上的 IDF 都是一样的。现在假设5个文档在分片1，而第6个文档在分片2上。那么词 foo 在第一个分片上的相关度比较低，在第二个分片上就比较高。
+
+不过，在生产环境上，随着文档量大，这种 Local IDF 与 Global IDF 的差别会越来越少。
+
+不过也可以使用 `?search_type=dfs_query_then_fetch` 来强制计算 Global IDF 。
+
+[NOTE]
+====
+生产环境下不要使用 `dfs_query_then_fetch` ，会有性能损耗。随着文档量大，这种 Local IDF 与 Global IDF 的差别会越来越少。
+====

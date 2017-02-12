@@ -401,3 +401,5 @@ somethingElse bonobo
 == Null Objects
 
 === Mock Objects
+
+=== Interface and Type information

@@ -1,0 +1,916 @@
+= 多字段搜索
+
+
+单一的一个 `match` 子句查询是非常少的。通常情况下，我们需要在多个字段中搜索一个或多个查询关键字，这也就意味着我们需要将多个查询子句组合到一起并且还要合并各子句的得分。
+本章将介绍目前用于组织多搜索子句的一些可用的工具。
+
+
+== 多搜索关键字
+
+最简单的多字段查询是我们知道哪个搜索关键字对应哪个字段，此时就很容易使用 `match` 然后组合起来。例如下面：
+
+[source,js]
+----
+
+GET /_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        { "match": { "title":  "War and Peace" }},
+        { "match": { "author": "Leo Tolstoy"   }}
+      ]
+    }
+  }
+}
+----
+
+`bool` 查询采用的是 _more-match-is-better_ 的方式（命中的子句越多，评分越高），所以每个子句的得分最终会加起来形成最终的 `_score` 。也就是说，那些匹配了多个子句的文档得分会比那些匹配了一个子句的文档的等分要高一些。
+
+当然，你可能不会只用 `match` 子句， `bool` 查询可以组合其它的任一子句，包括 `bool` 。例如：
+
+[source,js]
+----
+GET /_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        { "match": { "title":  "War and Peace" }},
+        { "match": { "author": "Leo Tolstoy"   }},
+        { "bool":  {
+          "should": [
+            { "match": { "translator": "Constance Garnett" }},
+            { "match": { "translator": "Louise Maude"      }}
+          ]
+        }}
+      ]
+    }
+  }
+}
+----
+
+上例中，我们在 _should_ 子句中再加了一个 _bool_ 子句，而 _bool_ 子句中的也是 _should_ 子句。我们为什么不直接把 _bool_ 中的 _should_ 子句添加到外层的 _should_ 下面呢？
+
+这是因为写法不同，最终得分计算也不一样。`bool查询计算方式：bool 查询将所有子句的得分加起来，乘以命中的子句个数，然后除以总的子句个数`。
+
+== 子句加权重
+
+_bool_ 子句中，可以通过 _boost_ 参数加权重。
+
+[source,js]
+----
+GET /_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        { "match": {
+            "title":  {
+              "query": "War and Peace",
+              "boost": 2
+        }}},
+        { "match": { 
+            "author":  {
+              "query": "Leo Tolstoy",
+              "boost": 2
+        }}},
+        { "bool":  { 
+            "should": [
+              { "match": { "translator": "Constance Garnett" }},
+              { "match": { "translator": "Louise Maude"      }}
+            ]
+        }}
+      ]
+    }
+  }
+}
+----
+
+[TIP]
+====
+子句默认的权重是 `1`
+====
+
+我们可以通过不停的查询测试来得出子句最佳的 _boost_ 值，不过 _boost_ 的取值范围为 1-10 ，当然你也可以设置为 15 ，不过你设置 15 对最终的得分影响跟 10 还是差不多的。因为 scores are normalized.
+
+== 单个搜索关键字
+
+多子句查询主要是通过 `bool` 查询来组合的。 `bool` 查询适用于很多场景，尤其是你想将不同的搜索关键字指定到不同的字段上时。
+
+不过现在的问题是，用户往往希望将输入的关键字放到一个大字符串（一键搜）中，然后由你程序来判断如何去返回最佳的结果。
+
+目前为止，没有说会一种查询能全部适应所有的搜索，如多词搜索、多字段搜索。为了取得最佳的结果，你必须了解你的数据并且知道使用什么样的查询来解决问题。
+
+=== 了解你的数据
+
+当你的用户只输入了一个查询字符串时，你通常会面临以下3个场景：
+
+Best Fields::
+当查询的关键字表示的是一个 _concept_ ，如 "brown fox"　，这两个字在一起比拆开匹配更有意义。此时在同一字段中匹配关键字越多的应该越匹配。这种情况下称为 **Best Fields**。待会注意看 _dis-query_ ，取最匹配的那个字段的分数。
+
+Most Fields::
+通常情况下，为了适应更的查询情况，我们会将同一字段数据索引成多个字段，以不同的分析器来处理。
++
+主字段还是保留它原有的格式，然后其它的再可以使用如同义词分析器之类的。
++
+通常来说，主字段加 `multi field mapping` 格式，再使用 `copy_to` 加新的字段做如 `word proximity` 匹配。
++
+这个时候匹配的字段越多，得分越高。见 _bool_ 查询
+
+Cross Fields::
+有的时候，像姓名、地址可能会跨多个字段。如：
+* Person: `firstname` 和 `lastname`
+* Book: `title` , `author` 和 `description`
+* Address: `street` , `city` , `county`　和 `postcode`
+
+这种情况下，我们希望在这些字段中尽可能地多匹配。我们需要跨多个字段进行检索。
+
+这些都是多关键字、多字段的检索，不过不同的场景需要不同的应对策略。
+
+## Best Fields
+假设我们有一个网站，用户可以搜索 _blogs_ ，现在有如下两个文档：
+[source,js]
+----
+PUT /my_index/my_type/1
+{
+    "title": "Quick brown rabbits",
+    "body":  "Brown rabbits are commonly seen."
+}
+
+PUT /my_index/my_type/2
+{
+    "title": "Keeping pets healthy",
+    "body":  "My quick brown fox eats rabbits on a regular basis."
+}
+----
+
+现在用户输入 `Brown fox` 进行查询，从上面2个文档来看，我们觉得第2个文档会更匹配一些，因为它的 `body` 字段包含了这两个搜索关键字。
+
+现在运行下面的 `bool` 查询：
+[source,js]
+----
+GET /my_index/my_type/_search
+{
+   "query": {
+      "bool": {
+         "should": [
+            {
+               "match": {
+                  "title": "Brown fox"
+               }
+            },
+            {
+               "match": {
+                  "body": "Borwn fox"
+               }
+            }
+         ]
+      }
+   }
+}
+----
+
+然而结果却是文档1的得分比文档2的要高。
+
+[source,js]
+----
+{
+  "hits": [
+     {
+        "_id":      "1",
+        "_score":   0.14809652,
+        "_source": {
+           "title": "Quick brown rabbits",
+           "body":  "Brown rabbits are commonly seen."
+        }
+     },
+     {
+        "_id":      "2",
+        "_score":   0.09256032,
+        "_source": {
+           "title": "Keeping pets healthy",
+           "body":  "My quick brown fox eats rabbits on a regular basis."
+        }
+     }
+  ]
+}
+----
+这是为什么呢？我们回想下 `bool` 查询是如何计算得分的。
+
+1. 执行所有 should 子句
+2. 将 should 子句的得分全部相加
+3. 然后再乘以命中的子句个数
+4. 然后再除以子句的总个数
+
+文档1的两个字段都包含 `brown` ，所以最后计算得分时它是乖以2，而文档2的却是乘以1。
+
+这种情况时，我们需要某个字段同时最佳匹配多个搜索关键字就好了。这就是 _Best fields_ ，此时就需要使用 `dis_max` 查询来搞定了。
+
+### dis_max Query
+
+我们使用 `dis_max` 查询来替换 _bool_ 查询。 `dis_max` 即 _Disjunction Max Query_ ，它的意思是从所有的匹配子句中，取最高分。
+
+[source,js]
+----
+{
+    "query": {
+        "dis_max": {
+            "queries": [
+                { "match": { "title": "Brown fox" }},
+                { "match": { "body":  "Brown fox" }}
+            ]
+        }
+    }
+}
+----
+
+这样，产生最终就是我们想要的结果。
+
+[source,js]
+----
+{
+  "hits": [
+     {
+        "_id":      "2",
+        "_score":   0.21509302,
+        "_source": {
+           "title": "Keeping pets healthy",
+           "body":  "My quick brown fox eats rabbits on a regular basis."
+        }
+     },
+     {
+        "_id":      "1",
+        "_score":   0.12713557,
+        "_source": {
+           "title": "Quick brown rabbits",
+           "body":  "Brown rabbits are commonly seen."
+        }
+     }
+  ]
+}
+----
+
+## 改进 Best Fields Queries
+
+现在假如我们搜索 `quick pets` 呢？两个文档都包含 `quick` ，但是只有文档2包含 `pets` 。
+
+示例：
+[source,js]
+----
+{
+    "query": {
+        "dis_max": {
+            "queries": [
+                { "match": { "title": "Quick pets" }},
+                { "match": { "body":  "Quick pets" }}
+            ]
+        }
+    }
+}
+----
+
+[source,js]
+----
+{
+  "hits": [
+     {
+        "_id": "1",
+        "_score": 0.12713557, // <1>
+        "_source": {
+           "title": "Quick brown rabbits",
+           "body": "Brown rabbits are commonly seen."
+        }
+     },
+     {
+        "_id": "2",
+        "_score": 0.12713557, // <1>
+        "_source": {
+           "title": "Keeping pets healthy",
+           "body": "My quick brown fox eats rabbits on a regular basis."
+        }
+     }
+   ]
+}
+----
+<1> 注意，两个文档的得分都是一样的。
+
+造成这个问题的原因是 `dis-max` query只是简单的取了子句中的最高分。
+
+### tie_breaker
+在 `dis-max` 查询中，也可以将其它子句（非最高分子句）的得分计算进来。使用 `tie_breaker` 参数搞定。
+
+[source,js]
+----
+{
+    "query": {
+        "dis_max": {
+            "queries": [
+                { "match": { "title": "Quick pets" }},
+                { "match": { "body":  "Quick pets" }}
+            ],
+            "tie_breaker": 0.3
+        }
+    }
+}
+----
+
+查询结果如下：
+[source,js]
+----
+{
+  "hits": [
+     {
+        "_id": "2",
+        "_score": 0.14757764, // <1>
+        "_source": {
+           "title": "Keeping pets healthy",
+           "body": "My quick brown fox eats rabbits on a regular basis."
+        }
+     },
+     {
+        "_id": "1",
+        "_score": 0.124275915, // <1>
+        "_source": {
+           "title": "Quick brown rabbits",
+           "body": "Brown rabbits are commonly seen."
+        }
+     }
+   ]
+}
+----
+<1> 现在文档2的得分就比文档1的略高了
+
+`tie_breaker` 参数让 `dis_max` 查询的效果介于 `dis_max` 查询与 `bool` 查询之间。它改变了 `dis_max` 的计分规则，规则如下：
+
+1. 取子句中的最高分
+2. 将其它的子句的得分相加再乘以 `tie_breaker`
+3. 将上述两步的得分相加，再normalize
+
+使用 `tie_breaker` 之后，所有的匹配的子句都参数了最终得分的计算，不过最高分那个计算的最多。
+
+[NOTE]
+====
+`tie_breaker` 取值为 float ，范围为 0-1，取0的话就是 dis-max 查询了。具体的取值根据你的需求而定，建议取值为 0.1-0.4，避免丢掉了 dis-max 的特性。
+====
+
+## multi_match Query
+
+`multi_match` 匹配提供了一个方便的方式来对多字段使用同一搜索关键字进行搜索。
+
+[NOTE]
+====
+`multi_match` 有多种类型。如javaAPI中的 `MultiMatchQueryBuilder.Type.PHRASE` ，不过它里面有三种类型对应上述介绍的3种场景：best_fields, most_fields, cross_fields.
+====
+
+默认情况下， `multi_match` 使用的是 `best_fields` 类型。意思就是说它生成 `match` 子句然后将它们包装成 `dis_max` 查询。
+
+[source,js]
+----
+{
+  "dis_max": {
+    "queries":  [
+      {
+        "match": {
+          "title": {
+            "query": "Quick brown fox",
+            "minimum_should_match": "30%"
+          }
+        }
+      },
+      {
+        "match": {
+          "body": {
+            "query": "Quick brown fox",
+            "minimum_should_match": "30%"
+          }
+        }
+      },
+    ],
+    "tie_breaker": 0.3
+  }
+}
+----
+
+上面可以改写成：
+[source,js]
+----
+{
+    "multi_match": {
+        "query":                "Quick brown fox",
+        "type":                 "best_fields", // <1>
+        "fields":               [ "title", "body" ],
+        "tie_breaker":          0.3,
+        "minimum_should_match": "30%" // <2>
+    }
+}
+----
+<1> `best_fields` 是默认的类型，此处也可以省略
+<2> 像 `minimum_should_match` 或者 `operator` 这些参数都可以传入到 `match` 查询中
+
+
+### 在字段名上使用通配符
+
+[source,js]
+----
+{
+    "multi_match": {
+        "query":  "Quick brown fox",
+        "fields": "*_title"
+    }
+}
+----
+
+### 为字段加权
+这里加权使用语法为 `^` + `boost value` ， boost值可以为浮点型
+
+[source,js]
+----
+{
+    "multi_match": {
+        "query":  "Quick brown fox",
+        "fields": [ "*_title", "chapter_title^2" ] // <1>
+    }
+}
+----
+
+## Most Fields
+全文搜索是一个介于 `recall` （返回相关的文档） 和 `precison` （不返回不相关的文档）之间的战斗。最终目标是给用户展示最匹配的文档。
+
+这些我们可以通过 `Multifield Mapping` （同一字段不同分词），及加字段（使用 `copy_to` 复制源字段数据）来搞定。
+
+### Multifield Mapping
+多字段映射，我们在字符串排序时介绍过。
+
+[source,js]
+----
+DELETE /my_index
+
+PUT /my_index
+{
+    "settings": { "number_of_shards": 1 }, // <1>
+    "mappings": {
+        "my_type": {
+            "properties": {
+                "title": { // <2>
+                    "type":     "string",
+                    "analyzer": "english",
+                    "fields": {
+                        "std":   { // <3>
+                            "type":     "string",
+                            "analyzer": "standard"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+----
+<1> 回头看下 《打破评分规则》
+<2> `title` 字段使用 _english_ 分词
+<3> `title.std` 字段使用 _standard_ 分词
+
+[NOTE]
+====
+这里的 `title.std` 包括上面说的 `copy_to` 都不需要在目标字段上写数据。源字段上的数据会 _copy_ 的。简单来说，不是复制，而只是把源数据换了个方式索引罢了。
+====
+
+现在插入两条数据
+
+[source,js]
+----
+PUT /my_index/my_type/1
+{ "title": "My rabbit jumps" }
+
+PUT /my_index/my_type/2
+{ "title": "Jumping jack rabbits" }
+----
+
+现在查一下
+[source,js]
+----
+GET /my_index/_search
+{
+   "query": {
+        "match": {
+            "title": "jumping rabbits"
+        }
+    }
+}
+----
+
+返回结果如下：
+[source,js]
+----
+{
+  "hits": [
+     {
+        "_id": "1",
+        "_score": 0.42039964,
+        "_source": {
+           "title": "My rabbit jumps"
+        }
+     },
+     {
+        "_id": "2",
+        "_score": 0.42039964,
+        "_source": {
+           "title": "Jumping jack rabbits"
+        }
+     }
+  ]
+}
+----
+
+如果我们把上面的查询字段换成 `title.std` ，那么只有文档2会被匹配。此时我们可以使用 `multi_match` 来同时匹配多个字段，这里使用 `most_fields` 类型（对应 _bool_ 查询）。
+
+[source,js]
+----
+GET /my_index/_search
+{
+   "query": {
+        "multi_match": {
+            "query":  "jumping rabbits",
+            "type":   "most_fields", // <1>
+            "fields": [ "title", "title.std" ]
+        }
+    }
+}
+----
+<1> 这里是对应的 _bool_ 查询，不是 `dis_max` 查询
+
+返回结果如下：
+[source,js]
+----
+{
+  "hits": [
+     {
+        "_id": "2",
+        "_score": 0.8226396, // <1>
+        "_source": {
+           "title": "Jumping jack rabbits"
+        }
+     },
+     {
+        "_id": "1",
+        "_score": 0.10741998, // <1>
+        "_source": {
+           "title": "My rabbit jumps"
+        }
+     }
+  ]
+}
+----
+<1> 文档2现在评分比文档1的要高
+
+这里可以使用 _boost_ 来指定哪个字段更重要。
+[source,js]
+----
+GET /my_index/_search
+{
+   "query": {
+        "multi_match": {
+            "query":       "jumping rabbits",
+            "type":        "most_fields",
+            "fields":      [ "title^10", "title.std" ] 
+        }
+    }
+}
+----
+
+## Cross-fields Entity Search
+现在我们会面临一个通常的情况， `Cross-fields` 搜索。比如身份信息，例如我们有一个 `person` 对象，按如下方式索引：
+
+[source,js]
+----
+{
+    "firstname":  "Peter",
+    "lastname":   "Smith"
+}
+----
+
+或者一个 `address` 对象按如下方式索引：
+
+[source,js]
+----
+{
+    "street":   "5 Poland Street",
+    "city":     "London",
+    "country":  "United Kingdom",
+    "postcode": "W1V 3DG"
+}
+----
+
+这里看起来和先前介绍过的《多关键字搜索》有些类似，不过这里是不一样的。这里需要一个查询语句跨多个字段搜索。
+
+例如，搜索 _Perter Smith_ ，是要这两个字连在一起，然后再在字段中搜索。要保证两个字段是连起来的。此时如果使用 `dis_max/best_fields` 查询就是错误的方式了。
+
+### 笨方法
+如果我们要查一个地址，用笨方法就是用多个match去匹配所有拆开的地址字段。
+
+[source,js]
+----
+{
+  "query": {
+    "bool": {
+      "should": [
+        { "match": { "street":    "Poland Street W1V" }},
+        { "match": { "city":      "Poland Street W1V" }},
+        { "match": { "country":   "Poland Street W1V" }},
+        { "match": { "postcode":  "Poland Street W1V" }}
+      ]
+    }
+  }
+}
+----
+
+或者说，使用 `multi_match` 
+[source,js]
+----
+{
+  "query": {
+    "multi_match": {
+      "query":       "Poland Street W1V",
+      "type":        "most_fields",
+      "fields":      [ "street", "city", "country", "postcode" ]
+    }
+  }
+}
+----
+
+### most_fields的问题
+用 `most_fields` 方式来进行实体搜索会存在以下几个问题：
+1. `most_fields` 本身是匹配子句越高则其匹配度越高，它并不适合用于多个字段中找到最匹配的。
+2. 它不能使用 `operator` 或 `mininum_should_match` 来排除那些不是很相关的文档
+3. 每个字段中的词频率并不相同，而且会互相影响各自的最终得分。
+
+## 字段为中心的查询
+上面介绍的关于 `most_fields` 的3个问题在于它是以字段为中心，而非以词为中心。它是找到匹配的字段越多越好，而我们希望的是某个字段匹配的词越多越好。
+
+[NOTE]
+====
+`best_fields` 也是以字段为中心的，同样它也会面临上述的3个问题。
+====
+
+下面看下，这些问题是如何存在的，以及如何解决它们。
+
+### 问题1，多个字段中匹配相同的Word
+回想下 `most_fields` 是如何执行的，每个字段生成一个 `match` 查询，然后通过 `bool` 查询组合起来。
+
+可以通过 `validate-query` API来查看下：
+[source,js]
+----
+GET /_validate/query?explain
+{
+  "query": {
+    "multi_match": {
+      "query":   "Poland Street W1V",
+      "type":    "most_fields",
+      "fields":  [ "street", "city", "country", "postcode" ]
+    }
+  }
+}
+----
+产生的 `explanation` 如下：
+[source,js]
+----
+(street:poland   street:street   street:w1v)
+(city:poland     city:street     city:w1v)
+(country:poland  country:street  country:w1v)
+(postcode:poland postcode:street postcode:w1v)
+----
+
+这样的话，`poland` 同时在两个字段中存在的会比 `poland street` 在某一个字段中存在的评分要高。
+
+### 移除不太相关的数据
+在《控制精度》章节中，我们使用 `and` 或 `minimum_should_match` 参数来移除不太相关的结果。
+
+如果我们这样写，
+[source,js]
+----
+{
+    "query": {
+        "multi_match": {
+            "query":       "Poland Street W1V",
+            "type":        "most_fields",
+            "operator":    "and", // <1>
+            "fields":      [ "street", "city", "country", "postcode" ]
+        }
+    }
+}
+----
+<1> 所有的搜索词都必须出现
+
+[source,js]
+----
+(+street:poland   +street:street   +street:w1v)
+(+city:poland     +city:street     +city:w1v)
+(+country:poland  +country:street  +country:w1v)
+(+postcode:poland +postcode:street +postcode:w1v)
+----
+
+上面使用 `and` 操作符后，那么所有的词都必须在同一字段中出现，这就完全是错的了。
+
+### 问题3，词频
+
+评分默认的计算算法是 TF/IDF
+
+Term frequency::
+在某一文档的某一字段中，一个词出现的次数，次数越多，相关度越高。（The number times a term appears in a field in one specific document.）
+
+Inverse document frequency::
+在一个索引的所有文档的某一字段中，一个词出现的次数，次数越多，相关度越低（说明这个词越没用）。（The more often a term appears in a field in all documents in the index, the less relevant is that term.）
+
+当我们对多字段进行搜索时， TF/IDF 有时会算出一些奇怪的结果。
+
+例如搜索 “Peter Smith” 时，使用 `first_name` 和 `last_name` 字段。 “Peter” 是很常用的 first_name ，而 “smith” 是很常用的 last_name，这两个都会是低 IDF 得分。如果搜索 “Smith Williams” ，“Smith” 是非常罕见的 `first_name` ，所以就它会有一个高 IDF 得分。
+
+[source,js]
+----
+{
+    "query": {
+        "multi_match": {
+            "query":       "Peter Smith",
+            "type":        "most_fields",
+            "fields":      [ "*_name" ]
+        }
+    }
+}
+----
+这样以 `smith` 作为 first_name 字段的数据会比以 peter 作为 first_name 和 smith 作为 last_name的数据得分高。
+
+### 解决方案
+这个问题出现的原因是同一实体多字段搜索，其实我们可以通过添加一个 `fullname` 字段搞定这个问题。
+
+例如：
+[source,js]
+----
+{
+    "first_name":  "Peter",
+    "last_name":   "Smith",
+    "full_name":   "Peter Smith"
+}
+----
+虽然这个问题能解决，但是我们不希望有冗余的字段。在 _ES_ 中，我们提供了两种方式，一种是索引数据时，一种是搜索时搞定。
+
+## 自定义 _all 字段
+
+在先前，我们提到过 `_all` 字段会把其它的所有字段添加到一个大的 _String_ 字段中进行索引。将所有字段索引到一个字段中显得有些不够灵活，我们可以添加自定义的类似于 `_all` 的字段。
+
+_ES_ 中提供了 `copy_to` 参数
+[source,js]
+----
+PUT /my_index
+{
+    "mappings": {
+        "person": {
+            "properties": {
+                "first_name": {
+                    "type":     "string",
+                    "copy_to":  "full_name" // <1>
+                },
+                "last_name": {
+                    "type":     "string",
+                    "copy_to":  "full_name" // <1>
+                },
+                "full_name": {
+                    "type":     "string"
+                }
+            }
+        }
+    }
+}
+----
+<1> `first_name` 和 `last_name` 中的字段值都会复制到 `full_name` 字段中
+
+[WARNING]
+====
+`copy_to` 参数在 multi_field mapping 中不会起效，它只作用于 main field。
+
+因为 multi_fields 只是 main field 的一个其它索引方式，它并不包含源数据。
+
+[source,js]
+----
+PUT /my_index
+{
+    "mappings": {
+        "person": {
+            "properties": {
+                "first_name": {
+                    "type":     "string",
+                    "copy_to":  "full_name", // <1>
+                    "fields": {
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed" // <2>
+                        }
+                    }
+                },
+                "full_name": {
+                    "type":     "string"
+                }
+            }
+        }
+    }
+}
+----
+<1> `copy_to` 要放在 main field 中
+<2> `copy_to` 不能放在 multi_fields 中
+====
+
+## cross-fields Queries
+尽管自定义 `_all` 已经是个非常不错的解决方案。但是还是有搜索时的解决方案： `multi_match` 加 `cross_fields` 类型。 `cross_fields` 以词为中心，它把所有字段作为一个大字段，然后从中匹配搜索的词。
+
+为了查看词为中心与字段为中心的查询区别，查看 `explanation` 。
+
+[source,js]
+----
+GET /_validate/query?explain
+{
+    "query": {
+        "multi_match": {
+            "query":       "peter smith",
+            "type":        "most_fields",
+            "operator":    "and", // <1>
+            "fields":      [ "first_name", "last_name" ]
+        }
+    }
+}
+----
+<1> 所有词都是必须的
+
+`explanation` 如下：
+[source,js]
+----
+(+first_name:peter +first_name:smith)
+(+last_name:peter  +last_name:smith)
+----
+
+
+以词为中心的，则是这样的：
+[source,js]
+----
++(first_name:peter last_name:peter)
++(first_name:smith last_name:smith)
+----
+
+`cross_fields` 先将搜索关键字拆分为词，然后再将词与每个字段匹配。这种差异解决了上述提到的以字段为中心面临的问题。
+
+[source,js]
+----
+GET /_validate/query?explain
+{
+    "query": {
+        "multi_match": {
+            "query":       "peter smith",
+            "type":        "cross_fields", 1
+            "operator":    "and",
+            "fields":      [ "first_name", "last_name" ]
+        }
+    }
+}
+----
+
+它通过混合字段的 IDF 来解决词频。
+
+[source,js]
+----
++blended("peter", fields: [first_name, last_name])
++blended("smith", fields: [first_name, last_name])
+----
+换句话说，它查找 `smith` 这个词在 `first_name` 和 `last_name` 中的IDF,然后从中取较小的值作为两个字段的IDF。这也就意味着 `smith` 本身是一个常见的 `last_name` ，这里它也会作为一个常见的 `first_name`
+
+[NOTE]
+====
+为了使用 `cross_fields` 效果最佳，建议所有的需要跨字段查询的字段都使用相同的分析器。共用同一个分析器的字段会被组合成混合字段。
+
+如果你包含了一个使用其它分析器的字段，它将以 `best_fields` 的方式添加到查询中。例如，我们添加一个 `title` （不一样的分析器）， `explanation` 如下：
+
+[source,js]
+----
+(+title:peter +title:smith)
+(
+  +blended("peter", fields: [first_name, last_name])
+  +blended("smith", fields: [first_name, last_name])
+)
+----
+====
+
+### 单独字段加权
+`cross_fields` 不同于自定义的 `_all` 字段，它可以查询时单独为字段加权。 
+
+[source,js]
+----
+GET /books/_search
+{
+    "query": {
+        "multi_match": {
+            "query":       "peter smith",
+            "type":        "cross_fields",
+            "fields":      [ "title^2", "description" ] 
+        }
+    }
+}
+----
+

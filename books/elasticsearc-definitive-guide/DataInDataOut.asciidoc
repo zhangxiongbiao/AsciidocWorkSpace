@@ -1,0 +1,722 @@
+= Data In Data Out
+:imagesdir: images
+
+存储在 _ES_ 中的数据，其每一个字段都是默认被索引化的，而且拥有专用的倒排索引。
+
+== What's a document?
+
+大多数 _entry_ 或 _object_ 都可以被序列化为 _JSON Object_ 。 _key_ 通常对应一个 _field_ ，而 _value_ 则可以为一个 _string_ 、 _number_ 、 _Boolean_ 、 或其它的对象及数组等。
+
+在 _ES_ 中，通常一个 _Json Object_ 对应为一个 _document_ ，但是它们还是有区别的。 _document_ 指拥有一个唯一ID，且是被序列化为 _JSON Object_ 的根对象。
+
+== Document Metadata
+一个文档不仅仅由数据组成，它还需要一些元数据。
+
+_index:: document所在的索引
+
+_type:: document的类型（class)
+
+_id:: document的唯一ID
+
+=== _index
+_index_ 类似于关系型数据库中的一个 _database_ ，用于存放索引数据。
+
+[TIP]
+====
+_index_ 只是逻辑上的一个命名空间，用于组织一到多个 _shard_ 。应用程序不直接跟 _shard_ 打交道，而只会跟 _index_ 交互。
+====
+
+_index_ 的命名，必须小写，不能以下划线开头，不能有分号。
+
+=== _type
+_type_ 类似于 _java_ 中的 _class_ ，或者说类似于数据库中的表。它用于描述有着相同数据结构的一组文档的类型。
+
+_type_ 的命名，可以小写或大写，但是不能以下划线开头，也不能包含分号。
+
+=== _id
+_id_ 用于在 _type_ 中唯一定位一个文档，类似于数据库中的 _rowid_ 。索引文档时，可以自己指定 _id_ 或者让 _ES_ 自动生成一个全局唯一的 _id_ 。
+
+==  Indexing a Document
+
+=== Using Our Own Id
+
+.指定自定义 _id_ 格式
+[source,js]
+----
+PUT /{index}/{type}/{id}
+{
+  "field": "value",
+  ...
+}
+----
+
+=== Autogenerating IDs
+使用 _POST_ 动作，而且省略 _id_ 即可让 _ES_ 自动生成ID。
+
+[source,js]
+----
+POST /{index}/{type}
+{
+  "field": "value",
+  ...
+}
+----
+
+=== Retrieving a Document
+
+[source,js]
+----
+GET /website/blog/123?pretty
+----
+
+=== Retrieving Part of a Document
+如果希望限制返回的列信息，则可以按如下操作。
+
+[source,js]
+----
+GET /website/blog/123?_source=title,text
+----
+
+如果不希望显示返回的元数据信息，则可以如下操作。
+
+[source,js]
+----
+GET /website/blog/123/_source
+----
+
+== Checking Whether a Document Exists
+
+如果你并不需要文档内容，只是检查下文档是否存在。可以使用 _curl_ ，只返回 _head_ 即可测试文档是否存在。
+
+[source,js]
+----
+C:\Users\zxb>curl -I http://localhost:9200/website/blogs/123
+HTTP/1.1 200 OK
+Content-Type: text/plain; charset=UTF-8
+Content-Length: 0
+----
+
+不存在时，将返回 _404_
+
+[source,js]
+----
+C:\Users\zxb>curl -I http://localhost:9200/website/blogs/1234
+HTTP/1.1 404 Not Found
+Content-Type: text/plain; charset=UTF-8
+Content-Length: 0
+----
+
+
+== Updating a Whole Document
+
+在 _ES_ 中， *document 是不可改变的* 。 所以如果需要更新一个 _document_ ，我们是将该文档给删除，然后再重建。
+
+[source,js]
+----
+PUT /website/blog/123 // <1>
+{
+  "title": "My first blog entry",
+  "text":  "I am starting to get the hang of this...",
+  "date":  "2014/01/02"
+}
+----
+<1> 使用 _PUT_ 覆盖刚才创建的 _document_
+
+[source,js]
+----
+{
+  "_index" :   "website",
+  "_type" :    "blog",
+  "_id" :      "123",
+  "_version" : 2, // <1>
+  "created":   false  // <2>
+}
+----
+<1> 版本号变为2了
+<2> _created_ 为 _false_
+
+[TIP]
+====
+_ES_ 内部是将旧的文档标记为 _deleted_ 状态，然后添加新的文档。当然， _ES_ 是不会立即删除旧的文档，不过你也不可以访问到该文档。 当你插入更多的数据时， _ES_ 会在后台任务中删除。
+====
+
+== Creating a New Document
+
+如果只希望在文档不存在时才插入文档，那么就需要用到如下的语法。
+
+[source,js]
+----
+PUT /website/blogs/123?op_type=create // <1>
+{
+   "title": "My first blog entry",
+   "text": "I am starting to get the hang of this...",
+   "date": "2014/01/02"
+}
+----
+<1> 指定 op_type 为 _create_ ，如果文档已经存在，它将会报错
+
+或者如下语法
+[source,js]
+----
+PUT /website/blog/123/_create
+{ ... }
+----
+
+
+[source,json]
+----
+{
+   "error": {
+      "root_cause": [
+         {
+            "type": "document_already_exists_exception",
+            "reason": "[blogs][123]: document already exists",
+            "shard": "0",
+            "index": "website"
+         }
+      ],
+      "type": "document_already_exists_exception",
+      "reason": "[blogs][123]: document already exists",
+      "shard": "0",
+      "index": "website"
+   },
+   "status": 409
+}
+----
+
+== Deleting a Document
+
+.delete语法
+[source,js]
+----
+DELETE /website/blog/123
+----
+
+如果文档存在，那么将返回一个 200
+
+[source,json]
+----
+{
+   "found": true,
+   "_index": "website",
+   "_type": "blogs",
+   "_id": "123",
+   "_version": 4,
+   "_shards": {
+      "total": 2,
+      "successful": 2,
+      "failed": 0
+   }
+}
+----
+
+
+如果文档不存在，那么将返回一个 404
+[source,json]
+----
+{
+   "found": false,
+   "_index": "website",
+   "_type": "blogs",
+   "_id": "123",
+   "_version": 5,  // <1>
+   "_shards": {
+      "total": 2,
+      "successful": 2,
+      "failed": 0
+   }
+}
+----
+<1> 注意，哪怕没有找到，它的版本号也会增加
+
+== Dealing with Conflicts
+
+.没有并发控制的情况
+image::elas_0301.png[]
+
+Pessimistic concurrency control::
+悲观锁控制，一般数据库中经常使用。这种方法是假设冲突经常发生，所以数据库中就直接将资源锁住以防发生冲突。一般就是在操作资源前将资源锁住，然后确定只有一个线程能对数据进行操作。
+
+Optimistic concurrency control::
+乐观锁控制， _ES_ 中使用。这种方法是假设冲突并不频繁发生，而且它也并不会提前锁住资源。 _ES_ 中使用一个 _version number_ ，每次操作该 _version number_ 都会增加，如果执行修改后的 _version number_ 不等于期望的 _ES_ 中的该行数据的 _version number_ ,则该次修改将被忽略，且返回错误给用户。 用户只需要再执行一次修改操作就可以了。
+
+== Optimistic Concurrency Control
+_ES_ 是分布式的。当 _documents_ 被创建、修改、删除时，这个新版本号的文档会被替换到集群中的其它节点。 _ES_ 也是异步和并发的，也就是说这个新文档是并行地替换到其它节点。 _ES_ 需要保证旧版本的修改永远不会覆盖新版本的文档。
+
+_ES_ 是通过文档的 _version_ 来确保修改能被正确的应用到文档上。
+
+=== 示例
+先创建一个文档
+[source,js]
+----
+PUT /website/blogs/2/_create
+{
+    "title":"My second blog entry",
+    "text":"Just trying this out..."
+}
+----
+
+此时版本号为1
+[source,json]
+----
+{
+   "_index": "website",
+   "_type": "blogs",
+   "_id": "2",
+   "_version": 1,
+   "_shards": {
+      "total": 2,
+      "successful": 2,
+      "failed": 0
+   },
+   "created": true
+}
+----
+
+程序其实一般是先取得文档，此时版本号为1
+[source,js]
+----
+GET /website/blogs/2
+----
+
+[source,json]
+----
+{
+   "_index": "website",
+   "_type": "blogs",
+   "_id": "2",
+   "_version": 1,
+   "found": true,
+   "_source": {
+      "title": "My second blog entry",
+      "text": "Just trying this out..."
+   }
+}
+----
+
+然后再做修改，且希望修改时文档的版本号为1，此时修改成功了，版本号为2。
+[source,js]
+----
+PUT /website/blogs/2?version=1
+{
+    "title":"My second blog entry",
+    "text":"Starting to get the hang of this..."
+}
+----
+
+[source,js]
+----
+{
+   "_index": "website",
+   "_type": "blogs",
+   "_id": "2",
+   "_version": 2,
+   "_shards": {
+      "total": 2,
+      "successful": 2,
+      "failed": 0
+   },
+   "created": false
+}
+----
+
+如果再执行刚才的 _PUT_ 请求，希望版本号为1，那么就会希望409错误。
+
+[source,js]
+----
+PUT /website/blogs/2?version=1
+{
+    "title":"My second blog entry",
+    "text":"Starting to get the hang of this..."
+}
+----
+
+[source,json]
+----
+{
+   "error": {
+      "root_cause": [
+         {
+            "type": "version_conflict_engine_exception",
+            "reason": "[blogs][2]: version conflict, current [2], provided [1]",
+            "shard": "2",
+            "index": "website"
+         }
+      ],
+      "type": "version_conflict_engine_exception",
+      "reason": "[blogs][2]: version conflict, current [2], provided [1]",
+      "shard": "2",
+      "index": "website"
+   },
+   "status": 409
+}
+----
+
+== Using Versions from an External System
+一个通用的应用场景是其它数据库作为数据的存储，将数据 _copy_ 到 _ES_ 中并使用 _ES_ 负责使数据可以被搜索。这种情况也就是说所有的对数据库的修改都需要即时 _copy_ 到 _ES_ 中，这时就会出现上述说到的并发问题了。
+
+此时如果数据库中已经有对应的 _verion number_ ，例如库表中的 _timestamp_ 。此时在 _ES_ 中可以通过设置 version_type=external 来使用外部的 _version number_ 。
+
+[TIP]
+====
+_version number_ 必须大于0且小于 9.2e+8 。 _Java_ 中的Long型值（正数）
+====
+
+使用外部 _version number_ 时，与 _ES_ 默认的 _verison number_ 稍有不同。外部 _version number_ 是判断文档当前的版本号是否比修改操作指定的版本号小，如果小则可修改，否则出错。
+
+
+[source,js]
+----
+PUT /website/blog/2?version=5&version_type=external
+{
+  "title": "My first external blog entry",
+  "text":  "Starting to get the hang of this..."
+}
+
+响应
+{
+  "_index":   "website",
+  "_type":    "blog",
+  "_id":      "2",
+  "_version": 5,
+  "created":  true
+}
+----
+
+现在执行修改操作
+[source,js]
+----
+PUT /website/blog/2?version=10&version_type=external
+{
+  "title": "My first external blog entry",
+  "text":  "This is a piece of cake..."
+}
+
+响应，此时版本号变为10了
+{
+  "_index":   "website",
+  "_type":    "blog",
+  "_id":      "2",
+  "_version": 10,
+  "created":  false
+}
+----
+
+如果此次再执行这个请求（版本为10），就会报错了。
+
+== Partial Updates to Documents
+局部更新文档。更新文档包括 _retrieve_ 、 _change_ 、 _reindex_ 三个步骤。因为 _ES_ 中的文档是不可变的，所以 _UPDATE_ api 也是这三个步骤，只不过它是在 _shard_ 内部完成的，此时就不需要从客户端发多次请求来完成这个操作。
+
+示例
+[source,js]
+----
+POST /website/blogs/2/_update
+{
+    "doc":{
+        "tags": ["testing"],
+        "views":0
+    }
+}
+----
+
+[source,json]
+----
+{
+   "_index": "website",
+   "_type": "blogs",
+   "_id": "2",
+   "_version": 3,
+   "_shards": {
+      "total": 2,
+      "successful": 2,
+      "failed": 0
+   }
+}
+----
+
+修改后，此时文档为
+[source,json]
+----
+{
+   "_index": "website",
+   "_type": "blogs",
+   "_id": "2",
+   "_version": 3,
+   "found": true,
+   "_source": {
+      "title": "My second blog entry",
+      "text": "Starting to get the hang of this...",
+      "views": 0,
+      "tags": [
+         "testing"
+      ]
+   }
+}
+----
+
+=== Using Scripts to Make Partial Updates
+使用脚本局部更新文档。
+在使用 _Update Api_ 时可以使用脚本更新 _source 中的内容，在脚本中使用 `ctx._source`引用。
+
+.示例，更新views的次数
+[source,js]
+----
+POST /website/blogs/2/_update
+{
+    "script":"ctx._source.views+=1"
+}
+----
+
+.示例，更新数组字段中的元素
+[source,js]
+----
+POST /website/blog/1/_update
+{
+   "script" : "ctx._source.tags+=new_tag",
+   "params" : {
+      "new_tag" : "search"
+   }
+}
+----
+
+.示例，根据元素内容删除文档
+[source,js]
+----
+POST /website/blog/1/_update
+{
+   "script" : "ctx.op = ctx._source.views == count ? 'delete' : 'none'",
+    "params" : {
+        "count": 1
+    }
+}
+----
+
+=== Updating a Document That May Not Yet Exist
+插入更新，文档不存在则插入，存在的话就更新。
+
+.示例，插入更新
+[source,js]
+----
+POST /website/blogs/3/_update
+{
+    "doc":{ // <1>
+        "views":3
+    },
+    "upsert":{ // <2>
+        "title":"My third blog entry",
+        "text":"String to get the hang of this...",
+        "views":1,
+        "tags":["test"]
+    }
+}
+----
+<1> 文档存在时，则使用 _doc_ 中的内容进行更新
+<2> 如果文档不存在，则使用 _upsert_ 中的内容插入
+
+[source,js]
+----
+POST /website/blogs/3/_update
+{
+   "script" : "ctx._source.views+=1", // <1>
+   "upsert": { // <2>
+       "views": 1
+   }
+}
+----
+<1> 文档存在时，使用 _script_ 中的内容进行更新
+<2> 文档不存在时，使用 _upsert_ 中的内容插入
+
+=== Updates and Conflicts
+Update文档时会执行 _retrieve_ 、 _change_ 、 _reindex_ 操作。而 _Update_ 操作在没有指定 _version number_ 时，是默认会以 _retrieve_ 回来的文档的 _version number_ 作为插入时的 _version number_ 的。所以如果 _version number_ 不对， _Update_ 操作会失败。
+
+> 使用 retry_on_conflict 参数可以控制更新失败后的重试次数
+
+[source,js]
+----
+POST /website/pageviews/1/_update?retry_on_conflict=5
+{
+   "script" : "ctx._source.views+=1",
+   "upsert": {
+       "views": 0
+   }
+}
+----
+
+== Retrieving Multiple Documents
+当需要 _retrieve_ 多个文档时，可以使用 _mget_ 来减少网络传输，避免发多个 _request_ 请求。
+
+_mget_ 需要一个 _docs_ 数组，每一个 _doc_ 中的内容都需要 _index 、 _type 、 _id 来指定你需要 retrieve 的元素。
+
+
+.同时取多个文档
+[source,js]
+----
+GET /_mget
+{
+    "docs":[
+        {
+            "_index":"website",
+            "_type":"blogs",
+            "_id":"2"
+        },
+        {
+            "_index":"website",
+            "_type":"blogs",
+            "_id":"3"
+        }
+    ]
+}
+----
+
+响应信息：
+[source,json]
+----
+{
+   "docs": [
+      {
+         "_index": "website",
+         "_type": "blogs",
+         "_id": "2",
+         "_version": 5,
+         "found": true,
+         "_source": {
+            "title": "My second blog entry",
+            "text": "Starting to get the hang of this...",
+            "views": 2,
+            "tags": [
+               "testing"
+            ]
+         }
+      },
+      {
+         "_index": "website",
+         "_type": "blogs",
+         "_id": "3",
+         "_version": 2,
+         "found": true,
+         "_source": {
+            "title": "My third blog entry",
+            "text": "String to get the hang of this...",
+            "views": 3,
+            "tags": [
+               "test"
+            ]
+         }
+      }
+   ]
+}
+----
+
+如果多个请求是同一个 index、type 下，那么可以在请求地址中指定默认的index与type。
+
+[source,js]
+----
+GET /website/blogs/_mget
+{
+    "docs":[
+        {"_id":"2"},{"_id":"3"}
+    ]
+}
+----
+
+楼上的情况还可以使用 _ids_ 来取文档
+
+[source,js]
+----
+GET /website/blogs/_mget
+{
+    "ids" : [ "2", "4" ]
+}
+----
+
+响应信息:
+[source,json]
+----
+{
+   "docs": [
+      {
+         "_index": "website",
+         "_type": "blogs",
+         "_id": "2",
+         "_version": 5,
+         "found": true,
+         "_source": {
+            "title": "My second blog entry",
+            "text": "Starting to get the hang of this...",
+            "views": 2,
+            "tags": [
+               "testing"
+            ]
+         }
+      },
+      {
+         "_index": "website",
+         "_type": "blogs",
+         "_id": "4",
+         "found": false  // <1>
+      }
+   ]
+}
+----
+<1> 注意，这里有一个 _found_ 为 _false_ 的
+
+[TIP]
+====
+此处使用 _mget_ 时，如果有个别文档找不到时， _mget_ 这个请求的响应 _CODE_ 仍旧是200，因为 _mget_ 确实执行成功了。所以此处如果需要判断文档是否存在时，使用 _found_ 来判断。
+====
+
+== Cheaper in Bulk
+同 _mget_ 来同时 _get_ 多个文档类似， _bulk_ 则可以同时执行多个 _create_ 、 _index_ 、 _update_ 、 _delete_ 操作。这个在批量插入数据时非常有用。
+
+.bulk语法
+[source,js]
+----
+{ action: { metadata }}\n
+{ request body        }\n
+{ action: { metadata }}\n
+{ request body        }\n // <1> <2>
+...
+----
+<1> 注意，每一行都必须以换行（\n）结尾
+<2> 再一点这些内容中不能包含未转义的换行（\n）,这也就是说JSON内容的格式是不能被格式化的，应该不包含换行的。
+
+示例
+[source,js]
+----
+POST /_bulk
+{ "delete": { "_index": "website", "_type": "blog", "_id": "123" }}
+{ "create": { "_index": "website", "_type": "blog", "_id": "123" }}
+{ "title":    "My first blog post" }
+{ "index":  { "_index": "website", "_type": "blog" }}
+{ "title":    "My second blog post" }
+{ "update": { "_index": "website", "_type": "blog", "_id": "123", "_retry_on_conflict" : 3} }
+{ "doc" : {"title" : "My updated blog post"} }
+----
+
+[TIP]
+====
+_bulk_ 中的每一个请求都是分开的，其中的任何一个请求都是独立的。所以 _bulk_ 请求不能实现事务，因为某一个请求失败不会影响到其它请求。
+====
+
+===  Don’t Repeat Yourself
+如果你使用 _bulk_ 写的数据都是相同的 _index_ 、 _type_ 的话，那么将默认的 _index_ 、 _type_ 写在地址中。如下：
+
+[source,js]
+----
+POST /website/_bulk
+{ "index": { "_type": "log" }}
+{ "event": "User logged in" }
+----
+
+不过仍然可以在各自的请求中覆盖默认的索引与类型设置
+[source,js]
+----
+POST /website/log/_bulk
+{ "index": {}}
+{ "event": "User logged in" }
+{ "index": { "_type": "blog" }}
+{ "title": "Overriding the default type" }
+----
+
+=== How Big Is Too Big?
+建议的 _bulk size_ 为5-15M

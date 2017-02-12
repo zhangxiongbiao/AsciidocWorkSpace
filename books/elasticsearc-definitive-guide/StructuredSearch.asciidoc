@@ -1,0 +1,991 @@
+= 结构化查询
+:imagesdir: images
+
+_结构化搜索_ 是指查询包含内部结构的数据。日期，时间，和数字都是结构化的：它们有明确的格式给你执行逻辑操作。一般包括比较数字或日期的范围，或确定两个值哪个大。
+
+文本也可以被结构化。一包蜡笔有不同的颜色：`红色`，`绿色`，`蓝色`。一篇博客可能被打上 `分布式` 和 `搜索`的标签。电子商务产品有商品统一代码（UPCs） 或其他有着严格格式的标识。
+
+通过结构化搜索，你的查询结果_始终_是 是或非；是否应该属于集合。结构化搜索不关心文档的相关性或分数，它只是简单的包含或排除文档。
+
+这必须是有意义的逻辑，一个数字不能比同一个范围中的其他数字 _更多_。它只能包含在一个范围中 —— 或不在其中。类似的，对于结构化文本，一个值必须相等或不等。这里没有 _更匹配_ 的概念。
+
+== 精确值查询
+对于精确值查询，你应该使用过滤查询。过滤查询最重要的在于它非常快。它不会计算相关度评分，而且还会缓存。记住，请尽可能多地使用过滤查询。
+
+=== 对数字类型的词查询
+首先介绍词查询是因为你会经常使用它，词查询可以处理数字、boolean、日期和文本类型等。
+
+
+首先，添加一些数据，每行数据包含 `price`　和 `productID`
+
+[source,js]
+----
+POST /my_store/products/_bulk
+{ "index": { "_id": 1 }}
+{ "price" : 10, "productID" : "XHDK-A-1293-#fJ3" }
+{ "index": { "_id": 2 }}
+{ "price" : 20, "productID" : "KDKE-B-9947-#kL5" }
+{ "index": { "_id": 3 }}
+{ "price" : 30, "productID" : "JODL-X-1937-#pV7" }
+{ "index": { "_id": 4 }}
+{ "price" : 30, "productID" : "QQPX-R-3956-#aD8" }
+----
+
+现在我们希望根据指定的 `price` 来查找所有等于该 `price` 的文档，如果用 `SQL` 表示的话，就是：
+
+[source,sql]
+----
+select documents
+from   products
+where
+  price = 20
+----
+
+在 _ES Query DSL_ 中，可以使用 _term query_ 来达到相同的目的。 _term query_ 用于查找精确的词，如下：
+
+[source,js]
+----
+{
+    "term" : {
+        "price" : 20
+    }
+}
+----
+
+在上面的这种情况下，我们只需要精确匹配到值就行了，并不关心匹配到的文档与词之前的匹配度。此时我们可以使用过滤查询，例如使用 `constant-score` 查询（不计匹配度的查询）。
+
+[source,js]
+----
+GET /my_store/_search
+{
+    "query":{
+        "constant_score":{  // <1>
+            "filter":{
+                "term":{"price":20} // <2>
+            }
+        }
+    }
+}
+----
+
+<1> 使用 `constant_score` 进入过滤查询模式
+<2> 词查询
+
+
+响应结果：
+[source,js]
+----
+"hits": [
+         {
+            "_index": "my_store",
+            "_type": "products",
+            "_id": "2",
+            "_score": 1, // <1>
+            "_source": {
+               "price": 20,
+               "productID": "KDKE-B-9947-#kL5"
+            }
+         }
+      ]
+----
+<1> 此处并没有计算评分，由于 `constnt_score` 所有文档全部使用固定的评分 1　。查询放到 `filter` 中时将不计算评分。
+
+=== 对文本的词查询
+
+像我们在开头提到的，`term` 过滤器可以像匹配数字一样轻松的匹配字符串。让我们通过特定 UPC 标识码来找出产品，而不是通过价格。如果用 SQL 来实现，我们可能会使用下面的查询：
+
+```sql
+
+SELECT product
+
+FROM   products
+
+WHERE  productID = "XHDK-A-1293-#fJ3"
+
+```
+
+转到查询 DSL，我们用 `term` 过滤器来构造一个类似的查询：
+
+```json
+
+GET /my_store/products/_search
+
+{
+    "query" : {
+        "filtered" : {
+            "filter" : {
+                "term" : {
+                    "productID" : "XHDK-A-1293-#fJ3"
+                }
+            }
+        }
+    }
+}
+
+```
+
+有点出乎意料：我们没有得到任何结果值！为什么呢？问题不在于 `term` 查询；而在于数据被索引的方式。如果我们使用 `analyze` API，我们可以看到 UPC 被分解成短小的表征：
+
+```json
+
+GET /my_store/_analyze?field=productID
+
+XHDK-A-1293-#fJ3
+
+```
+
+```json
+
+{
+
+  "tokens" : [ {
+
+    "token" :        "xhdk",
+
+    "start_offset" : 0,
+
+    "end_offset" :   4,
+
+    "type" :         "<ALPHANUM>",
+
+    "position" :     1
+
+  }, {
+
+    "token" :        "a",
+
+    "start_offset" : 5,
+
+    "end_offset" :   6,
+
+    "type" :         "<ALPHANUM>",
+
+    "position" :     2
+
+  }, {
+
+    "token" :        "1293",
+
+    "start_offset" : 7,
+
+    "end_offset" :   11,
+
+    "type" :         "<NUM>",
+
+    "position" :     3
+
+  }, {
+
+    "token" :        "fj3",
+
+    "start_offset" : 13,
+
+    "end_offset" :   16,
+
+    "type" :         "<ALPHANUM>",
+
+    "position" :     4
+
+  } ]
+
+}
+
+```
+
+<!-- SENSE: 080_Structured_Search/05_Term_text.json -->
+
+这里有一些要点：
+
+* 我们得到了四个分开的标记，而不是一个完整的标记来表示 UPC。
+
+* 所有的字符都被转为了小写。
+
+* 我们失去了连字符和 `#` 符号。
+
+所以当我们用 `XHDK-A-1293-#fJ3` 来查找时，得不到任何结果，因为这个标记不在我们的倒排索引中。相反，那里有上面列出的四个标记。
+
+显然，在处理唯一标识码，或其他枚举值时，这不是我们想要的结果。
+
+为了避免这种情况发生，我们需要通过设置这个字段为 `not_analyzed` 来告诉 Elasticsearch 它包含一个准确值。我们曾在【自定义字段映射】中见过它。为了实现目标，我们要先删除旧索引（因为它包含了错误的映射），并创建一个正确映射的索引：
+
+```json
+
+DELETE /my_store <1>
+
+PUT /my_store <2>
+
+{
+
+    "mappings" : {
+
+        "products" : {
+
+            "properties" : {
+
+                "productID" : {
+
+                    "type" : "string",
+
+                    "index" : "not_analyzed" <3>
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+```
+
+<!-- SENSE: 080_Structured_Search/05_Term_text.json -->
+
+<1> 必须首先删除索引，因为我们不能修改已经存在的映射。
+
+<2> 删除后，我们可以用自定义的映射来创建它。
+
+<3> 这里我们明确表示不希望 `productID` 被分析。
+
+现在我们可以继续重新索引文档：
+
+```json
+
+POST /my_store/products/_bulk
+
+{ "index": { "_id": 1 }}
+
+{ "price" : 10, "productID" : "XHDK-A-1293-#fJ3" }
+
+{ "index": { "_id": 2 }}
+
+{ "price" : 20, "productID" : "KDKE-B-9947-#kL5" }
+
+{ "index": { "_id": 3 }}
+
+{ "price" : 30, "productID" : "JODL-X-1937-#pV7" }
+
+{ "index": { "_id": 4 }}
+
+{ "price" : 30, "productID" : "QQPX-R-3956-#aD8" }
+
+```
+
+<!-- SENSE: 080_Structured_Search/05_Term_text.json -->
+
+现在我们的 `term` 过滤器将按预期工作。让我们在新索引的数据上再试一次（注意，查询和过滤都没有修改，只是数据被重新映射了）。
+
+```json
+
+GET /my_store/products/_search
+
+{
+
+    "query" : {
+
+        "filtered" : {
+
+            "filter" : {
+
+                "term" : {
+
+                    "productID" : "XHDK-A-1293-#fJ3"
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+```
+
+<!-- SENSE: 080_Structured_Search/05_Term_text.json -->
+
+`productID` 字段没有经过分析，`term` 过滤器也没有执行分析，所以这条查询找到了准确匹配的值，如期返回了文档 1。
+
+#### 内部过滤操作
+
+Elasticsearch 在内部会通过一些操作来执行一次过滤：
+
+1. _查找匹配文档_。
++
+`term` 过滤器在倒排索引中查找词 `XHDK-A-1293-#fJ3`，然后返回包含那个词的文档列表。在这个例子中，只有文档 1 有我们想要的词。
+
+2. _创建bitset_
++
+然后过滤器将创建一个 **bitset**(一个由 1 和 0 组成的数组 —— 描述哪些文档包含这个词)。匹配的文档得到 `1` 字节，在我们的例子中，字节集将是 `[1,0,0,0]`，在ES内部，这被表示为 https://www.elastic.co/blog/frame-of-reference-and-roaring-bitmaps[roaring map]　，它可以有效地 _encode_ 为稀少和密集的 _sets_
+
+3. _遍历bitset(s)_
+每一次query都会产生一个 _bitsets_ ，ES会遍历 _bitsets_ 以便找到那些匹配 _filter_ 的文档。而遍历的顺序则是越稀少的 _bitset_ 越先遍历。（因为它排除了大部分的documents）
+
+4. _Increment the usage counter_
++
+_ES_ 会缓存 _non-scoring_ 查询以便快速访问，但是如果那些用的很少的查询都去缓存的话就显得很不明智了。因为倒排索引， _Non-scoring_　查询本身就已经很快了，所以我们需要缓存那些我们知道会重复使用的查询以免资源浪费。
++
+为了办到这一点， _ES_ 会基于每一个索引来做查询记录。如果一个查询在最近的 _256_ 次查询中被使用到了多少，那么它将被缓存在内存中。并且当 _bitsets_ 被缓存后，那些 _segments_ (段)上文档数少于 _10000_ 个的（或者文档数小于该index的总的docs数的3%）将不会缓存。因为这些小的段很快就会消失（被合并成大段），所以小段上去关联 _cache_ 则会造成资源浪费。
+
+
+尽管不是非常准确的一个说法，但是你还是尽可能从概念上理解 _non-scoring_ 查询的执行速度比 _scoring_ 查询的速度要快很多，因为它少了最耗时的相关度排序那一步骤。
+
+[NOTE]
+====
+尽可能地先考虑使用 _non-scoring_ 查询，再来考虑使用 _scoring_ 查询，这样你可以写出更高效的查询语句。
+====
+
+### 组合过滤查询
+上述两个例子中都是介绍的单个过滤查询的使用，然而在实际使用中，你可能需要过滤多个值或字段。比方说，你如何在 _ES_ 中处理这个 _SQL_ ：
+[source,sql]
+----
+SELECT product
+FROM   products
+WHERE  (price = 20 OR productID = "XHDK-A-1293-#fJ3")
+  AND  (price != 30)
+----
+
+在这种情况，你需要使用在 constant_score 中嵌套使用 _bool_ 查询，通过 _bool_ 可以连接多个子查询。
+
+#### bool 过滤查询
+_bool_ 查询可以由以下四部分组成：
+[source,js]
+----
+{
+   "bool" : {
+      "must" :     [],
+      "should" :   [],
+      "must_not" : [],
+      "filter":    []
+   }
+}
+----
+
+`must`::
+该条件下的子句需要 _must_ 匹配，也就是 _AND_
+
+`must_not`::
+该条件下的子句 must_not 匹配，也就是 _NOT_
+
+`should`::
+至少一个子句匹配，也就是 _OR_
+
+`filter`::
+子句必须匹配，但是使用filter模式，也就是 _Non-Scoring_ 查询
+
+在这次的 _bool_ 查询中，可以忽略它的 `filter` 子句，因为这里的 _bool_ 查询是嵌套在 `constant_score` 子句中，即已经是 _non-scoring_ 模式了，所以这里的 `filter` 子句可以不需要。
+
+[source,js]
+----
+GET /my_store/products/_search
+{
+   "query" : {
+      "constant_score" : { // <1>
+         "filter" : {
+            "bool" : {
+              "should" : [
+                 { "term" : {"price" : 20}}, // <2>
+                 { "term" : {"productID" : "XHDK-A-1293-#fJ3"}} // <2>
+              ],
+              "must_not" : {
+                 "term" : {"price" : 30} // <3>
+              }
+           }
+         }
+      }
+   }
+}
+----
+<1> 注意，这里还是需要使用 constant_score 查询加 _filter_ 来保证它是 non-scoring 模式。
+<2> 这里的两个 `term` 查询都在 _should_ 从句中，也就是说至少一个 `term` 需要匹配。
+<3> 如何有 _product_ 的 _price_ 为30，则会因为 `must_not` 从句排除掉。
+
+[NOTE]
+====
+放在 _constant-score_ 模式下的查询都是走的 _filter mode_
+====
+
+上面的查询的返回结果：
+[source,js]
+----
+"hits" : [
+    {
+        "_id" :     "1",
+        "_score" :  1.0,
+        "_source" : {
+          "price" :     10,
+          "productID" : "XHDK-A-1293-#fJ3" // <1>
+        }
+    },
+    {
+        "_id" :     "2",
+        "_score" :  1.0,
+        "_source" : {
+          "price" :     20, // <2>
+          "productID" : "KDKE-B-9947-#kL5"
+        }
+    }
+]
+----
+<1> 匹配 `productID = "XHDK-A-1293-#fJ3"` 的词查询
+<2> 匹配 `price = 20` 的词查询
+
+#### 内嵌的Boolean查询
+如果你需要更复杂的查询，可以使用 _bool_ 嵌套查询。
+
+例如，如果有以下 _SQL_ 语句示例：
+[source,js]
+----
+SELECT document
+FROM   products
+WHERE  productID      = "KDKE-B-9947-#kL5"
+  OR (     productID = "JODL-X-1937-#pV7"
+       AND price     = 30 )
+----
+
+我们可以将它转换为一组内嵌的 _bool_ 过滤查询
+
+[source,js]
+----
+GET /my_store/products/_search
+{
+   "query" : {
+      "constant_score" : {
+         "filter" : {
+            "bool" : {
+              "should" : [
+                { "term" : {"productID" : "KDKE-B-9947-#kL5"}}, //<1>
+                { "bool" : { //<1>
+                  "must" : [
+                    { "term" : {"productID" : "JODL-X-1937-#pV7"}}, //<2>
+                    { "term" : {"price" : 30}} //<2>
+                  ]
+                }}
+              ]
+           }
+         }
+      }
+   }
+}
+----
+<1> 这里的 _term_ 查询与 _bool_ 查询是兄弟节点并同属于 _should_ 子句下。这里表示至少其中一个匹配。
+<2> 这里的两个 _term_ 查询同属于 _must_ 子句下，所以是必须匹配。
+
+上面的查询示例，结果如下：
+[source,js]
+----
+"hits" : [
+    {
+        "_id" :     "2",
+        "_score" :  1.0,
+        "_source" : {
+          "price" :     20,
+          "productID" : "KDKE-B-9947-#kL5" // <1>
+        }
+    },
+    {
+        "_id" :     "3",
+        "_score" :  1.0,
+        "_source" : {
+          "price" :      30, // <2>
+          "productID" : "JODL-X-1937-#pV7" // <2>
+        }
+    }
+]
+----
+<1> `productID`　匹配了第一个 _bool_ 中的 _term_ 查询
+<2> 这两个匹配到了内嵌的 _bool_ 查询中的 _term_ 查询
+
+这里只是一个简单的例子，但是它证明了 _bool_ 查询是如何组装成复杂的查询的。
+
+### 多值精确查询（IN 查询）
+`term`　查询适合单值的精确匹配，但是如果要多值做精确匹配呢。
+
+此时可以不需要使用多个 _term_ 查询组合，直接使用　_terms_ 查询就可以搞定。
+
+[source,js]
+----
+{
+    "terms" : {
+        "price" : [20, 30]
+    }
+}
+----
+
+跟普通的 `term` 查询一样，我们把 `terms` 查询放到 `constant-score` 查询做 `Non-Scoring` 查询。
+[source,js]
+----
+GET /my_store/products/_search
+{
+    "query" : {
+        "constant_score" : {
+            "filter" : {
+                "terms" : { // <1>
+                    "price" : [20, 30]
+                }
+            }
+        }
+    }
+}
+----
+<1> 同上面的 _terms_ 查询一样，只是放到了 `constant-score` 中。
+
+上述查询返回结果：
+[source,js]
+----
+"hits" : [
+    {
+        "_id" :    "2",
+        "_score" : 1.0,
+        "_source" : {
+          "price" :     20,
+          "productID" : "KDKE-B-9947-#kL5"
+        }
+    },
+    {
+        "_id" :    "3",
+        "_score" : 1.0,
+        "_source" : {
+          "price" :     30,
+          "productID" : "JODL-X-1937-#pV7"
+        }
+    },
+    {
+        "_id":     "4",
+        "_score":  1.0,
+        "_source": {
+           "price":     30,
+           "productID": "QQPX-R-3956-#aD8"
+        }
+     }
+]
+----
+
+#### 包含，但是不是精确的等于
+这里需要注意的是， `term` 与 `terms` 查询都不是精确的匹配，而是包含。这是什么意思呢？
+如果你有一个这样的 _term query_ ： `{ "term" : { "tags" : "search" } }` ，那么它将匹配下面的两个文档：
+[source,js]
+----
+{ "tags" : ["search"] }
+{ "tags" : ["search", "open_source"] } // <1>
+----
+<1> 这个文档也会被返回，尽管它并不是完全匹配 _search_ 的。
+
+
+回忆下 `term` 查询是如何工作的：
+
+1. 检索出倒排索引中包含该词的所有文档
+2. 构造出一个 _bitset_
+
+现在我们有如何的一个倒排索引：
+
+|===
+|Token| DocsID
+|**open_source**|`2`
+|**search**|`1`,`2`
+|===
+
+当执行了 `search` 词查询时，它会通过对应的词找到它在倒排索引中关联的文档ID。如上面所描述的，关联的ＩＤ就是1和2，所以这两个都会被返回。
+
+[NOTE]
+====
+倒排索引的特性决定了实体属性的相等比较是非常难计算的。你不可能知道某一文档只包含你请求的词，它还可能包含其它的词。如果你要做到这点，你需要根据你请求的词找到匹配的文档，然后再依次遍历匹配的这些文档，看这些文档还有没有其它的词在这个字段上。
+
+你可以想象，这种操作是极其低效的。正是因为这个原因，所以 `term` 和 `terms` 查询都是包含而非精确的相等。
+====
+
+#### 精确相等
+如果你一定需要字段值是完全精确相等匹配的话，你可以通过添加一个新的字段来达到这个目的。在这个新的字段中，以你的原字段所包含的词个数作为值存储。
+
+在上述的例子中，我们添加新的字段 *tag_count*
+
+[source,js]
+----
+{ "tags" : ["search"], "tag_count" : 1 }
+{ "tags" : ["search", "open_source"], "tag_count" : 2 }
+----
+
+此时，可以再来多加一个 *tag_count* 作为条件来匹配
+[source,js]
+----
+GET /my_index/my_type/_search
+{
+    "query": {
+        "constant_score" : {
+            "filter" : {
+                 "bool" : {
+                    "must" : [
+                        { "term" : { "tags" : "search" } }, // <1>
+                        { "term" : { "tag_count" : 1 } } // <2>
+                    ]
+                }
+            }
+        }
+    }
+}
+----
+<1> 查找所有包含词 `search` 的文档
+<2> 并且只包含1个词
+
+现在这个匹配就达到了上述所希望的精确匹配了。
+
+### Ranges（范围查询）
+在本章讨论数字的查询时，我们大多介绍的是数字精确匹配查询。实际应用中，数字范围匹配也用地非常多。例如，你需要查找价格在$20到$40之间的产品。
+
+在 `SQL` 查询中，可能是这样的：
+[source,js]
+----
+SELECT document
+FROM   products
+WHERE  price BETWEEN 20 AND 40
+----
+
+_Elasticsearch_ 有一个 `Range` 查询，毫无疑问，就是用于范围匹配文档的。
+[source,js]
+----
+"range" : {
+    "price" : {
+        "gte" : 20,
+        "lte" : 40
+    }
+}
+----
+
+`Range` 查询支持以下几种匹配符：
+
+* `gt` : `>` 大于
+* `lt` : `<` 小于
+* `gte` : `>=` 大于等于
+* `lte` : `<=` 小于等于
+
+查询示例：
+[source,js]
+----
+GET /my_store/products/_search
+{
+    "query" : {
+        "constant_score" : {
+            "filter" : {
+                "range" : {
+                    "price" : {
+                        "gte" : 20,
+                        "lt"  : 40
+                    }
+                }
+            }
+        }
+    }
+}
+----
+
+#### Date类型的范围查询
+`Range` 查询也可以被用于日期查询上。
+[source,js]
+----
+"range" : {
+    "timestamp" : {
+        "gt" : "2014-01-01 00:00:00",
+        "lt" : "2014-01-07 00:00:00"
+    }
+}
+----
+
+当 `Range` 查询用于 `date` 类型的字段上时，可以使用 _date math_ 操作。例如，根据时间戳字段查询最近一小时的文档。
+[source,js]
+----
+"range" : {
+    "timestamp" : {
+        "gt" : "now-1h"
+    }
+}
+----
+
+_date math_ 也可以用于具体的某一个日期值上，不过不像与 _now_ 使用一样，它需要使用 `||` 将日期与 _date math_ 表达式拼接起来。
+[source,js]
+----
+"range" : {
+    "timestamp" : {
+        "gt" : "2014-01-01 00:00:00",
+        "lt" : "2014-01-01 00:00:00||+1M" // <1>
+    }
+}
+----
+<1> 早于（2014-01-01加1个月）
+
+查看 https://www.elastic.co/guide/en/elasticsearch/reference/master/mapping-date-format.html[date format reference documentation] 以了解更多关于 _date math_ 相关知识。
+
+#### 字符串上使用Range查询
+`Range` 查询也可以用在字符串类型字段上，字符串类型的比较则是基于字典顺序或字典顺序进行比较。
+
+例如，下面就是根据字典顺序排序。
+* 5, 50, 6, B, C, a, ab, abb, abc, b
+
+[TIP]
+====
+倒排索引中的词是按照字段顺序存储的，这也是为什么字符串范围匹配会基于字典顺序。
+====
+
+如果需要查询以a开头，但是不包含b，则可以如下查询：
+[source,js]
+----
+"range" : {
+    "title" : {
+        "gte" : "a",
+        "lt" :  "b"
+    }
+}
+----
+
+.注意基数大小
+****
+数字与日期类型的存储方式都非常便于范围查询，但是字符串类型则不是这样。
+
+要在字符串类型的字段上执行一个范围查询， _Elasticsearch_ 需要执行一个 `term` 过滤以匹配每一个文档，这通常比数字与日期类型的范围查询慢得多。
+
+当字段的基数小时（唯一的词数量较少，重复的词数量大），字符中类型的范围查询也还好。但是该字段上唯一的词越多，字符范围查询效率就越低。
+****
+
+### 空值查询
+**如果一个字段没有值，那么它在倒排索引中又是如何存储的呢？**
+
+这个问题的答案上，根本就不存储。回顾先前的例子中提到的倒排索引：
+
+|===
+|Token| DocIDs
+|`open_source`|2
+|`search`|1,2
+|===
+
+如果这个字段没有值，也就说明它没有词，那你又如何存储在倒排索引上呢？不过有时数据就是这样，有这种空值的情况。
+
+_Elasticsearch_ 提供了一些空值的查询。
+
+#### exist查询
+`exist` 查询，它用于匹配在指定字段下有值的那些文档。
+
+准备一些测试数据：
+[source,js]
+----
+POST /my_index/posts/_bulk
+{ "index": { "_id": "1"              }}
+{ "tags" : ["search"]                }  // <1>
+{ "index": { "_id": "2"              }}
+{ "tags" : ["search", "open_source"] }  // <2>
+{ "index": { "_id": "3"              }}
+{ "other_field" : "some data"        }  // <3>
+{ "index": { "_id": "4"              }}
+{ "tags" : null                      }  // <4>
+{ "index": { "_id": "5"              }}
+{ "tags" : ["search", null]          }  // <5>
+----
+<1> tags字段只有1个值
+<2> tags字段有2个值
+<3> 没有tags字段
+<4> tags字段显示的设置了一个null
+<5> tags字段有1个值和一个null
+
+最终 `tags` 字段上的倒排索引将是这样的：
+
+|===
+|Token|DocIDs
+|`open_source`|2
+|`search`|1,2,5
+|===
+
+在 `SQL` 中，可以使用 `IS NOT NULL` 来查看某字段值存在的数据。
+[source,sql]
+----
+SELECT tags
+FROM   posts
+WHERE  tags IS NOT NULL
+----
+
+在 `Elasticsearch`　中，将使用 _exists_　查询。
+[source,js]
+----
+GET /my_index/posts/_search
+{
+    "query" : {
+        "constant_score" : {
+            "filter" : {
+                "exists" : { "field" : "tags" }
+            }
+        }
+    }
+}
+----
+
+最终将返回 _3_ 个文档。
+[source,js]
+----
+"hits" : [
+    {
+      "_id" :     "1",
+      "_score" :  1.0,
+      "_source" : { "tags" : ["search"] }
+    },
+    {
+      "_id" :     "5",
+      "_score" :  1.0,
+      "_source" : { "tags" : ["search", null] } // <1>
+    },
+    {
+      "_id" :     "2",
+      "_score" :  1.0,
+      "_source" : { "tags" : ["search", "open source"] }
+    }
+]
+----
+<1> 尽管文档5上的tags字段包含一个null值，但是它还有一个 `search` 值啊，并且这个 `search` 是存在倒排索引上的。
+
+#### missing查询
+`missing` 查询相当于 `exists` 查询的反义词。它返回在指定字段上没有值的文档。
+
+`SQL` 中的查询是这样的。
+[source,sql]
+----
+SELECT tags
+FROM   posts
+WHERE  tags IS NULL
+----
+
+`Elasticsearch` 中的查询是这样的。
+[source,js]
+----
+GET /my_index/posts/_search
+{
+    "query" : {
+        "constant_score" : {
+            "filter": {
+                "missing" : { "field" : "tags" }
+            }
+        }
+    }
+}
+----
+
+返回结果。
+[source,js]
+----
+"hits" : [
+    {
+      "_id" :     "3",
+      "_score" :  1.0,
+      "_source" : { "other_field" : "some data" }
+    },
+    {
+      "_id" :     "4",
+      "_score" :  1.0,
+      "_source" : { "tags" : null }
+    }
+]
+----
+
+.什么时候NULL才是NULL
+****
+有时候你需要区分一个字段是真的没值呢还是显式的设置了一个null值。此时可以在 _mapping_ 中指定一个 `null_value` 值，该值在碰到 _null_ 值时将使用设置的 `null_value` 替换掉null值。
+****
+
+#### exists/missing on Objects
+`exists` 和 `missing` 查询也可以用在 `inner objects` 上。
+
+例如，有如下一个文档：
+[source,js]
+----
+{
+   "name" : {
+      "first" : "John",
+      "last" :  "Smith"
+   }
+}
+----
+
+这时，你可以使用 `exists` 检查 `name.first` ， `name.last` 及 `name` 是否存在。
+
+在《类型与映射》章节提到过，object映射最终会在 _lucene_ 中被扁平化，如：
+[source,js]
+----
+{
+   "name.first" : "John",
+   "name.last"  : "Smith"
+}
+----
+
+此时在 `name` 是执行 `exists` 或 `missing` 查询。
+[source,js]
+----
+{
+    "exists" : { "field" : "name" }
+}
+----
+
+在 _ES_ 内部，是转换成如下查询的。
+[source,js]
+----
+{
+    "bool": {
+        "should": [
+            { "exists": { "field": "name.first" }},
+            { "exists": { "field": "name.last" }}
+        ]
+    }
+}
+----
+
+### 关于缓存
+在先前的《内部过滤操作》中，我们提到过 `non-scroing` 查询是如何计算的。它的核心是使用 _bitset_ 表示那些哪些文档被 _filter_ 命中。当 _Elasticsearch_ 决定了一个文档将来可能被重用时，它会缓存这个 _bitset_ 。一旦缓存了 _bitset_ ，当同样的查询来时，将重用这些缓存的 _bitset_ 。
+
+这些缓存是非常聪明的，它会随着你增加新文档而更新。当你添加了新的文档时，它只需将那些匹配 _filter_ 的新的文档添加到缓存的 _bitset_ 中。
+
+#### 独立的查询缓存
+一个搜索请求中的每一个查询组件对应的 _bitset_ 都是互相独立的。这也就意味着，一旦一个查询组件对应的 _bitset_ 缓存了，这个查询组件可以用于其它的搜索请求中，查询组件是不依赖于包围它的上下文查询。这些缓存将加速你的所有搜索请求中的某一部分。　**注意，缓存的是搜索请求中的某一个query component**
+
+同样的，一个搜索请求中某一个查询组件的 _bitset_ 被缓存后，它可以被其它查询组件复用。
+
+下面看一个查询示例：
+
+* In the inbox and have not been read
+* Not in the inbox but have been marked as important
+
+
+[source,js]
+----
+GET /inbox/emails/_search
+{
+  "query": {
+      "constant_score": {
+          "filter": {
+              "bool": {
+                 "should": [
+                    { "bool": {
+                          "must": [
+                             { "term": { "folder": "inbox" }}, // <1>
+                             { "term": { "read": false }}
+                          ]
+                    }},
+                    { "bool": {
+                          "must_not": {
+                             "term": { "folder": "inbox" } // <1>
+                          },
+                          "must": {
+                             "term": { "important": true }
+                          }
+                    }}
+                 ]
+              }
+            }
+        }
+    }
+}
+----
+<1> 这两个查询组件是独立的，但是它们会共用一个 _bitset_
+
+
+#### 自动缓存
+在早期的 _ES_ 版本中，默认的行为是缓存所有可以缓存的东西。
+
+现在的 _ES_ 版本中，将自动根据查询组件的使用频率来缓存。如果一个 _non-scoring_ 查询在最近的256次查询中出现过多次，那么这个查询将被作为侯选的缓存对象。但是，不是所有的段都会缓存到 _bitset_ 中，只有持有docs数量大于 _10000_ （或该索引总的docs数的3%）才会缓存 _bitset_　，因为小的段本身是可以被快速检索的而且小的段很快被会合并到大段中，也就是说没必要缓存小的段。
+
+_bitset_ 一旦被缓存后，它将一直存活直至被驱逐出去。缓存逐出算法是基于 LRU （least recently used） 的，当缓存空间满时，那些最近使用次数最少的缓存对象将会被逐出。

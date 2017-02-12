@@ -1,0 +1,78 @@
+= Life inside a cluster
+:imagesdir: images
+
+== An Empty Cluster
+
+.A cluster with one empty node
+image::elas_0201.png[]
+
+节点是一个运行的ES实例，而集群则由一到多个节点组成（节点需要有相同的cluster.name）。
+
+集群中会有一个节点被推选为 _master_ 节点。 _master_ 节点负责 *集群级别* 的管理工作，如 创建、删除索引，添加、移除节点。 _master_ 节点不负责文档级别的修改或搜索，所以只有一个 _master_ 节点并不会成为集群的瓶颈。
+
+[TIP]
+====
+任何节点都可以成为 _master_ 节点
+====
+
+对于 _client_ 而言，我们可以与集群中的任何节点进行通讯（包括主节点）。每一个节点都知道需要搜索的文档在哪个节点上，也都可以把请求转发到对应的节点上。 _client_ 请求的那个节点将 *负责请求的转发以及收集响应的结果数据* 并最终返回给 _client_ 。
+
+== Cluster Health
+
+在ES中许多统计都可以被监控，但是最重要的莫过于 _Cluster Health_ 。 _Cluster Health_ 将以绿、黄、红三种颜色显示集群的健康程度。
+
+[source,js]
+----
+GET /_cluster/health
+----
+
+.响应
+[source,js]
+----
+{
+   "cluster_name": "hbgay",
+   "status": "yellow",
+   "timed_out": false,
+   "number_of_nodes": 1,
+   "number_of_data_nodes": 1,
+   "active_primary_shards": 10,
+   "active_shards": 10,
+   "relocating_shards": 0,
+   "initializing_shards": 0,
+   "unassigned_shards": 10,
+   "delayed_unassigned_shards": 0,
+   "number_of_pending_tasks": 0,
+   "number_of_in_flight_fetch": 0,
+   "task_max_waiting_in_queue_millis": 0,
+   "active_shards_percent_as_number": 50
+}
+----
+
+
+green::
+所有的主、备分片都被激活了
+yellow::
+所有的主分片激活了，但是备份分片未激活
+red::
+有主分片未激活，或者说主分片丢失了
+
+== Add an Index
+往ES中存储数据时，我们需要一个 _index_ 用于来存储数据。实际上 _index_ 只是一个逻辑上的命名，它实际上是由多个物理上的 _shard_ 组成。
+
+一个 _shard_ 是一个低级别的工作单元，它用于存储一个 _index_ 中所有数据的 *一部分* 。 _shard_ 是一单个 _Lucene_ 实例，并且是一个完整的搜索引擎。我们的数据都是存储在 _shard_ 中的，然而我们的程序却不直接跟 _shard_ 交互，而是跟 _index_ 交互。
+
+_shards_ 正是ES分布式的关键。ES将 _shards_ 分布在各个节点上来实现负载平衡。
+
+一个 _shard_ 可以是主分片或备份分片。每一个doc（每一条数据）在 _index_ 中都只属于一个主分片，所以主分片的数量就直接决定了你的 _index_ 能存储的数据的最大量。
+
+[TIP]
+====
+一个主分片理论上是可以存储 *Integer.MAX_VALUE* - 128 条数据的，然而实际上可以存储的数据量取决于你的硬件、数据的大小及复杂程度、索引与搜索的方式，还有你期望的搜索响应时间。
+====
+
+一个备份分片则实际上是主分片的一个拷贝。备份分片主要用于提供数据的冗余以避免磁盘挂掉，而且备份分片可以服务那些读的请求（搜索或检索文档）。
+
+
+主分片的数量在索引创建时就指定了且不可以更改，而备份的份数则可以随时更改。默认情况下，建立一个索引时会分5个主分片。
+
+== Add Failover

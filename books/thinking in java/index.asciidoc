@@ -33,3 +33,5 @@ include::String.asciidoc[]
 include::RegularExpression.asciidoc[]
 
 include::TypeInformation.asciidoc[]
+
+include::Generic.asciidoc[]

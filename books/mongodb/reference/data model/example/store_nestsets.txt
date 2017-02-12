@@ -1,0 +1,37 @@
+一个文档对应一个树节点，但是在文档中还记录该树节点的左右位置，然后根据该左右位置范围查询其子节点。
+
+
+-----------------------1  Books      12---------------------------
+-----------------------2  Programing 11---------------------------
+--3 Languages 4-------------------------5 Databases 10------------
+-----------------------------6 MongoDB 7-----------8 dbm 9--------
+
+
+1. 插入测试数据
+
+db.categories.insert( { _id: "Books", parent: 0, left: 1, right: 12 } )
+db.categories.insert( { _id: "Programming", parent: "Books", left: 2, right: 11 } )
+db.categories.insert( { _id: "Languages", parent: "Programming", left: 3, right: 4 } )
+db.categories.insert( { _id: "Databases", parent: "Programming", left: 5, right: 10 } )
+db.categories.insert( { _id: "MongoDB", parent: "Databases", left: 6, right: 7 } )
+db.categories.insert( { _id: "dbm", parent: "Databases", left: 8, right: 9 } )
+
+
+2.	查找Databases的子节点
+
+2.1 先查找Databases这个节点
+
+	var databaseCategory = db.categories.findOne( { _id: "Databases" } );
+
+2.2	根据Databases节点再去找其子节点
+
+	db.categories.find( { left: { $gt: databaseCategory.left }, right: { $lt: databaseCategory.right } } );
+
+
+优点：
+	能很快速地查找出该树节点下的所有子树。
+
+缺点：
+	对树的任何修改都会影响相关节点的left和right值，不适合频繁修改的树节点。
+
+对于静态树，不经常修改的树挺合适的。	

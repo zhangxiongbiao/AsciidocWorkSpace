@@ -1,0 +1,20 @@
+1. 插入数据
+
+	db.categories.insert( { _id: "MongoDB", parent: "Databases" } );
+	db.categories.insert( { _id: "dbm", parent: "Databases" } );
+	db.categories.insert( { _id: "Databases", parent: "Programming" } );
+	db.categories.insert( { _id: "Languages", parent: "Programming" } );
+	db.categories.insert( { _id: "Programming", parent: "Books" } );
+	db.categories.insert( { _id: "Books", parent: null } );
+
+2. 查找一条并打印其parent属性	
+
+	db.categories.findOne( { _id: "MongoDB" } ).parent；
+
+3. 为parent属性创建索引
+
+	db.categories.createIndex({parent: 1});
+
+4. 根据parent属性查询数据
+
+	db.categories.find({ parent: "Databases" })；

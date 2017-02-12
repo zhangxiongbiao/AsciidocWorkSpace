@@ -1,0 +1,84 @@
+= 客户端集成
+:imagesdir: images
+:toc:
+
+== 添加依赖
+
+[source,xml]
+----
+<dependency>
+	<groupId>com.dameng.dmga</groupId>
+	<artifactId>dmga-cat-monitor</artifactId>
+	<version>3.0.1-SNAPSHOT</version>
+</dependency>
+----
+
+== 添加app.properties
+image::app.png[]
+
+
+== web.xml下添加filter
+
+[source,xml]
+----
+  <filter>
+    <filter-name>cat-filter</filter-name>
+    <filter-class>com.dianping.cat.servlet.CatFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>cat-filter</filter-name>
+    <url-pattern>*.do</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+  </filter-mapping>
+----
+
+[NOTE]
+====
+该过滤器可以放置在SetCurrentRequestFilter之后
+====
+
+== 修改log4j配置
+添加如下Appender
+[source,xml]
+----
+<appender name="catAppender" class="com.dianping.cat.log4j.CatAppender"></appender>
+
+<!-- 整体默认为WARN级别  -->
+<root>
+    <level value="WARN" />
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="LOGFILE" />
+    <appender-ref ref="ERRORLOGFILE" />
+    <appender-ref ref="catAppender"/>
+</root>
+----
+
+如下图所示：
+:image:log4j.png[]
+
+== 本机添加client.xml
+1. 目录地址
++
+client.xml保存的路径地址为 `/data/appdatas/cat/client.xml`。
++
+但是在Windows系统环境下，则为所在tomcat所在盘目录下的data目录。
++
+.例如
+====
+ tomcat所在目录： D:/java/apache-tomcat-6.0.34
+ client.xml目录：D:/data/appdatas/cat/client.xml
+====
+
+2. 编辑client.xml
+[source,xml]
+----
+<?xml version="1.0" encoding="utf-8"?>
+
+<config mode="client" xmlns:xsi="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="config.xsd">
+	<servers>
+		<server ip="10.72.39.163" port="2280" http-port="18080" /> // <1>
+	</servers>
+</config>
+----
+<1> ip，port为cat server的ip及port，另外http-port也是cat server所在tomcat的http-port

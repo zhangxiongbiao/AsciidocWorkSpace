@@ -1,0 +1,25 @@
+将所有上级节点的_id以数组存储，父节点在数组中的顺序从顶到下存放的。同时为了方便查找最近的父节点，使用parent存储。
+
+1. 插入测试数据
+
+	db.categories.insert( { _id: "MongoDB", ancestors: [ "Books", "Programming", "Databases" ], parent: "Databases" } )
+	db.categories.insert( { _id: "dbm", ancestors: [ "Books", "Programming", "Databases" ], parent: "Databases" } )
+	db.categories.insert( { _id: "Databases", ancestors: [ "Books", "Programming" ], parent: "Programming" } )
+	db.categories.insert( { _id: "Languages", ancestors: [ "Books", "Programming" ], parent: "Programming" } )
+	db.categories.insert( { _id: "Programming", ancestors: [ "Books" ], parent: "Books" } )
+	db.categories.insert( { _id: "Books", ancestors: [ ], parent: null } )
+
+2.	查找上级节点
+	
+	db.categories.findOne( { _id: "MongoDB" } ).ancestors	
+
+3.	创建索引
+	
+	db.categories.createIndex({ancestores:1}, {background:true, name:"IDX_ANCESTORES"});
+
+4.	根据父节点查找
+
+	db.categories.find( { ancestors: "Programming" } );	
+
+
+这种做法的好处就是可以快速访问父节点。

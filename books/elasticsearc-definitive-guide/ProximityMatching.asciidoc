@@ -1,0 +1,526 @@
+= 近似匹配
+
+标准的全文检索使用 TF/IDF 处理文档， `match` 查询则告诉我们某一字段是否包含我们要搜索的词，但是它无法告诉我们词之间的关系。
+
+
+== Phrase 匹配
+
+`match` 查询不是直接看是否匹配词，不会去理会词之间的顺序。而 `match_phrase_query` 则不仅要匹配词，还要保证词之间的顺序是正确的。
+
+[source,js]
+----
+GET /my_index/my_type/_search
+{
+    "query": {
+        "match_phrase": {
+            "title": "quick brown fox"
+        }
+    }
+}
+----
+
+同 `match` 查询类似， `match_phrase` 查询先去对搜索关键字进行分词，然后找到匹配的文档，但是匹配的文档要保证词的顺序。
+
+[NOTE]
+====
+`match_phrase` 查询也可以重写为 `match` 查询（ `phrase` 类型）
+
+[source,js]
+----
+"match": {
+    "title": {
+        "query": "quick brown fox",
+        "type":  "phrase"
+    }
+}
+----
+====
+
+### Term Positions
+当一个字符串被分词后，分析器不仅仅返回一组词，还会每个词在原字符串中的position，order
+
+[source,js]
+----
+GET /_analyze?analyzer=standard
+{
+    "text":"Quick brown fox"
+}
+----
+
+返回结果如下：
+
+[source,js]
+----
+{
+   "tokens": [
+      {
+         "token": "quick",
+         "start_offset": 0,
+         "end_offset": 5,
+         "type": "<ALPHANUM>",
+         "position": 1 // <1>
+      },
+      {
+         "token": "brown",
+         "start_offset": 6,
+         "end_offset": 11,
+         "type": "<ALPHANUM>",
+         "position": 2 // <1>
+      },
+      {
+         "token": "fox",
+         "start_offset": 12,
+         "end_offset": 15,
+         "type": "<ALPHANUM>",
+         "position": 3 // <1>
+      }
+   ]
+}
+----
+<1> 词在原字符串中的位置
+
+Positions 可以存储在倒排索引中，那些对词位置敏感的查询，如 `match_phrase` 就可以利用 _position_ 来匹配文档了。
+
+### 什么是 Phrase
+
+
+如果一个文档，现在来匹配这个短语“quick brown fox” ，那么这个文档必须满足下面的条件：
+* `quick` , `brown` , `fox` 必须出现在同一字段中
+* `brown` 的position值要比 `quick` 的大1
+* `fox` 的position值要比 `brown` 的大1
+
+[NOTE]
+====
+`match_phrase` 查询底层是使用 `span` 查询做位置匹配的。Span 查询是词级别的查询，所以它们没有分析阶段，它是直接查词的。
+
+幸运的是，大多数情况下根本就不需要使用 `span` 查询，因为通常情况下 `match_phrase` 查询已经足够了。不过一些特殊情况，如专利查询，使用这些低级别的字查询就比较合适了。
+====
+
+## 将 Phrase 查询与 词查询 混合
+
+需要完全的 Phrase 匹配显得有些严格。或许我们希望搜索 “quick brown fox” 时 “quick fox” 也能匹配到。
+
+此时可以通过参数 `slop` 搞定。
+
+[source,js]
+----
+GET /my_index/my_type/_search
+{
+    "query": {
+        "match_phrase": {
+            "title": {
+                    "query": "quick fox",
+                    "slop":  1
+            }
+        }
+    }
+}
+----
+
+`slop` 参数用于告诉 `match_phrase` 查询词之间可以允许隔多远。指的是允许词之间隔多少步或词移动到指定位置需要多少步。
+
+搜索关键字 `quick fox` 匹配文档 `quick brown fox` ，这时只需要 slop 1 步就ok了。
+
+[source,js]
+----
+            Pos 1         Pos 2         Pos 3
+-----------------------------------------------
+Doc:        quick         brown         fox
+-----------------------------------------------
+Query:      quick         fox
+Slop 1:     quick                 ↳     fox
+----
+
+如果我们用 `fox quick` 再去匹配上面文档，则需要3步。
+
+[source,js]
+----
+            Pos 1         Pos 2         Pos 3
+-----------------------------------------------
+Doc:        quick         brown         fox
+-----------------------------------------------
+Query:      fox           quick
+Slop 1:     fox|quick  ↵  // <1>
+Slop 2:     quick      ↳  fox
+Slop 3:     quick                 ↳     fox
+----
+<1> 注意，词quick移到fox那个位置需要1步，再把fox移到quick那个位置又需要1步
+
+## 多值字段
+如果你使用 Phrase 查询匹配多值字段。
+
+[source,js]
+----
+PUT /my_index/groups/1
+{
+    "names": [ "John Abraham", "Lincoln Smith"]
+}
+----
+
+然后执行下面的查询
+
+[source,js]
+----
+GET /my_index/groups/_search
+{
+    "query": {
+        "match_phrase": {
+            "names": "Abraham Lincoln"
+        }
+    }
+}
+----
+
+令人惊讶的是，文档匹配上了。
+
+当 `John Abraham` 被分析时，将产生如下词：
+
+* Position 1: `john`
+* Position 2: `abraham`
+
+然后 `Lincoln Smith` 被分析时，将产生如下词：
+
+* Position 3: `lincoln`
+* Position 4: `smith`
+
+注意，数组字段在Lucene中被扁平化了。
+
+这里有一个参数 `position_increment_gap` 来控制数组中的多值的 position 的增长因子。
+
+例如：
+[source,js]
+----
+PUT /my_index/_mapping/groups 2
+{
+    "properties": {
+        "names": {
+            "type":                "string",
+            "position_increment_gap": 100
+        }
+    }
+}
+----
+
+这时，数组中的两个值索引时经分析后如下。
+
+* Position 1: john
+* Position 2: abraham
+* Position 103: lincoln
+* Position 104: smith
+
+此时必须添加 `slop` 并设置值为100才能使用 `match_phrase` 匹配上。
+
+##  Closer Is Better
+Phrase Query 只是将不包含搜索短语的文档给排除掉，而 _proximity query_ （使用slop值大于0的 Phrase Query）
+
+## Proximity for Relevance
+
+尽管 proximity 查询非常有用，但是它如何做到先前提到过的如 3/4 匹配呢。
+
+此时可以使用 match 来匹配/排除文档，然后用 proximity 查询来增加评分。这里通过 most_fields 可以完成。
+
+[source,js]
+----
+GET /my_index/my_type/_search
+{
+  "query": {
+    "bool": {
+      "must": {
+        "match": { // <1>
+          "title": {
+            "query":                "quick brown fox",
+            "minimum_should_match": "30%"
+          }
+        }
+      },
+      "should": {
+        "match_phrase": { // <2>
+          "title": {
+            "query": "quick brown fox",
+            "slop":  50
+          }
+        }
+      }
+    }
+  }
+}
+----
+<1> `must` 子句包含/排除文档
+<2> `should` 子句增加评分
+
+## 提升性能
+Phrase 或 proximity 查询比 `match` 查询代价要大的得， `match` 查询只需要从倒排索引中匹配搜索的词就行了，而 `proxmity` 查询则还需要计算并比较词的位置。
+
+http://people.apache.org/~mikemccand/lucenebench/[Lucene nightly benchmarks] 上说一个普通的 `term` 查询速度是 phrase 查询的10倍，是 proximity query查询的20倍。当然，这些代价都是在搜索阶段，并非索引阶段。
+
+[NOTE]
+====
+通常情况下，这些额外的 `phrase query` 代价并不如上述报告提到的那么大。
+在某些情况下， phrase query 是非常昂贵的，一个典型的例子是 DNA 序列，它会有很多唯一的词并且在不同的位置，此时用较大的slop值将会产生大量的位置运算成本。
+====
+
+那如何降低 phrase 和 proximity 查询的代价呢，一个有效的方法就是减少 phrase query 需要处理的文档数。
+
+### Rescoring Results
+在上一章节提到，使用近似查询用于增加相关度评分，而非用于 include/exclude 文档，使用 match 查询来 include/exlude 文档。
+
+`match` 查询已经根据搜索关键字对匹配的文档进行了相关度评分排序了，但是我们可能还会需要通过额外的近似查询对 TOP N 结果文档进行重排序。
+
+`search` API 支持这种操作。
+
+[source,js]
+----
+GET /my_index/my_type/_search
+{
+    "query": {
+        "match": {  // <1>
+            "title": {
+                "query":                "quick brown fox",
+                "minimum_should_match": "30%"
+            }
+        }
+    },
+    "rescore": {
+        "window_size": 50, // <2>
+        "query": {         // <3>
+            "rescore_query": {
+                "match_phrase": {
+                    "title": {
+                        "query": "quick brown fox",
+                        "slop":  50
+                    }
+                }
+            }
+        }
+    }
+}
+----
+<1> `match` 查询决定了哪些文档需要 include/exclude
+<2> `window_size` 决定了 top N/每个分片 个结果文档需要重新评分并排序。
+<3>  rescore_query
+
+## 找到关联的words
+尽管 phrase 与 proximity 查询非常有用，但是它们还有缺点。那就是限制太多，所有的词必须按排序匹配，尽管可以使用 `slop` 。
+
+你通过 `slop` 带来的词匹配顺序上的弹性也是需要代价的，因为它失去了词之间的关联。
+
+当 words 连在一起时，它所表达的意思远比它们单独放在不同的地方所表达的意思有意义。如 _I’m not happy I’m working_ 和 _I’m happy I’m not working_ 的 words 完全一样，但是表达的意思却完全不一样。
+
+出于这种场景，我们可能不仅要将每个 word 作为词索引，还需要将每个 word 与它紧邻的 word 作为词索引。
+
+这些 word pairs(or bigrams) 被称为 _shingles_
+
+[NOTE]
+====
+Shingles 并不限制你必须使用2个word作为一个词，你也可以用3个word作为一个词。
+
+不过用3个作为词将增加大量的唯一的词，通常情况下，2个word作为一个词就已经足够了。
+====
+
+[TIP]
+====
+我们现在常碰到的姓名，完全可以这么做。按1个/2个/3个字作为一个词，这样就不需要对姓名作 phrase 查询了。（可能为大幅提高效率，这就是以空间换时间的做法了）
+====
+
+当然， _shingles_ 只有当用户输入的words与文档中的words顺序一致时才会有效。
+
+幸运的是，用户往往使用出现在他们搜索的数据相似的words结构来输入words搜索。但是这也是很重要的一点：我们不仅仅需要多字组合的词，单字的词我们也需要，通过使用多字的词来提升相关度评分。
+
+### 创建 Shingles
+Shingles 需要在索引时作为分析器的一部分创建。我们可以将单字和多字的词写到同一个字段，但是为了简洁考虑建议分成不同的字段来写。单字作为词的字段用于提供基本的搜索，而多字组成的词则用于增加相关度评分。
+
+首先，我们需要创建一个 `shingle` 的字过滤器。
+
+[source,js]
+----
+DELETE /my_index
+
+PUT /my_index
+{
+    "settings": {
+        "number_of_shards": 1,  // <1>
+        "analysis": {
+            "filter": {
+                "my_shingle_filter": {
+                    "type":             "shingle",
+                    "min_shingle_size": 2, // <2>
+                    "max_shingle_size": 2, // <2>
+                    "output_unigrams":  false   // <3>
+                }
+            },
+            "analyzer": {
+                "my_shingle_analyzer": {
+                    "type":             "custom",
+                    "tokenizer":        "standard",
+                    "filter": [
+                        "lowercase",
+                        "my_shingle_filter" // <4>
+                    ]
+                }
+            }
+        }
+    }
+}
+----
+<1> 避免数据量少时 Local IDF 计算导致的评分问题
+<2> 默认的  min/max shingle size 就是2，所以这里可以省略的。
+<3> `shingle` 词过滤器默认情况下是还会产生单字（词）的，这里因为单字与多字的要分开，所以我们不需要。
+<4> `my_shingle_analyzer` 使用上面自定义的 `my_shingles_filter` 词过滤器
+
+使用 `analyze` API 来测试一下
+[source,js]
+----
+GET /my_index/_analyze?analyzer=my_shingle_analyzer
+{
+   "text":"Sue ate the alligator"
+}
+----
+现在会得到下面3个词
+
+* `sue ate`
+* `ate the`
+* `the alligator`
+
+现在可以配置一个字段使用这个分析器了
+
+### Multifields
+上面我们说过将 单字 与多字的词分开，所以我们创建 title 字段的 multifield
+
+[source,js]
+----
+PUT /my_index/_mapping/my_type
+{
+    "my_type": {
+        "properties": {
+            "title": {
+                "type": "string",
+                "fields": {
+                    "shingles": {
+                        "type":     "string",
+                        "analyzer": "my_shingle_analyzer"
+                    }
+                }
+            }
+        }
+    }
+}
+----
+
+现在，创建一些测试数据
+
+[source,js]
+----
+POST /my_index/my_type/_bulk
+{ "index": { "_id": 1 }}
+{ "title": "Sue ate the alligator" }
+{ "index": { "_id": 2 }}
+{ "title": "The alligator ate Sue" }
+{ "index": { "_id": 3 }}
+{ "title": "Sue never goes anywhere without her alligator skin purse" }
+----
+
+### 搜索 Shingles
+
+[source,js]
+----
+GET /my_index/my_type/_search
+{
+   "query": {
+        "match": {
+           "title": "the hungry alligator ate sue"
+        }
+   }
+}
+----
+
+这里返回了所有的文档
+
+[source,js]
+----
+{
+  "hits": [
+     {
+        "_id": "1",
+        "_score": 0.44273707, // <1>
+        "_source": {
+           "title": "Sue ate the alligator"
+        }
+     },
+     {
+        "_id": "2",
+        "_score": 0.44273707, // <1>
+        "_source": {
+           "title": "The alligator ate Sue"
+        }
+     },
+     {
+        "_id": "3", // <2>
+        "_score": 0.046571054,
+        "_source": {
+           "title": "Sue never goes anywhere without her alligator skin purse"
+        }
+     }
+  ]
+}
+----
+<1> 包含the, alligator, ate这3个词的文档，它们的评分一样
+<2> 可以通过设置 `minimum_should_match` 来排除文档3
+
+现在添加 `shingles` 字段到该查询中。
+
+[source,js]
+----
+GET /my_index/my_type/_search
+{
+   "query": {
+      "bool": {
+         "must": {
+            "match": {
+               "title": "the hungry alligator ate sue"
+            }
+         },
+         "should": {
+            "match": {
+               "title.shingles": "the hungry alligator ate sue"
+            }
+         }
+      }
+   }
+}
+----
+此时返回结果如下
+[source,js]
+----
+{
+  "hits": [
+     {
+        "_id": "2",
+        "_score": 0.4883322,
+        "_source": {
+           "title": "The alligator ate Sue"
+        }
+     },
+     {
+        "_id": "1",
+        "_score": 0.13422975,
+        "_source": {
+           "title": "Sue ate the alligator"
+        }
+     },
+     {
+        "_id": "3",
+        "_score": 0.014119488,
+        "_source": {
+           "title": "Sue never goes anywhere without her alligator skin purse"
+        }
+     }
+  ]
+}
+----
+
+尽管搜索关键字中包含word `hungry` ，但是通过近似词匹配还是能返回最匹配的文档。
+
+### 性能
+shingles 相对于 phrase queries 不光更灵活，而且执行效率更高一些。它不像 phrase 查询是在每次查询时耗费时间，它是通过在索引时耗费一次时间就搞定了。
+
+在遇到这种情况时，要尽可能地在索引时能解决的，就不要放到search时解决。

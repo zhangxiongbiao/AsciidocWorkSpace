@@ -1,0 +1,269 @@
+= 结构化查询
+
+== 空搜索
+
+[source,js]
+----
+GET /_search
+{}
+----
+
+.A GET Request with a Body?
+****
+一般来说，GET请求是不会有请求体的。
+
+在 https://tools.ietf.org/html/rfc7231#page-24[RFC 7231] 中，并没有定义一个 _GET_ 请求包含请求体时是什么样的。而有些服务端支持 _GET_ 请求带请求体，有些则不支持。
+
+_ES_ 作者更喜欢使用 _GET_ 带请求体的方式，因为 _GET_ 这个动词比 _POST_ 更能说明这个检索的动作。不过 _GET_ 带请求体的方式并不通用，所以 search 操作也支持 _POST_ 请求。
+
+[source,java]
+----
+POST /_search
+{
+  "from": 30,
+  "size": 10
+}
+----
+****
+
+== Query DSL
+Query DSL 是 _ES_ 使用的一个强大的搜索语言，通过简单地 _JSON_ 格式来表示。
+
+[source,js]
+----
+GET /_search
+{
+    "query": {
+        "match": {
+            "tweet": "elasticsearch"
+        }
+    }
+}
+----
+
+可以使用 _bool_ 查询组合多个查询。
+
+[NOTE]
+====
+_bool_ 查询在 _2.x_ 版本中添加了 filter context
+====
+
+[source,json]
+----
+{
+    "bool": {
+        "must":     { "match": { "tweet": "elasticsearch" }},
+        "must_not": { "match": { "name":  "mary" }},
+        "should":   { "match": { "tweet": "full text" }},
+        "filter":   { "range": { "age" : { "gt" : 30 }} }
+    }
+}
+----
+
+_bool_ 查询中, _must_ 等后面，要么是一个 _json_ 对象，要么是一个 _json_ 数组。
+
+[source,json]
+----
+{
+    "bool": {
+        "must": { "match":   { "email": "business opportunity" }},
+        "should": [
+            { "match":       { "starred": true }},
+            { "bool": {
+                "must":      { "match": { "folder": "inbox" }},
+                "must_not":  { "match": { "spam": true }}
+            }}
+        ],
+        "minimum_should_match": 1
+    }
+}
+----
+
+== 查询 VS 过滤
+
+过滤查询现在移到了 _bool_ 查询的 _filter_ 中。
+
+
+查询与过滤的主要区别在于::
+
+. 查询时需要计算匹配相关度，而过滤时则不考虑这个
+. 查询时不会缓存结果，而过滤时会缓存结果
+
+
+何时使用查询或过滤::
+一般的全文检索需要计算匹配相关度的，即要按相关度排序的，那么就使用查询。其它的情况则全部使用过滤就行了。
+
+== 基本查询
+
+=== 匹配所有
+
+[source,js]
+----
+{ "match_all": {}}
+----
+
+=== 匹配查询
+匹配查询碰到需要分词的字段时，会分词后匹配。
+[source,js]
+----
+{ "match": { "tweet": "About Search" }}
+----
+
+=== 多字段匹配
+
+[source,js]
+----
+{
+    "multi_match": {
+        "query":    "full text search",
+        "fields":   [ "title", "body" ]
+    }
+}
+----
+
+=== 范围匹配
+
+[source,js]
+----
+{
+    "range": {
+        "age": {
+            "gte":  20,
+            "lt":   30
+        }
+    }
+}
+----
+
+[horizontal]
+gt::
+大于
+gte::
+大于等于
+lt::
+小于
+lte::
+小于等于
+
+=== 词查询
+词查询用于精确查询，词查询就是词与词的匹配。用于 _date_ 、 _numbers_ 、 _Booleans_ 及 *not_analyzed* 的 _string_ 字段。
+
+[source,js]
+----
+{ "term": { "age":    26           }}
+{ "term": { "date":   "2014-09-01" }}
+{ "term": { "public": true         }}
+{ "term": { "tag":    "full_text"  }}
+----
+
+=== 多词查询
+类似于词查询，不过它同时允许指定多个词进行匹配。
+
+[source,js]
+----
+{ "terms": { "tag": [ "search", "full_text", "nosql" ] }}
+----
+
+=== 存在与否查询
+类似于 _SQL_ 中的 is null 或 is not null
+
+[source,js]
+----
+{
+    "exists":   { // <1>
+        "field":    "title"
+    }
+}
+----
+<1> 不存在，用 missing
+
+在 _SQL_ 中就是
+[source,sql]
+----
+where title is not null
+----
+
+=== 常量（固定）分数查询
+并不常用，这个查询就是对所有的文档应用一个固定的匹配分数，默认为 _score=1。它经常用于执行一个过滤查询（因为不关心匹配度）。
+
+可以使用下面这个查询代替只有一个filter的 _bool_ 查询，两者性能是一样的，只是这种比较简洁。
+[source,js]
+----
+GET /_search
+{
+    "query":{
+        "constant_score":   {
+            "filter": {
+                "term": { "tweet": "really" }
+            }
+        }
+    }
+}
+----
+
+== 验证查询
+使用 _Query DSL_ 时，有时可能会写错。使用如下语法可以测试是否写错。
+
+[source,js]
+----
+GET /gb/tweet/_validate/query?explain
+{
+   "query": {
+      "tweet" : {
+         "match" : "really powerful"
+      }
+   }
+}
+----
+
+给出的验证结果：
+[source,js]
+----
+{
+   "valid": false,   // <1>
+   "_shards": {
+      "total": 1,
+      "successful": 1,
+      "failed": 0
+   },
+   "explanations": [
+      {
+         "index": "gb",
+         "valid": false,
+         "error": "org.elasticsearch.index.query.QueryParsingException: No query registered for [tweet]"  // <2>
+      }
+   ]
+}
+----
+<1> 验证结果为 _false_ ，即验证失败
+<2> 失败的原因
+
+[TIP]
+====
+上面写错了，是把 _match_ 和 _tweet_ 位置上写反了。
+====
+
+
+理解查询::
+通过在查询请求后面添加查询参数 _explain_ ，可以看出查询请求是如何被解析的。
+
+[source,js]
+----
+GET /_search?explain
+{
+   "query": {
+      "match": {
+         "tweet": "elasticsearch"
+      }
+   }
+}
+
+GET /_validate/query?explain
+{
+   "query": {
+      "match" : {
+         "tweet" : "really powerful"
+      }
+   }
+}
+----

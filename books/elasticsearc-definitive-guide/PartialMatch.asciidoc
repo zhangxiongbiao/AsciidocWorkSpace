@@ -1,0 +1,517 @@
+= 词的部分匹配
+
+如果你仔细观察的话，你会发现先前介绍的查询全部都是基于整个词来做的查询。词作为最小的单元，你只能通过匹配倒排索引上的词来匹配文档。
+
+但是当你想只匹配词的一部分而非整个时，怎么办？
+
+这种词部分匹配的需求，在全文搜索中是很少的。如果你有 _SQL_ 背景，你可能会写出这种SQL
+
+[source,sql]
+----
+WHERE text LIKE "%quick%"
+      AND text LIKE "%brown%"
+      AND text LIKE "%fox%" // <1>
+----
+<1> `*fox*` 会匹配 fox 和 foxes
+
+当然这种情况在 _ES_ 中完全可能通过 analyze 过程与倒排索引来索引词根来搞定，其实大多数情况下根本也就不需要词的部分匹配。
+
+不过，有些情况部分匹配非常有用。通常包括以下几种场景。
+
+* 如邮政编码、产品序列号匹配，或者 `not_analyzed` 字段值的前缀匹配，wildcard匹配，正则匹配。
+* search-as-you-type (displaying the most likely results before the user has finished typing the search terms)
+* Matching in languages like German or Dutch, which contain long compound words, like Weltgesundheitsorganisation (World Health Organization)
+
+## Postcodes and Structured Data
+
+添加 `not_analyzed` 字段
+
+[source,js]
+----
+PUT /my_index
+{
+    "mappings": {
+        "address": {
+            "properties": {
+                "postcode": {
+                    "type":  "string",
+                    "index": "not_analyzed"
+                }
+            }
+        }
+    }
+}
+----
+
+添加一些数据
+
+[source,js]
+----
+PUT /my_index/address/1
+{ "postcode": "W1V 3DG" }
+
+PUT /my_index/address/2
+{ "postcode": "W2F 8HW" }
+
+PUT /my_index/address/3
+{ "postcode": "W1F 7HW" }
+
+PUT /my_index/address/4
+{ "postcode": "WC1N 1LZ" }
+
+PUT /my_index/address/5
+{ "postcode": "SW5 0BE" }
+----
+
+## prefix 查询
+为了找到所有以 `W1` 开头的postcodes，可以执行以下的 `prefix` 查询
+
+[source,js]
+----
+GET /my_index/address/_search
+{
+    "query": {
+        "prefix": {
+            "postcode": "W1"
+        }
+    }
+}
+----
+
+`prefix` 查询是词级别的查询，它没有分词阶段。
+
+[NOTE]
+====
+默认情况下， `prefix` 也不会计算相关度评分。它只是找到匹配的文档，然后给一个 `1` 的评分。所以，它的行为更像一个 filter 而不是 query， `prefix` query 与 `prefix` filter 的唯一区别在于 filter 可以被缓存。
+====
+
+先前我们提到过“只能找到倒排索引中确实存在的词”，但是这里我们并没有在索引数据时做什么特殊处理，只是添加了 `not_analyzed` 字段数据。那 `prefix` 又是如何处理的呢？
+
+倒排索引如下：
+[source,js]
+----
+Term:          Doc IDs:
+-------------------------
+"SW5 0BE"    |  5
+"W1F 7HW"    |  3
+"W1V 3DG"    |  1
+"W2F 8HW"    |  2
+"WC1N 1LZ"   |  4
+-------------------------
+----
+
+`prefix` 查询步骤如下：
+
+1. 倒排索引中不是以 `W1` 开头的词跳过，找到以 `W1` 开头的词
+2. 记下匹配到的文档的ID
+3. 移到下一个词继续1-2的步骤，直到结束
+
+当然，这对于我们这里的例子自然是没有什么问题，但是如果以 `W1` 开头的词量很大呢。
+
+并且 `prefix` 查询的搜索关键字越短，需要在倒排索引中找到的词就越多。如果我们搜的是 `W` ，那么可能出来的结果比 `W1` 要多１０倍还多。
+
+[CAUTION]
+====
+`prefix` 查询适合一些特殊的匹配，但是必须要小心使用。在那些词量比较少的字段上使用没什么问题，但是如果该字段词量比较大的话，可能会影响整体的集群性能。使用长的前缀来减少需要访问的词量。
+====
+
+## wildcard与regex匹配
+`wildcard` 查询是低级别的，基于词的查询。它可以指定一个通配符来匹配词， `?` 表示匹配一个任意字符，而 `*` 表示匹配0到多个任意字符。
+
+下面这个查询会匹配 `W1F 7HW` 和 `W2F 8HW`
+
+[source,js]
+----
+GET /my_index/address/_search
+{
+    "query": {
+        "wildcard": {
+            "postcode": "W?F*HW" // <1>
+        }
+    }
+}
+----
+<1> `?` 匹配到了１和２，而 `*` 匹配到了空格及７和８
+
+而 `regexp` 匹配查询则提供了更复杂的匹配功能，当然，它也是基于词的。
+
+[source,js]
+----
+GET /my_index/address/_search
+{
+    "query": {
+        "regexp": {
+            "postcode": "W[0-9].+"
+        }
+    }
+}
+----
+
+`wildcard` 和 `regexp` 查询的步骤跟 `prefix` 类似。它们也会遍历倒排索引来找到匹配的词，然后根据匹配的词找到关联的文档ID。与 `prefix` 唯一的区别在于这两种查询支持更复杂的查询方式。
+
+同 `prefix` 一样，这两种查询也需要谨慎使用。在有大量唯一词的字段上使用这种查询可能会很浪费资源，而且要避免使用这种查询（通配符 `*foo` 及正则 `.*foo` ）
+
+[CAUTION]
+====
+`prefix` , `wildcard` , `regexp` 查询都是基于词的。如果你在一个 `analzyed` 字段上使用这几种查询，那们它会基于该字段分析后的词来匹配的。
+
+例如， `title` 字段，值 “Quick brown fox”，将产生如下几个词 `quick` , `brown` 及 `fox`
+
+下面的查询将会匹配
+[source,js]
+----
+{ "regexp": { "title": "br.*" }}
+----
+
+而下面的查询则不会匹配
+[source,js]
+----
+{ "regexp": { "title": "Qu.*" }} // <1>
+{ "regexp": { "title": "quick br*" }} // <2>
+----
+<1> 倒排索引中的词是 `quick` ，而非 `Quick`
+<2> `quick` 与 `brown` 是拆开的
+====
+
+## Query-Time Search-as-You-Type
+抛开邮政编码匹配不说，让我们先看下 _prefix_ 匹配。用户现在已经习惯了在完成它们的查询前就看到查询结果，这也被称为 _instant search_ 或者 _search-as-you-type_ 。这么做的目的不仅仅是让用户更快地看到查询结果，更多地是用于引导用户进行搜索（引导搜索存在于当前索引中的内容，而避免让用户输入当前索引中不存在的内容来搜索）。
+
+在搜索阶段，可以通过 `match_phrase_prefix` 达到类似的效果。
+
+[source,js]
+----
+{
+    "match_phrase_prefix" : {
+        "brand" : "johnnie walker bl"
+    }
+}
+----
+
+这个查询跟 `match_phrase` 查询类似，不过它把最后一个word当作了一个prefix.
+
+如果你通过 `validate-query` API 来执行上面的查询，将会产生如下的解释：
+[source,js]
+----
+"johnnie walker bl*"
+----
+
+同 `match_phrase` 查询一样，它也可以接受一个 `slop` 参数。
+
+[source,js]
+----
+{
+    "match_phrase_prefix" : {
+        "brand" : {
+            "query": "walker johnnie bl", 
+            "slop":  10
+        }
+    }
+}
+----
+
+然而，这里总是最后一个word被当作prefix
+
+在前面的章节中，我们提到过 `prefix` 查询是有风险的，而且可能会很耗资源。如果使用 `a` 作为prefix来匹配的话，可能会匹配到很多结果，此时可能通过设置 `max_expansions` 来控制最多匹配多少个。
+
+[source,js]
+----
+{
+    "match_phrase_prefix" : {
+        "brand" : {
+            "query":          "johnnie walker bl",
+            "max_expansions": 50
+        }
+    }
+}
+----
+
+`max_expansions` 参数用于控制有多少个词可以被匹配。这里它会匹配以 `bl` 开头的词，按拼写顺序取前50个。
+
+
+## 索引时优化
+上面提到的 `match_phrase_prefix` 是搜索时的解决方法，虽然这种方式很灵活，但是这里的问题就是会有搜索时的性能问题。
+
+如果在索引数据时就把数据提前做好了，就能极大地提升搜索的性能了。当然，这也是有代价的，那就是增加索引大小，并且略微降低索引速度。但是这种代价只会在索引时付出一次，而非在每次搜索时都付出代价。
+
+## Ngrams for Partial Matching
+
+先前说过，你只能找到那些在倒排索引中存在的词。尽管 `prefix` , `wildcard` , `regexp` 查询都说明这一说法并不严格。不过单个词的匹配查询远远比遍历倒排索引去找匹配的词要快地多。提前在索引数据时准备好局部匹配的词能极大地提升搜索性能。
+
+在索引阶段准备好数据用于局部匹配也就是说需要选择正确的 `analysis chain` ,我们用于局部匹配的工具称为 _n-gram_ 。
+
+_n-gram_ 可以理解为一个word中的移动窗口，其中 _n_ 表示长度。如果我们对词 `quick` 做 _n-gram_ ，那么词结果如下。
+
+* Length 1 (unigram): [ q, u, i, c, k ]
+* Length 2 (bigram): [ qu, ui, ic, ck ]
+* Length 3 (trigram): [ qui, uic, ick ]
+* Length 4 (four-gram): [ quic, uick ]
+* Length 5 (five-gram): [ quick ]
+
+普通的 _n-grams_ 用于匹配一个word非常有用，但是在 _search-as-you-type_ 中，我们使用一个特殊的 _n-grams_ ,称为 _edge n-grams_ ， _edge n-grams_ 以word的首字母开始。例如对 `quick` 做 _n-graming_
+
+* q
+* qu
+* qui
+* quic
+* quick
+
+你会发现这同用户输入 `quick` 时所用到的词一模一样。
+
+## Index-Time Search-as-You-Type
+设置索引时的 _search-as-you-type_ 的第一步是添加 analysis chain.
+
+### 准备index
+第一步是自定义一个 `edge_ngram` 词过滤器，这里将之命名为 `autocomplete_filter`
+
+[source,js]
+----
+{
+    "filter": {
+        "autocomplete_filter": {
+            "type":     "edge_ngram",
+            "min_gram": 1,
+            "max_gram": 20
+        }
+    }
+}
+----
+这个配置的意思是，该词过滤器将根据所接收到词，产生一个定位到word首字母的最小长度为1最大长度为20的n-gram
+
+然后再把这个token filter组装成一个自定义的analyzer
+
+[source,js]
+----
+{
+    "analyzer": {
+        "autocomplete": {
+            "type":      "custom",
+            "tokenizer": "standard",
+            "filter": [
+                "lowercase",
+                "autocomplete_filter" // <1>
+            ]
+        }
+    }
+}
+----
+<1> 引用我们自定义的autocomplete_filter
+
+
+完整的配置如下：
+[source,js]
+----
+PUT /my_index
+{
+    "settings": {
+        "number_of_shards": 1, 
+        "analysis": {
+            "filter": {
+                "autocomplete_filter": { 
+                    "type":     "edge_ngram",
+                    "min_gram": 1,
+                    "max_gram": 20
+                }
+            },
+            "analyzer": {
+                "autocomplete": {
+                    "type":      "custom",
+                    "tokenizer": "standard",
+                    "filter": [
+                        "lowercase",
+                        "autocomplete_filter" 
+                    ]
+                }
+            }
+        }
+    }
+}
+----
+
+使用 analyze API 测试一下
+[source,js]
+----
+GET /my_index/_analyze
+{
+  "analyzer": "autocomplete",
+  "text": "quick brown"
+}
+----
+
+返回结果如下，是正确的。
+
+* q
+* qu
+* qui
+* quic
+* quick
+* b
+* br
+* bro
+* brow
+* brown
+
+然后，将这个 analyzer 应用到字段上。
+
+[source,js]
+----
+PUT /my_index/_mapping/my_type
+{
+    "my_type": {
+        "properties": {
+            "name": {
+                "type":     "string",
+                "analyzer": "autocomplete"
+            }
+        }
+    }
+}
+----
+
+
+添加一些测试文档
+[source,js]
+----
+POST /my_index/my_type/_bulk
+{ "index": { "_id": 1            }}
+{ "name": "Brown foxes"    }
+{ "index": { "_id": 2            }}
+{ "name": "Yellow furballs" }
+----
+
+### 查询该字段
+
+[source,js]
+----
+GET /my_index/my_type/_search
+{
+    "query": {
+        "match": {
+            "name": "brown fo"
+        }
+    }
+}
+----
+
+2个文档都匹配上了，尽管 `Yello furballs` 即不包含 `brown` 或 `fo`
+
+[source,js]
+----
+{
+
+  "hits": [
+     {
+        "_id": "1",
+        "_score": 1.5753809,
+        "_source": {
+           "name": "Brown foxes"
+        }
+     },
+     {
+        "_id": "2",
+        "_score": 0.012520773,
+        "_source": {
+           "name": "Yellow furballs"
+        }
+     }
+  ]
+}
+----
+
+通过 `validation-query` API 可以看出是为什么
+
+[source,js]
+----
+GET /my_index/my_type/_validate/query?explain
+{
+    "query": {
+        "match": {
+            "name": "brown fo"
+        }
+    }
+}
+----
+
+[source,js]
+----
+name:b name:br name:bro name:brow name:brown name:f name:fo
+----
+
+不过这里我们希望在索引时使用 `autocomplete` analyzer 来按 edge-ngram 拆词，搜索时按 `standard` analyzer 分词，这样搜索时 `fo` 就需要完全匹配才行啊。
+
+[source,js]
+----
+GET /my_index/my_type/_search
+{
+    "query": {
+        "match": {
+            "name": {
+                "query":    "brown fo",
+                "analyzer": "standard"  // <1>
+            }
+        }
+    }
+}
+----
+<1> 这将覆盖name字段上的 `analyzer` 设置
+
+
+当然，在配置mapping时，也可以分开写索引与搜索时的analyzer.
+
+[source,js]
+----
+PUT /my_index/my_type/_mapping
+{
+    "my_type": {
+        "properties": {
+            "name": {
+                "type":            "string",
+                "analyzer":  "autocomplete", 
+                "search_analyzer": "standard" 
+            }
+        }
+    }
+}
+----
+
+.Completion Suggester
+****
+https://www.elastic.co/guide/en/elasticsearch/reference/master/search-suggesters-completion.html[completion suggester] 是另一种完全不同的实现。它在内存中，比所有的词查询都快。
+
+Completion Suggester这种方式适合在词顺序是可预测的情况下使用。如果词之间的顺序不可预测的话，还是建议使用 edge-ngram 来处理。
+****
+
+### Edge n-grams and Postcodes
+
+edge n-gram 也可以用于结构化数据，如之前提到的邮政编码数据。为了使用 edge n-gram 的token filter，这里需要将邮政编码设置为 `analyzed` 而非先前的 `not-analyzed`
+
+[TIP]
+====
+`keyword` tokenizer 是一个什么也不处理的tokenizer。它用来帮忙处理那些需要做成 `not-analyzed` 但是也需要一些其它的token filter如lowercase的情况。
+====
+
+[source,js]
+----
+{
+    "analysis": {
+        "filter": {
+            "postcode_filter": {
+                "type":     "edge_ngram",
+                "min_gram": 1,
+                "max_gram": 8
+            }
+        },
+        "analyzer": {
+            "postcode_index": { 
+                "tokenizer": "keyword",
+                "filter":    [ "postcode_filter" ]
+            },
+            "postcode_search": { 
+                "tokenizer": "keyword"
+            }
+        }
+    }
+}
+----
+
+## Ngrams for Compound Words
+略

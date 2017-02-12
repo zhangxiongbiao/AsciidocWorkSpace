@@ -1,0 +1,342 @@
+= 排序
+:imagesdir: images
+
+默认情况下，查询都是按匹配度倒序排序的，也就是说匹配度最高的优先返回了。
+
+== 默认排序
+默认排序是按照文档的匹配相关度进行排序的。在 _ES_ 中使用 *_score* 字段来表示文档匹配的相关度，所以默认的排序是按照 *_score* 倒序排序的。
+
+有时，可能并不关心文档匹配度排序，这时可以使用过滤查询。例如，过滤查询所有 user_id 为1的数据：
+
+[source,js]
+----
+GET /_search
+{
+    "query" : {
+        "bool" : {
+            "filter" : {
+                "term" : {
+                    "user_id" : 1
+                }
+            }
+        }
+    }
+}
+----
+
+这时，返回的所有结果数据的 *_score* 都为0
+
+[source,json]
+----
+{
+  "_index": "us",
+  "_type": "tweet",
+  "_id": "14",
+  "_score": 0,
+  "_source": {
+     "date": "2014-09-24",
+     "name": "John Smith",
+     "tweet": "How many more cheesy tweets do I have to write?",
+     "user_id": 1
+  }
+}
+----
+
+如果上面这个得分为0不是很好理解，可以使用 constant_score 查询，其查询结果得分全为1
+
+[source,js]
+----
+GET /_search
+{
+    "query" : {
+        "constant_score" : {
+            "filter" : {
+                "term" : {
+                    "user_id" : 1
+                }
+            }
+        }
+    }
+}
+----
+
+== 根据字段进行排序
+
+如指定 _date_ 字段倒序排序。
+
+[source,js]
+----
+GET /_search
+{
+    "query" : {
+        "bool" : {
+            "filter" : { "term" : { "user_id" : 1 }}
+        }
+    },
+    "sort": { "date": { "order": "desc" }}
+}
+----
+
+响应结果
+[source,js]
+----
+"hits" : {
+    "total" :           6,
+    "max_score" :       null, //<1>
+    "hits" : [ {
+        "_index" :      "us",
+        "_type" :       "tweet",
+        "_id" :         "14",
+        "_score" :      null, //<1>
+        "_source" :     {
+             "date":    "2014-09-24",
+             ...
+        },
+        "sort" :        [ 1411516800000 ] //<2>
+    },
+    ...
+}
+----
+<1> *_score* 没有计算，因为没有用 *_score* 作为排序字段
+<2> 该时间字段的值被转换为 _ms_ 了，然后再排序的。
+
+[TIP]
+====
+由于计算相关度得分是非常耗时的操作，所以在未指定 *_score* 为排序字段时就没有计算相关度得分。
+
+如果这种情况下你仍然需要计算相关度得分，在查询请求后面添加查询参数 *track_scores=true* 即可。
+====
+
+== 多级排序
+多级排序指的就是按照多个字段进行排序，类似于 _SQL_ 中的 `order by time desc,num asc` 这种。
+
+[source,js]
+----
+GET /_search
+{
+    "query" : {
+        "bool" : {
+            "must":   { "match": { "tweet": "manage text search" }},
+            "filter" : { "term" : { "user_id" : 2 }}
+        }
+    },
+    "sort": [  // <1>
+        { "date":   { "order": "desc" }},
+        { "_score": { "order": "desc" }}
+    ]
+}
+----
+<1> 先根据 _date_ 降序排序，再根据 *_score* 降序排序
+
+[TIP]
+====
+_query-string_ 中也可以指定排序。
+
+[source,js]
+----
+GET /_search?sort=date:desc&sort=_score&q=search
+----
+====
+
+== 多值字段排序
+当一个字段有多个值时，如该字段为一个数组。此时如果对该字段进行排序，则需要指定按照这个数组中的哪一个值进行排序呢。
+
+如 _dates_ 为一个日期数组字段。
+
+[source,js]
+----
+"sort": {
+    "dates": {
+        "order": "asc",
+        "mode":  "min" // <1>
+    }
+}
+----
+<1> 支持的模式包括：`min`,`max`,`avg`,`sum`
+
+== String 字段排序
+
+被分词的字段也可以说是多值的，要是直接对 _analyzed_ 的字段进行排序的话，通常得到的结果并不是你想要的。
+
+例如该字段有一个值为 “fine old art” ，被分词后就是三个值了，此时如何想按 `fine` 排序怎么办？如果说使用 _min_ 模式，那么按字母顺序就是按 `art` 进行排序了，按 _max_ 就是 `old` 了。
+
+为了对一个 _string_ 字段进行排序，这个字段必须为单个词才方便排序，即 *not_analyzed* 。但是我们又希望这个字段可以被搜索（需要该字段 _analyzed_ ）。
+
+
+最简单的做法是同一个字段存储为两个字段，一个字段分词，一个字段不分词。但是这种做法会造成存储空间的浪费。
+
+其实此时我们只需要对同一个字段按照两种不同的索引方式索引即可。
+
+.tweet之前的索引方式
+[source,js]
+----
+"tweet": {
+    "type":     "string",
+    "analyzer": "english"
+}
+----
+
+.tweet的2种索引方式
+[source,js]
+----
+"tweet": {
+    "type":     "string",  //<1>
+    "analyzer": "english",
+    "fields": {
+        "raw": { // <2>
+            "type":  "string",
+            "index": "not_analyzed"
+        }
+    }
+}
+----
+<1> `tweet` 字段同先前一样，分词字段，可以被检索
+<2> `tweet.raw` 作为子字段，不分词
+
+现在就可以对 `tweet.raw` 字段进行排序了。
+
+[source,js]
+----
+GET /_search
+{
+    "query": {
+        "match": {
+            "tweet": "elasticsearch"
+        }
+    },
+    "sort": "tweet.raw"
+}
+----
+
+[WARNING]
+====
+不要直接对分词字段进行排序，会很耗内存的。
+
+分词字段的排序，应使用上面推荐的方法。即新增一个不分词的子字段。
+====
+
+== 什么是相关度
+在你搜索时，搜索结果中的每一个文档都有一个相关度评分，被称为 *_score* ，这个字段用一个正的浮点数表示，值越大，说明文档越匹配。
+
+文档的相关度匹配跟你用的查询语句有很大的关系，如 `fuzzy` 查询会计算文档与搜索词的拼写相似程度，而 `terms` 查询则计算词命中了多少次。
+
+在 _ES_ 中计算文档相关度，使用的算法称为 _term frequency/inverse document frequency_ ，即 _TF/IDF_ ，这个算法主要依据下面3个方面来计算相关度。
+
+词频率::
+即你搜索的词出现在该字段中的频率，频率越高，自然相关度越高。
+
+反向文档频率::
+即你搜索的词在这个索引中（所有的文档中）出现的频率，如果这个词越频繁，说明这个词越不重要（如一些语气词），那么相关度就越低。
+
+字段长度准则::
+这个就是看你匹配的字段内容长度，例如一个 _title_ 字段命中该词比一个 _content_ 字段命中该词后的相关度要高。因为明显 _title_ 字段比 _content_ 字段中的内容长度要小。
+
+=== 理解相关度评分
+当使用了一个复杂的查询时，一般是很难理解 *_score* 是如何计算出来的。此时可以在查询请求后面添加 _explain_ 参数来让 _ES_ 产生一个评分计算的说明。
+
+
+[source,js]
+----
+GET /_search?explain
+{
+   "query"   : { "match" : { "tweet" : "honeymoon" }}
+}
+----
+
+响应的解释信息
+
+[source,js]
+----
+"_explanation": { // <1>
+   "description": "weight(tweet:honeymoon in 0)
+                  [PerFieldSimilarity], result of:",
+   "value":       0.076713204,
+   "details": [
+      {
+         "description": "fieldWeight in 0, product of:",
+         "value":       0.076713204,
+         "details": [
+            {  // <2>
+               "description": "tf(freq=1.0), with freq of:",
+               "value":       1,
+               "details": [
+                  {
+                     "description": "termFreq=1.0",
+                     "value":       1
+                  }
+               ]
+            },
+            { // <3>
+               "description": "idf(docFreq=1, maxDocs=1)",
+               "value":       0.30685282
+            },
+            { // <4>
+               "description": "fieldNorm(doc=0)",
+               "value":        0.25,
+            }
+         ]
+      }
+   ]
+}
+----
+<1> 解释说明的摘要。weight(tweet:honeymoon in 0) 即计算词 honeymoon 在字段 tweet 上的权重，在文档0（内部的文档ID，此处可以忽略）中
+<2> 词频率。 词 honeymoon 在字段 tweet 的值中出现了多少次
+<3> 反向文档频率。 词 honeymoon 在该索引下所有文档中的 tweet 字段的值中出现多少次。
+<4> 字段长度标准。 在该文档中 tweet 这个字段的值的长度占比。
+
+[WARNING]
+====
+产生 _explain_ 信息是很耗性能的，所以这个操作只应该用于调试，生产系统造成不要开启 _explain_
+====
+
+=== 理解为什么某一文档匹配上了
+可以使用 _explain_ API来理解文档为什么会被匹配或匹配不上。
+
+例如，想看下 /us/tweet/12 这个文档为什么用下面的查询匹配不上。
+
+[source,js]
+----
+GET /us/tweet/12/_explain
+{
+   "query" : {
+      "bool" : {
+         "filter" : { "term" :  { "user_id" : 2           }},
+         "must" :  { "match" : { "tweet" :   "honeymoon" }}
+      }
+   }
+}
+----
+
+省略一长串解释信息后，可以看到返回结果中明确说明了为什么不匹配。
+[source,js]
+----
+"user_id: 12 doesn't match id 2",
+----
+
+也就是说，上面的 "user_id" 过滤器阻止了文档被匹配上
+
+== Doc Values 介绍
+
+当我们对一个字段进行排序时， _ES_ 需要访问所有的匹配到查询的文档中的该字段的值。倒排索引，对于检索来说是非常棒的一个数据结构，但是对于排序来说并不适合。
+
+* 当搜索时，我们用词来关联文档。（倒排索引）
+* 当排序时，我们需要用文档来关联它的词。（非倒排索引，传统数据库模式）
+
+.字段排序结构图
+image::doc_value.png[]
+
+上图中，最终演变为了列存储的结构。在 _ES_ 中，这种列存储也被称为 _doc values_ ，它是默认开启的。 _Doc values_ 在索引数据时创建：当一个字段数据插入时， _ES_ 不光把这种词与文档的映射关系添加到倒排索引，同时还把该字段数据对应的词添加到对应的字段列的 _doc values_ 中。
+
+在 _ES_ 中， _doc values_ 主要用于以下几处：
+
+* 对字段进行排序
+* 对字段进行聚合（按字段分组）
+* 某些过滤器（如地理位置过滤器）
+* 针对字段操作的脚本
+
+_Doc values_ 是存储在硬盘上的，所以 _ES_ 在节点内存空余时会将 _doc values_ 加载到内存中以实现快速访问，如果节点内存不足时，则会直接在硬盘上读取。
+
+[TIP]
+====
+_Doc values_ 加载时会将整个字段对应的数据全部加载进来，而非仅仅你的查询匹配的数据。
+====
