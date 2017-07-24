@@ -1,0 +1,65 @@
+== 不同 _Android_ 平台版本
+:sectnums:
+
+=== 简介
+
+image::images\DifferentPlatformVersion-96b4f.png[]
+
+尽量使用 https://developer.android.com/topic/libraries/support-library/index.html[Android Support Library] ，注意它的向后兼容性很赞，可以保持各平台版本上行为一致，也不用在运行时检查该平台版本是否支持某些功能。
+
+=== 指定最低或最高 _API Levels_
+
+在 https://developer.android.com/guide/topics/manifest/manifest-intro.html[AndroidManifest.xml] 描述支持的最低和最高版本。
+
+.示例
+[source,xml]
+----
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" ... >
+    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="15" />
+    ...
+</manifest>
+----
+
+http://blog.csdn.net/zhangjg_blog/article/details/17142395[参考链接]
+
+=== 运行时检查系统版本
+如果使用了一些新版本SDK中的些新特性，但是不支持应用所运行的平台的API版本，也不知道它是否支持这些新特性。可以在运行时判断一下，如果不支持就不运行对应的方法。
+
+[source,java]
+----
+private void setUpActionBar() {
+    // Make sure we're running on Honeycomb or higher to use ActionBar APIs
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+}
+----
+
+[NOTE]
+====
+解析 _XML_ 元素时， _Android_ 系统会忽略当前设备不支持的那些属性。
+====
+
+=== 使用平台样式和主题
+系统自带了很多主题样式，如果使用这些自带的主题样式，这就会享受到新版本系统更新时自动更新这些主题样式的便利了。
+
+.使用系统内置主题样式
+[source,xml]
+----
+<activity android:theme="@android:style/Theme.Dialog">
+----
+
+
+自定义主题定义在 `/res/values/styles.xml`
+.使用自定义主题
+[source,xml]
+----
+<activity android:theme="@style/CustomTheme">
+----
+
+.自定义主题应用到整个应用
+[source,xml]
+----
+<application android:theme="@style/CustomTheme">
+----

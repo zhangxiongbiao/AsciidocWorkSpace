@@ -1,0 +1,362 @@
+= 活动
+:sectnums:
+
+== 基本用法
+
+image::images\chapter02-d608e.png[]
+
+=== 使用 _Toast_ 显示提示框
+
+.示例代码
+[source,java]
+----
+Button buttonTip = (Button) findViewById(R.id.button_tip);
+buttonTip.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        Toast.makeText(FirstActivity.this, "You click button tip", Toast.LENGTH_SHORT).show();
+    }
+});
+----
+
+.效果图
+image::images\chapter02-5375c.png[]
+
+=== 使用menu
+
+==== 效果图
+
+image::images\chapter02-70397.png[]
+
+image::images\chapter02-770ca.png[]
+
+==== 创建menu.xml
+
+image::images\chapter02-c7346.png[]
+
+[source,xml]
+----
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/add_item"
+        android:title="Add"/>
+    <item
+        android:id="@+id/remove_item"
+        android:title="Remove"/>
+</menu>
+----
+
+==== 渲染菜单视图
+
+在活动中重写 _onCreateOptionsMenu_ 方法
+
+[source,java]
+----
+@Override
+public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.main, menu); // 创建菜单
+    return true;
+}
+----
+
+重写 _onOptionsItemSelected_ 方法，添加事件
+
+[source,java]
+----
+@Override
+public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+        case R.id.add_item:
+            Toast.makeText(this, "you clicked add item here!", Toast.LENGTH_SHORT).show();
+            break;
+        case R.id.remove_item:
+            Toast.makeText(this, "you clicked remove item here!", Toast.LENGTH_SHORT).show();
+            break;
+        default:
+            return false;
+    }
+    return true;
+}
+----
+
+==== 销毁活动
+
+image::images\chapter02-a820a.png[]
+
+== 使用Intent
+
+.结构图
+image::images\chapter02-0fb82.png[]
+
+=== 显式Intent
+
+使用显式Intent启动活动。
+
+[source,java]
+----
+Intent intent = new Intent(FirstActivity.this, SecondActivity.class); // 指定上下文及要启动的活动的类名
+                startActivity(intent);
+----
+
+=== 隐式Intent
+
+在 _Manifest.xml_ 文件中声明 _action_ 和 _category_
+
+[source,xml]
+----
+<activity android:name=".FourActivity">
+    <intent-filter>
+        <action android:name="com.example.activitytest.action.START" /> // <1>
+
+        <category android:name="android.intent.category.DEFAULT" /> // <2>
+        <category android:name="com.example.activitytest.MY_CATEGORY" /> // <3>
+        <data android:scheme="http://" />  // <4>
+    </intent-filter>
+</activity>
+----
+<1> _action_ 名称，系统内置的在 _Intent_ 这个类中的 _ACTION_　开头的常量中
+<2> 如果要使用隐式 _Intent_ 这个必须指定
+<3> 指定自定义的 _Category_
+<4> 指定调用者传递的数据必须是这种格式时才能调用
+
+image::images\chapter02-97c9b.png[]
+
+.调用隐式 _Intent_
+[source,java]
+----
+Intent intent = new Intent(FOUR_ACTIVITY_ACTION_NAME);
+intent.addCategory("com.example.activitytest.MY_CATEGORY");
+startActivity(intent);
+----
+
+.调用内置的浏览器 _Intent_
+[source,java]
+----
+Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("http://www.baidu.com"));
+                startActivity(intent);
+----
+
+.调用内置的拨号 _Intent_
+[source,java]
+----
+Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:15549427029"));
+                startActivity(intent);
+----
+
+
+=== 传递数据
+
+putExtra()::
++
+image::images\chapter02-e3419.png[]
+
+getExtra()::
++
+image::images\chapter02-74746.png[]
+
+=== 返回数据给上一级
+
+1. 先使用 _startActivityForResult()_ 启动下一级活动，传入Intent和requestCode
++
+[source,java]
+----
+Intent intent = new Intent(FOUR_ACTIVITY_ACTION_NAME);
+                intent.addCategory("com.example.activitytest.MY_CATEGORY");
+                startActivityForResult(intent, 1);
+----
+
+2. 下一级活动中使用 _setResult()_ 设置要返回的数据
++
+[source,java]
+----
+@Override
+public void onBackPressed() {
+    Intent data = new Intent();
+    data.putExtra("data_return", "哈哈哈哈哈哈");
+    setResult(RESULT_OK, data);
+    super.onBackPressed();
+}
+----
+
+
+3. 上一级在其 _onActivityResult()_ 中根据 _requestCode_ 区分来源数据
++
+[source,java]
+----
+@Override
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    switch (requestCode) {
+        case 1:
+            if (resultCode == RESULT_OK) {
+                String returnedData = data.getStringExtra("data_return");
+                Log.d("FirstActivity", returnedData);
+            }
+            break;
+        default:
+    }
+}
+----
+
+== 生命周期
+
+=== 返回栈
+
+_Android_ 使用 _Task_ 来管理活动，一个任务就是一组存放在栈里的活动的集合，这个栈也被称为返回栈（ _back stack_ ）。每当启动一个新的活动，它会在返回栈中入栈，并处于栈顶的位置。而当按下 _Back_ 或执行 _finish()_ 方法后，处于栈顶的活动就会出栈，前一个入栈的活动就会重新位于栈顶。
+
+=== 生命周期详细
+
+image::images/activity_lifecycle.png[]
+
+=== 状态
+
+image::images/basic-lifecycle.png[]
+
+[CAUTION]
+====
+进入 _stop_ 状态后的活动，是随时可能被系统回收掉的，释放资源操作一定要放到 _onStop()_ 方法中进行。因为 _onDesctory_ 并不一定会执行，有可能系统因缺内存直接被系统杀进程了。
+====
+
+=== 保存活动被回收前的数据
+当一个活动进入 _stop_ 状态，该活动随时可能会被系统回收掉，当用户重新回到该活动时，为了不影响用户体验，应该把用户之前输入的数据保存下来。
+
+使用 _onSaveInstanceState()_ 来保存临时数据。
+
+image::images\chapter02-8f4cc.png[]
+
+在 _onCreate()_ 中恢复之前保存的临时数据。
+
+image::images\chapter02-74240.png[]
+
+== 启动模式
+
+image::images\chapter02-7cdf1.png[]
+
+=== Standard
+默认模式。对于使用 _standard_ 模式的活动，系统不会在乎这个活动是否已经返回栈中存在，每次启动都会创建该活动的一个新的实例。
+
+image::images\chapter02-c215e.png[]
+
+每次点击按钮，都会创建一个活动的实例，哪怕这个活动当前是在栈顶。
+
+image::images\chapter02-521a8.png[]
+
+=== SingleTop
+
+活动已经在栈顶时，则直接取消该活动实例。
+
+.修改启动模式
+image::images\chapter02-04bd0.png[]
+
+image::images\chapter02-71079.png[]
+
+活动 **未处于栈顶时** ，启动活动还是会创建新实例。
+
+=== SingleTask
+
+当活动的启动模式为 _singleTask_ 时，每次启动活动时系统会首先去返回栈中检查是否存在该活动的实例，如果发现已经存在则直接使用该实例， **并把这个活动之上的所有活动统统出栈** 。
+
+=== SingleInstance
+
+_singleInstance_ 模式每次都会启用一个新的返回栈来管理活动。在将本活动提供给其它程序使用时，可以很方便地共享同一个活动实例。这种情况，前面3个模式没法处理，因为每个程序是有自己的单独的返回栈的。
+
+== 最佳实践
+
+image::images\chapter02-c1c48.png[]
+
+=== 知晓当前是哪一个活动
+
+[source,java]
+----
+public class BaseActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d("BaseActivity", getClass().getSimpleName()); // <1>
+        ActivityCollector.addActivity(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
+    }
+}
+----
+<1> 所有活动继承 _BaseActivity_ ，从 _Android Monitor_ 中查看日志就知道当前是哪个活动了。
+
+=== 收集活动，随时注销程序
+
+当需要在 _APP_ 上随时退出某个活动时，为避免需要多次回退才能退出程序，可以提前将所有活动收集起来再一次性退出所有。
+
+.ActivityCollector
+[source,java]
+----
+public class ActivityCollector {
+
+    public static List<Activity> activities = new ArrayList<>();
+
+    public static void addActivity(Activity activity) {
+        activities.add(activity);
+    }
+
+    public static void removeActivity(Activity activity) {
+        activities.remove(activity);
+    }
+
+    public static void finishAll() {
+        for (Activity activity : activities) {
+            if (!activity.isFinishing()) {
+                activity.finish();
+            }
+        }
+    }
+}
+----
+
+然后在 _BaseActivity_ 中添加或移除 _Activity_
+
+[source,java]
+----
+public class BaseActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d("BaseActivity", getClass().getSimpleName());
+        ActivityCollector.addActivity(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
+    }
+}
+----
+
+=== KillProcess
+
+[source,java]
+----
+android.os.Process.killProcess(android.os.Process.myPid());
+----
+
+=== 启动活动最佳做法
+
+如果在某个活动必须要传递一些参数才可以启动时，最好在该活动中封装一个静态方法来启动，这样调用者知道要传什么参数，不容易出错。
+
+[source,java]
+----
+public class SecondActivity extends BaseActivity {
+
+    public static void actionStart(Context context, String data1, String data2) {
+        Intent intent = new Intent(context, SecondActivity.class);
+        intent.putExtra("param1", data1);
+        intent.putExtra("param2", data2);
+        context.startActivity(intent);
+    }
+----

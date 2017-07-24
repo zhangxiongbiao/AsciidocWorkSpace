@@ -1,0 +1,5 @@
+= 使用 _Fragment_ 构造动态UI
+:sectnums:
+:imagesdir: fragments
+
+include::fragments/createFragment.asciidoc[]

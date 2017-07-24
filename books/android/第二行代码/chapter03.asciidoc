@@ -1,0 +1,821 @@
+= 编写界面
+:sectnums:
+
+== 常用控件
+
+image::images\chapter03-0a0f3.png[]
+
+=== TextView
+
+[source,xml]
+----
+<TextView
+    android:id="@+id/text_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="top"
+    android:gravity="top"
+    android:text="text view..."
+    android:textColor="#00ff00"
+    android:textSize="24sp" />
+----
+
+_android:gravity_ 指定控件中文字布局时排列行为
+
+_android:layout_gravity_ 指定布局时的排列行为
+
+_textSize_ 指定文字大小
+
+_textColor_ 指定文字颜色
+
+=== Button
+
+[source,xml]
+----
+<Button
+    android:id="@+id/button_first"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Button"
+    android:textAllCaps="false" /> // <1>
+----
+<1> 指定 _Button_ 上的文字内容不转成大写
+
+=== EditText
+
+[source,xml]
+----
+<EditText
+    android:id="@+id/edit_text"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="请输入你的用户名"
+    android:maxLines="1"/>
+----
+
+=== ImageView
+用于在页面上显示图片。
+
+[source,xml]
+----
+<ImageView
+    android:id="@+id/image_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/abc" />
+----
+
+image::images\chapter03-86538.png[]
+
+=== ProgressBar
+
+[source,xml]
+----
+<ProgressBar
+    android:id="@+id/progress_bar"
+    style="?android:attr/progressBarStyleHorizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:max="100"
+    android:progress="0" /> // <1>
+----
+<1> 指定样式
+
+[source,java]
+----
+public void stopProgressBar(View view) {
+    ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+    if (progressBar != null) {
+        /*if (progressBar.getVisibility() == View.GONE) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }*/
+
+        int progress = progressBar.getProgress();
+        progress = progress + 10;
+        progressBar.setProgress(progress);
+    }
+}
+----
+
+=== AlertDialog
+
+用于弹出提示框。
+
+[source,java]
+----
+AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("提示");
+        dialog.setMessage("您确定要移除此文件吗？");
+        dialog.setCancelable(false); // 防止使用back键退出窗口
+        dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(MainActivity.this, "OK", Toast.LENGTH_SHORT).show();
+            }
+        });
+        dialog.setNegativeButton("FALSE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(MainActivity.this, "False", Toast.LENGTH_SHORT).show();
+            }
+        });
+        dialog.show();
+----
+
+.效果图
+image::images\chapter03-82519.png[]
+
+=== ProgressDialog
+
+.示例代码
+[source,java]
+----
+ProgressDialog progressDialog = new ProgressDialog(MainActivity.this, ProgressDialog.STYLE_HORIZONTAL);
+progressDialog.setTitle("提示");
+progressDialog.setMessage("加载中...");
+progressDialog.setCancelable(false); // 防止使用back键退出窗口
+progressDialog.show();
+----
+
+.效果图
+image::images\chapter03-cb785.png[]
+
+
+== 四种布局
+
+通过布局的多层嵌套，可以完成复杂的页面效果。
+
+.布局和控件的关系
+image::images\chapter03-fc4d4.png[]
+
+=== 线性布局
+
+_LinearLayout_ 也称为线性布局，这个布局会将它所包含的控件在线性方向上依次列。
+
+线性排除有横向和竖向两种方向。
+
+_android:layout_weight_ 按比重排列。
+
+=== 相对布局
+
+_RelativeLayout_ 通过相对定位的方式让控件出现在布局的任何位置。
+
+=== 帧（ _Frame_ ）布局
+
+_FrameLayout_ 称为帧布局，所有的控件默认会摆在布局的左上角。
+
+=== 百分比布局
+
+_PercentLayout_ 为相对布局、帧布局提供百分比支持，该布局定义在 _support_ 库中。
+
+[source,java]
+----
+dependices{
+  compile 'com.android.support:percent:25.3.1'
+}
+----
+
+image::images\chapter03-77bf1.png[]
+
+
+== 创建自定义控件
+
+.视图控件的继承结构
+image::images\chapter03-b9036.png[]
+
+=== 引入自定义控件
+
+自定义一个 _title.xml_ 文件，其中编写需要被其它地方引入的布局内容。
+
+[source,xml]
+----
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <Button
+        android:id="@+id/title_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BACK" />
+
+    <TextView
+        android:id="@+id/text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="标题" />
+
+    <Button
+        android:id="@+id/title_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:text="EDIT" />
+</LinearLayout>
+----
+
+然后在其它布局中引用即可。
+
+image::images\chapter03-72483.png[]
+
+=== 创建自定义控件
+
+上面这种引用方式有局限性，并不太方便为 _title.xml_ 中的 _Button_ 绑定点击事件，手动创建自定义布局 _java_ 文件。
+
+[source,java]
+----
+public class TitleLayout extends LinearLayout {
+
+    private static final String TAG = "TitleLayout";
+
+    public TitleLayout(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        LayoutInflater.from(context).inflate(R.layout.title, this); // <1>
+
+        Button button = (Button)findViewById(R.id.title_back); // <2>
+        button.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Activity activity = (Activity) getContext();
+                    if(activity != null){
+                        activity.finish();
+                    }
+                } catch (ClassCastException e) {
+                    Log.e(TAG, "back: class cast error", e);
+                }
+            }
+        });
+    }
+}
+----
+<1> _R.layout.title_ 这里引用 _title.xml_ 布局文件
+<2> 为其中的 _Button_ 绑定 _click_ 事件
+
+引入自定义的布局类。
+
+image::images\chapter03-a5eaf.png[]
+
+== ListView
+
+_ListView_　用来做列表展示。
+
+=== 布局中引入 _ListView_
+
+image::images\chapter03-a2adc.png[]
+
+=== 绑定并渲染 _ListView_
+
+[source,java]
+----
+ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new String[]{"苹果", "香蕉", "梨子", "蛋蛋", "恐龙"});
+        ListView listView = (ListView) findViewById(R.id.list_view);
+        listView.setAdapter(adapter);
+----
+
+=== 制定List Item的布局
+上面的例子太简单了，只是简单的展示了文字，如果同时展示文字和图片就显得力不从心了。
+
+添加 _fruit_item.xml_ ，在该布局中添加 _ImageView_ 和 _TextView_ .
+
+image::images\chapter03-ab3f5.png[]
+
+[source,xml]
+----
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/fruit_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10dp" />
+
+    <TextView
+        android:id="@+id/fruit_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10dp"/>
+</LinearLayout>
+----
+
+添加 _Fruit_ Domain对象
+
+[source,java]
+----
+public class Fruit {
+
+    private String name;
+
+    private int imageId;
+
+    public Fruit() {
+    }
+
+    public Fruit(String name, int imageId) {
+        this.name = name;
+        this.imageId = imageId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getImageId() {
+        return imageId;
+    }
+}
+----
+
+添加 _Fruit Adapter_ 重写 _getView()_ 方法来渲染 _fruit_item_ 视图。
+
+[source,java]
+----
+public class FruitAdapter extends ArrayAdapter<Fruit> {
+
+    private int resourceId;
+
+    public FruitAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull Fruit[] objects) {
+        super(context, resource, objects);
+        this.resourceId = resource;
+    }
+
+    @NonNull
+    @Override
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        View view;
+        ViewHolder viewHolder;
+
+        Fruit fruit = getItem(position);
+        if (convertView == null) {
+            viewHolder = new ViewHolder();
+            view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
+
+            viewHolder.fruitImage = (ImageView) view.findViewById(R.id.fruit_image);
+            viewHolder.fruitName = (TextView) view.findViewById(R.id.fruit_name);
+
+            view.setTag(viewHolder);
+        } else {
+            view = convertView;
+            viewHolder = (ViewHolder) view.getTag();
+        }
+
+        viewHolder.fruitImage.setImageResource(fruit.getImageId());
+        viewHolder.fruitName.setText(fruit.getName());
+        return view;
+    }
+
+    class ViewHolder {
+        ImageView fruitImage;
+
+        TextView fruitName;
+    }
+}
+----
+
+最后，在 _Activity_ 中为 _listView_ 添加绑定数据。
+
+[source,java]
+----
+ListView listView = (ListView) findViewById(R.id.list_view);
+FruitAdapter fruitAdapter = new FruitAdapter(this, R.layout.fruit_item, fruitList.toArray(new Fruit[fruitList.size()]));
+listView.setAdapter(fruitAdapter);
+
+listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Fruit fruit = fruitList.get(position);
+        Toast.makeText(TwoActivity.this, fruit.getName(), Toast.LENGTH_SHORT).show();
+    }
+});
+----
+
+== RecyclerView
+
+_ListView_ 有很多局限性：
+
+1. 绑定 _Click_ 事件时只能为整个 _Item_ 绑定，而不能具体地为 _Item_ 中的某个控件绑定点击事件。
+2. _ListView_ 只有垂直方向布局，而 _RecyclerView_ 可以水平方向布局和瀑布流布局。
+
+=== 引入依赖
+
+_RecyclerView_ 是支持库中的操作，所以需要引入支持库中的包。
+
+image::images\chapter03-34b89.png[]
+
+=== 编写 _FruitRecyclerAdapter_ 类
+该类完成 _item_ 数据的绑定
+
+[source,java]
+----
+package com.example.uiwidgettest.adapter;
+
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.uiwidgettest.R;
+import com.example.uiwidgettest.domain.Fruit;
+
+import java.util.List;
+
+/**
+ * Created by zxb on 2017/4/20.
+ */
+
+public class FruitRecyclerAdapter extends RecyclerView.Adapter<FruitRecyclerAdapter.ViewHolder> {
+
+    private List<Fruit> fruitList;
+
+    public FruitRecyclerAdapter(List<Fruit> fruitList) {
+        this.fruitList = fruitList;
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fruit_item, parent, false);
+        final ViewHolder viewHolder = new ViewHolder(view);
+
+        viewHolder.fruitImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(), "you clicked image", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        viewHolder.fruitName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(), viewHolder.fruitName.getText(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return viewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        Fruit fruit = fruitList.get(position);
+        if (fruit != null) {
+            holder.fruitName.setText(fruit.getName());
+            holder.fruitImage.setImageResource(fruit.getImageId());
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return fruitList.size();
+    }
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView fruitImage;
+        TextView fruitName;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            fruitImage = (ImageView) itemView.findViewById(R.id.fruit_image);
+            fruitName = (TextView) itemView.findViewById(R.id.fruit_name);
+        }
+    }
+}
+----
+
+=== Activity中渲染视图
+
+_Activity_ 中配置 _RecyclerView_ 描述
+
+[source,xml]
+----
+<android.support.v7.widget.RecyclerView
+    android:id="@+id/recycler_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+----
+
+image::images\chapter03-1dc11.png[]
+
+.效果图
+image::images\chapter03-8c81d.png[]
+
+== 编写聊天界面
+
+=== 制作Nine-Patch图片
+
+image::images\chapter03-9e333.png[]
+
+image::images\chapter03-60430.png[]
+
+
+=== 添加依赖
+
+image::images\chapter03-484f2.png[]
+
+=== 活动中添加 _RecyclerView_ 布局
+
+[source,xml]
+----
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/msg_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/send_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/input_tip"
+            android:maxLines="2" />
+
+        <Button
+            android:id="@+id/button_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/send"
+            android:onClick="sendMessage"/>
+    </LinearLayout>
+</LinearLayout>
+----
+
+=== 添加消息 _Item_ 布局
+
+[source,xml]
+----
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/left_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:background="@drawable/message_left"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/left_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/right_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:background="@drawable/message_right"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/right_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp" />
+    </LinearLayout>
+</LinearLayout>
+----
+
+=== 创建MSG实体类
+
+[source,java]
+----
+package com.example.uiwidgettest.domain;
+
+/**
+ * Created by zxb on 2017/4/20.
+ */
+
+public class Msg {
+
+    public static final int TYPE_RECEIVED = 0;
+
+    public static final int TYPE_SENT = 1;
+
+    private String content;
+
+    private int type;
+
+    public Msg(String content, int type) {
+        this.content = content;
+        this.type = type;
+    }
+
+    public Msg() {
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+}
+----
+
+=== 创建MsgAdapter类
+
+[source,java]
+----
+package com.example.uiwidgettest.adapter;
+
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.example.uiwidgettest.R;
+import com.example.uiwidgettest.domain.Msg;
+
+import java.util.List;
+
+/**
+ * Created by zxb on 2017/4/20.
+ */
+
+public class MsgAdapter extends RecyclerView.Adapter<MsgAdapter.ViewHodler> {
+
+    private List<Msg> msgList;
+
+    public MsgAdapter(List<Msg> msgList) {
+        this.msgList = msgList;
+    }
+
+    @Override
+    public ViewHodler onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.msg_item, parent, false);
+        return new ViewHodler(view);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHodler holder, int position) {
+        Msg msg = msgList.get(position);
+        if (msg.getType() == Msg.TYPE_RECEIVED) {
+            holder.leftLayout.setVisibility(View.VISIBLE);
+            holder.rightLayout.setVisibility(View.GONE);
+            holder.leftMsg.setText(msg.getContent());
+        } else if (msg.getType() == Msg.TYPE_SENT) {
+            holder.rightLayout.setVisibility(View.VISIBLE);
+            holder.leftLayout.setVisibility(View.GONE);
+            holder.rightMsg.setText(msg.getContent());
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return msgList.size();
+    }
+
+    static class ViewHodler extends RecyclerView.ViewHolder {
+        private LinearLayout leftLayout;
+
+        private LinearLayout rightLayout;
+
+        private TextView leftMsg;
+
+        private TextView rightMsg;
+
+        public ViewHodler(View itemView) {
+            super(itemView);
+
+            leftLayout = (LinearLayout) itemView.findViewById(R.id.left_layout);
+            rightLayout = (LinearLayout) itemView.findViewById(R.id.right_layout);
+            leftMsg = (TextView) itemView.findViewById(R.id.left_msg);
+            rightMsg = (TextView) itemView.findViewById(R.id.right_msg);
+        }
+    }
+}
+----
+
+=== 活动中渲染RecyclerView
+
+[source,java]
+----
+package com.example.uiwidgettest;
+
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+
+import com.example.uiwidgettest.adapter.MsgAdapter;
+import com.example.uiwidgettest.domain.Msg;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * Created by zxb on 2017/4/20.
+ */
+
+public class ThreeActivity extends AppCompatActivity {
+
+    private RecyclerView recyclerView;
+
+    private EditText sendText;
+
+    private Button sendButton;
+
+    private MsgAdapter msgAdapter;
+
+    private List<Msg> msgList;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_three);
+
+        sendText = (EditText) findViewById(R.id.send_text);
+        sendButton = (Button) findViewById(R.id.button_send);
+        recyclerView = (RecyclerView) findViewById(R.id.msg_recycler_view);
+
+        msgList = createMsgList();
+        msgAdapter = new MsgAdapter(msgList);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(msgAdapter);
+    }
+
+    /**
+     * sendButton的点击事件
+     */
+    public void sendMessage(View view) {
+        String content = sendText.getText().toString();
+        if (content != null && content.trim().length() > 0) {
+            Msg msg = new Msg(content, Msg.TYPE_SENT);
+            msgList.add(msg);
+            msgAdapter.notifyItemInserted(msgList.size() - 1);
+            recyclerView.scrollToPosition(msgList.size() - 1);
+            sendText.setText("");
+        }
+    }
+
+    public List<Msg> createMsgList() {
+        Msg msgOne = new Msg("你好，你叫什么？", Msg.TYPE_SENT);
+        Msg msgTwo = new Msg("我叫张雄彪", Msg.TYPE_RECEIVED);
+        Msg msgThree = new Msg("你今年多少岁？", Msg.TYPE_SENT);
+        Msg msgFour = new Msg("102岁", Msg.TYPE_RECEIVED);
+
+        List<Msg> msgList = new ArrayList<Msg>();
+        msgList.add(msgOne);
+        msgList.add(msgTwo);
+        msgList.add(msgThree);
+        msgList.add(msgFour);
+        return msgList;
+    }
+}
+----
+
+=== 最终效果
+
+image::images\chapter03-55035.png[]

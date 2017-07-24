@@ -1,0 +1,21 @@
+= Maven库导入
+:imagesdir: ./images
+:toc:
+
+== 添加库
+1. 公安里单独建了一个`third-party`库存放部分第三方jar包，所以导入前需要先创建`third-party`库。
++
+image:2.png[]
+
+2. 然后将`third-party`库添加到虚拟库remote-repos中
++
+image::4.png[]
+
+
+== 移除metadata信息
+image::1.png[]
+
+== 完成导入
+导入过程中，如下警告信息可以忽略。
+
+image::3.png[]

@@ -1,0 +1,20 @@
+= 角色
+
+* 资源拥有者（resource owner）
+* 资源所在服务提供者（resource server）
+* Client应用(client application)
+* 验证服务(authorization server)
+
+image::images\roles-ff99b.png[]
+
+资源拥有者::
+资源拥有者指拥有将被共享的数据的人或应用，这些数据是放在 _Resource Server_ 上的。
+
+资源服务提供者::
+指存储资源拥有者的数据的服务。
+
+Client应用::
+指请求访问资源拥有者存放在资源服务提供者上的数据的应用。如王者荣耀请求 _QQ_ 上的用户数据。
+
+验证服务::
+_authorization server_ 指用来验证 _Client 应用_　合法性的程序。验证服务和资源服务提供者可以是同一个应用，也可以分开的应用。

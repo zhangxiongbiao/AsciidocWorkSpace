@@ -1,0 +1,35 @@
+= 概要
+
+OAuth2.0协议是一个开放协议，可以让程序互相访问数据。例如，用户通过 _QQ_ 号登陆王者荣耀。
+
+.示意图
+image::images\tutorial-1df29.png[]
+
+1. 用户访问游戏，游戏提示用户可以使用 _QQ_ 号登陆
+2. 用户点击 _QQ_ 号登陆，然后被重定向到 _QQ_ 的校验地址进行账号登陆
+3. 登陆完成后，重定向回游戏
+4. 游戏再与 _QQ_ 服务器通讯获取用户信息
+
+== OAuth2.0 用户案例
+1. 可以让其它程序安全地访问本程序的用户数据
+
+== OAuth2.0 规范
+https://tools.ietf.org/html/draft-ietf-oauth-v2-23[规范]
+
+
+== OAuth2.0 一般访问流程
+
+.流程
+image::images\tutorial-0065e.png[]
+
+1. 用户访问 _Client App_ ，点击 _Login via Facebook_ 按钮
+2. 用户被重定向到 _Facebook_ 登陆页面
+3. 用户完成登陆后重定向回 _Client APP_ 的 _Redirect URL_ ，并带上参数 _authentication code_
+4. _Client APP_ 接收到 _authentication code_ 后，内部与 _Facebook_ 的 _Token_ 端点通讯，获取 _Access Token_
+5. 最终 _Client APP_ 挟带 _Access Token_ 到 _Facebook_ 上获取用户数据。
+
+
+[NOTE]
+====
+_Redirect URL_ 事先由 _Client APP_ 开发者到 _Facebook_ 上注册的。
+====

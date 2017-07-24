@@ -1,0 +1,8 @@
+= Training
+:sectnums:
+
+include::Support_Different_Devices.asciidoc[]
+
+include::Fragment.asciidoc[]
+
+include::save_data.asciidoc[]

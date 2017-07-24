@@ -1,0 +1,70 @@
+= 开启行程
+:sectnums:
+
+image::images\开启行程-bdbd1.png[]
+
+== 系统架构
+image::images\开启行程-6a726.png[]
+
+== 工程结构
+
+image::images\开启行程-e12f5.png[]
+
+image::images\开启行程-6f171.png[]
+
+image::images\开启行程-06278.png[]
+
+image::images\开启行程-9e217.png[]
+
+image::images\开启行程-50ec2.png[]
+
+=== app模块目录结构分析
+
+image::images\app.png[]
+
+image::images\开启行程-4bc7e.png[]
+
+image::images\开启行程-cee8b.png[]
+
+image::images\开启行程-50ad9.png[]
+
+image::images\开启行程-1c0e8.png[]
+
+==== 详解build.gradle文件
+
+image::images\开启行程-3e58e.png[]
+
+1. apply plugin
++
+image::images\开启行程-6bae4.png[]
+
+2. android
++
+image::images\开启行程-19511.png[]
++
+image::images\开启行程-4c77a.png[]
++
+image::images\开启行程-4f2e6.png[]
+
+3. dependencies
++
+image::images\开启行程-e9801.png[]
+
+
+== 日志工具
+
+image::images\开启行程-91ff1.png[]
+
+logt:: 生成TAG语句
++
+image::images\开启行程-07ff4.png[]
+
+logd:: 生成debug语句
++
+image::images\开启行程-77987.png[]
+
+AndroidMonitor中查看日志，并且可以自定义过滤日志。
+
+image::images\开启行程-dd096.png[]
+
+image::images\开启行程-a6ac0.png[]

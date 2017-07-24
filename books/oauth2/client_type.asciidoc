@@ -1,0 +1,23 @@
+= Client类型
+
+_OAuth2_ 基于 _Client_ 与验证服务器之间的验证安全性定义了两种 _Client 类型_　，
+
+保密的（confidential）::
+Client有能力保证它的 _Client 凭证_ 不会泄露。如 _Web_ 应用程序，它存储的 _Cleint 凭证_ （可能本地，也可能数据库），别人不可能连上服务器或数据库看到 _Client 凭证_ .
+
+公开的(public)::
+Client没有能力保证它的 _Client 凭证_ 不会泄露。如 _Android_ 应用（凭证放在手机存储里，很容易被盗）。
+
+== Client Profiles
+
+常见的 _client_ 主要有以下3种，它们可能是 _public_ ，也可能是 _confidential_ 的，或者二者都是。
+
+== Web Application
+
+_Web Application_ 指运行在 _Web Server_ 上的应用程序。通常 _Client 凭证_　会放在 _Web Server_ 所在服务器上面。
+
+image::images\client_type-897af.png[]
+
+== user-agent-based application
+
+如前端页面 _JS_ 。

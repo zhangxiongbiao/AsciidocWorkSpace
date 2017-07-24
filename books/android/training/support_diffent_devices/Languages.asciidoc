@@ -1,0 +1,52 @@
+== 支持不同的语言
+:sectnums:
+
+=== 创建语言区域目录
+
+1. `res` 目录下，添加 `resource directory`
++
+image::images/Languages-68e09.png[]
+
+2. 添加目录
++
+image::images/Languages-e3a97.png[]
+
+3. 选择语言
++
+image::images/Languages-daf8a.png[]
+
+4. Open editor中编辑
++
+image::images/Languages-2759d.png[]
+
+5. 编辑内容
++
+image::images/Languages-f6696.png[]
+
+
+=== 引用字符串资源
+
+[source,java,indent=0]
+----
+ R.string.<string_name>
+----
+
+.代码中引用string
+[source,java]
+----
+// Get a string resource from your app's Resources
+String hello = getResources().getString(R.string.hello_world);
+
+// Or supply a string resource to a method that requires a string
+TextView textView = new TextView(this);
+textView.setText(R.string.hello_world);
+----
+
+.XML文件中引用
+[source,xml]
+----
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/hello_world" />
+----

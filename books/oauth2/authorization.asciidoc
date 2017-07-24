@@ -1,0 +1,77 @@
+= 验证授权
+
+== Authorization Code Grant
+
+image::images\authorization-fcdf5.png[]
+
+=== Authorization Request
+
+image::images\authorization-a8780.png[]
+image::images\authorization-bcced.png[]
+
+.请求示例
+[source,plain]
+====
+GET /authorize?response_type=code&client_id=s6BhdRkqt3&state=xyz
+&redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcb HTTP/1.1
+Host: server.example.com
+====
+
+=== Authorization Response
+
+image::images\authorization-3de47.png[]
+image::images\authorization-ad923.png[]
+
+.响应示例
+[source,plain]
+====
+HTTP/1.1 302 Found
+Location: https://client.example.com/cb?code=SplxlOBeZQQYbYS6WxSbIA
+&state=xyz
+====
+
+=== Error Response
+
+image::images\authorization-9b33b.png[]
+image::images\authorization-84632.png[]
+image::images\authorization-1a25b.png[]
+image::images\authorization-6c67f.png[]
+image::images\authorization-6c3dd.png[]
+
+.错误响应示例
+[source,plain]
+====
+HTTP/1.1 302 Found
+Location: https://client.example.com/cb?error=access_denied&state=xyz
+====
+
+== Access Token Request
+
+image::images\authorization-4111c.png[]
+
+.请求示例
+[source,plain]
+====
+POST /token HTTP/1.1
+Host: server.example.com
+Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
+Content-Type: application/x-www-form-urlencoded
+grant_type=authorization_code&code=SplxlOBeZQQYbYS6WxSbIA
+&redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcb
+====
+
+.响应示例
+[source,js]
+====
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Cache-Control: no-store
+Pragma: no-cache
+{
+"access_token":"2YotnFZFEjr1zCsicMWpAA",
+"token_type":"example",
+"expires_in":3600,
+"refresh_token":"tGzv3JOkF0XG5Qx2TlKWIA",
+"example_parameter":"example_value"
+}
+====

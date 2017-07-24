@@ -1,0 +1,9 @@
+= 支持不同的设备
+:sectnums:
+:imagesdir: support_diffent_devices
+
+include::support_diffent_devices/Languages.asciidoc[]
+
+include::support_diffent_devices/Screen.asciidoc[]
+
+include::support_diffent_devices/DifferentPlatformVersion.asciidoc[]

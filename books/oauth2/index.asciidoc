@@ -1,0 +1,10 @@
+= OAuth2笔记
+:sectnums:
+
+include::tutorial.asciidoc[]
+
+include::roles.asciidoc[]
+
+include::client_type.asciidoc[]
+
+include::authorization.asciidoc[]

@@ -1,0 +1,1685 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN' 'http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml' >
+<head>
+<title>XXTB</title>
+<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+<meta http-equiv='X-UA-Compatible' content='IE=edge'/>
+<style type='text/css'>
+body {
+    font-family: 'trebuchet MS', 'Lucida sans', Dialog;
+    font-size: 12px;
+    color: #444;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.bordered {
+    border: solid #ccc 1px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-box-shadow: 0 1px 1px #ccc;
+    -moz-box-shadow: 0 1px 1px #ccc;
+    box-shadow: 0 1px 1px #ccc;
+}
+
+.bordered tr:hover {
+    background: #fbf8e9;
+    -o-transition: all 0.1s ease-in-out;
+    -webkit-transition: all 0.1s ease-in-out;
+    -moz-transition: all 0.1s ease-in-out;
+    -ms-transition: all 0.1s ease-in-out;
+    transition: all 0.1s ease-in-out;
+}
+
+.bordered td, .bordered th {
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    padding: 4px;
+    text-align: left;
+}
+
+.bordered th {
+    background-color: #d7d7ea;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#f4f4fb), to(#d7d7ea));
+    background-image: -webkit-linear-gradient(top, #f4f4fb, #d7d7ea);
+    background-image:    -moz-linear-gradient(top, #f4f4fb, #d7d7ea);
+    background-image:     -ms-linear-gradient(top, #f4f4fb, #d7d7ea);
+    background-image:      -o-linear-gradient(top, #f4f4fb, #d7d7ea);
+    background-image:         linear-gradient(top, #f4f4fb, #d7d7ea);
+    -webkit-box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
+    -moz-box-shadow:0 1px 0 rgba(255,255,255,.8) inset;
+    box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
+    border-top: none;
+    text-shadow: 0 1px 0 rgba(255,255,255,.5);
+}
+
+.bordered td:first-child, .bordered th:first-child {
+    border-left: none;
+}
+
+.bordered th:first-child {
+    -moz-border-radius: 6px 0 0 0;
+    -webkit-border-radius: 6px 0 0 0;
+    border-radius: 6px 0 0 0;
+}
+
+.bordered th:last-child {
+    -moz-border-radius: 0 6px 0 0;
+    -webkit-border-radius: 0 6px 0 0;
+    border-radius: 0 6px 0 0;
+}
+
+.bordered th:only-child{
+    -moz-border-radius: 6px 6px 0 0;
+    -webkit-border-radius: 6px 6px 0 0;
+    border-radius: 6px 6px 0 0;
+}
+
+.bordered tr:last-child td:first-child {
+    -moz-border-radius: 0 0 0 6px;
+    -webkit-border-radius: 0 0 0 6px;
+    border-radius: 0 0 0 6px;
+}
+
+.bordered tr:last-child td:last-child {
+    -moz-border-radius: 0 0 6px 0;
+    -webkit-border-radius: 0 0 6px 0;
+    border-radius: 0 0 6px 0;
+}
+
+</style>
+</head>
+
+<body>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'   width='1485' height='1025' viewbox='0 0 1485 1025' >
+  <script type='text/ecmascript'>
+  <![CDATA[
+  function hghl(el) { for ( var i in el ){ document.getElementById(el[i]).setAttribute('class','highlight');  }  }
+  function uhghl(el) { for ( var i in el ){ document.getElementById(el[i]).setAttribute('class','scene'); }  } 
+  ]]>
+  </script> 
+
+<style type='text/css'>
+  text                { fill:#000000; font-family: SimSun, 'Trebuchet MS', Dialog; font-size:12px; }
+  text:hover          { fill:#a00000; font-size:13px; }
+  text.highlight      { fill:#a00000; font-size:13px; }
+  text.colType        { fill:#b3b3b3; }
+  path                { stroke:#54402e; stroke-width:1.25; fill:none; }
+  path.scene          { stroke-width:10; opacity:0;}
+  path.highlight      { stroke-width:7; stroke:#e5d78a; opacity:0.6;}
+  rect.table          { fill:#ffffff; stroke:#101010; stroke-width:0.44; filter:url(#shadow); }
+  line.delim          { stroke:#222; stroke-width:0.3; }
+  rect.callout        { fill:url(#calloutGradient); stroke:#bebdbd; stroke-width:0.5; filter: url(#shadow);}
+  rect.grp            { stroke:#b1b1b1; stroke-width:1.7; }
+</style>
+<defs>
+  <pattern patternUnits='userSpaceOnUse' id='layoutBgA' width='10' height='20' x='0' y='0' viewBox='0 0 5 10'>  
+     <line x1='-2' y1='1' x2='7' y2='10' stroke='#f3f3f3' stroke-width='.5'/>  
+     <line x1='-2' y1='6' x2='7' y2='15' stroke='#f3f3f3' stroke-width='.5'/>  
+     <line x1='-2' y1='-4' x2='7' y2='5' stroke='#f3f3f3' stroke-width='.5'/>  
+  </pattern>  
+  <radialGradient id='layoutBgB' gradientUnits='userSpaceOnUse' cx='50%' cy='50%' r='75%' fx='46%' fy='22%'>
+     <stop offset='0%' stop-opacity='.2' stop-color='#f0f0f0' />  
+     <stop offset='100%' stop-color='#e7e7e7' />  
+  </radialGradient>
+  <linearGradient id='tableHeaderGradient0' x1='0%' y1='0%' x2='0%' y2='90%' >
+          <stop offset='-50%' stop-color='#c0d4f3'/> 
+          <stop offset='20%' stop-color='#fafafa'/> 
+          <stop offset='100%' stop-color='#c0d4f3'/> 
+   </linearGradient>
+  <linearGradient id='groupUnderTitleLine' x1='0%' y1='0%' x2='100%' y2='0%' >
+          <stop offset='0%' stop-color='#999999' stop-opacity='0.7'/> 
+          <stop offset='100%' stop-color='#999999' stop-opacity='0' /> 
+   </linearGradient>
+  <radialGradient id='calloutGradient' cx='25%' cy='20%' r='80%' fx='10%' fy='10%'>
+	   <stop offset='0%' stop-color='#ffffff' />
+    <stop offset='100%' stop-color='#f8f6d1' />
+  </radialGradient>
+  <filter id='shadow' width='120%' height='120%'> 
+      <feOffset result='offOut' in='SourceGraphic' dx='2' dy='2' /> 
+      <feColorMatrix result='matrixOut' in='offOut' type='matrix' 
+      values='0.1 0 0 0 0 0 0.1 0 0 0 0 0 0.1 0 0 0 0 0 0.5 0' /> 
+      <feGaussianBlur result='blurOut' in='matrixOut' stdDeviation='3' /> 
+      <feBlend in='SourceGraphic' in2='blurOut' mode='normal' /> 
+    </filter> 
+  <filter id='fkShadow' height='130%'> 
+    <feGaussianBlur in='SourceAlpha' stdDeviation='1.5'/> <!-- stdDeviation is how much to blur -->
+    <feOffset dx='1.2' dy='1.2' result='offsetblur'/> <!-- how much to offset -->
+    <feMerge>
+    <feMergeNode/> <!-- this contains the offset blurred image -->
+    <feMergeNode in='SourceGraphic'/> <!-- this contains the element that the filter is applied to -->
+    </feMerge>
+  </filter>
+  <radialGradient id='legendGradient' fx='5%' fy='5%' r='75%' spreadMethod='pad'>
+          <stop offset='0%' stop-color='#eaf6ee' stop-opacity='1'/> 
+          <stop offset='100%' stop-color='#cce3ca' stop-opacity='1' /> 
+   </radialGradient>
+  <symbol id='calloutArrowDown' overflow='visible' >
+      <path d='M 0,0 L 7,11 L 15,0 z' style='fill:#f8f6d1;stroke:none; filter: url(#shadow);' />
+      <path d='M 0,0 L 7,11 L 15,0' style='stroke:#bebdbd; stroke-width:0.5;' />
+  </symbol>
+  <symbol id='calloutArrowUp' overflow='visible' >
+      <path d='M 0,15 L 7,3 L 15,15 z' style='fill:#ffffff; stroke:none; filter: url(#shadow);' />
+      <path d='M 0,15 L 7,3 L 15,15' style='stroke:#bebdbd; stroke-width:0.5;' />
+  </symbol>
+  <symbol id='pk' overflow='visible' >
+    <g transform='scale(0.99)'>
+     <path style='fill:#fbea8e;stroke:#472106;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;'
+        d='M 9.3678877,3.5695485 C 9.1030218,3.2729386 9.0796382,2.7628519 9.3396185,2.4517097 9.5449651,2.1956495 9.9040386,2.0980533 10.199638,2.2169415 10.533525,2.3415459 10.775153,2.706942 10.750675,3.0842709 10.737029,3.3980003 10.541153,3.699122 10.258248,3.8066067 9.966649,3.9250429 9.6169668,3.8418805 9.4008073,3.6062324 9.3894892,3.5943518 9.3785264,3.582104 9.3678886,3.5695487 z M 11.226617,6.9916004 C 11.888137,6.3548946 12.293488,5.4172188 12.311087,4.442353 12.378144,2.7379364 11.248678,1.0541269 9.7322318,0.44767357 8.3887112,-0.1280313 6.7865012,0.26822889 5.8918395,1.4007929 5.080823,2.3839145 4.9336815,3.8452096 5.3635544,5.101615 L 4.3670905,5.315913 C 4.0664984,5.3682645 4.0967703,5.6316724 4.2574957,5.8208829 L 4.9124,6.5655244 4.1543436,7.2512357 3.2136002,7.2163506 3.1674775,8.5586827 2.0406832,8.5086512 1.5965306,8.9299953 1.5471661,10.179833 0.75616674,10.195223 0.2112857,10.758575 0.15354288,11.735988 0.07199052,12.765553 c 0.36440953,0.238225 0.79006967,0.195492 1.44938278,-0.02675 L 6.3033562,8.1282037 6.8217102,8.6765688 C 6.9985465,8.8799427 7.3003699,8.7497574 7.358381,8.5016252 L 7.4938877,7.5084164 c 0.8537488,0.3985387 1.8303125,0.4711541 2.6851793,0.1427713 0.393927,-0.1407258 0.746858,-0.3701772 1.04755,-0.6595873 z'/>
+     <path d='M 6.8014948,6.3102123 0.15369063,13.024481 0.21560535,12.141962 6.0062342,6.2683782 z'
+        style='fill:#ffe5a5;fill-opacity:1;stroke:#854e31;stroke-width:0.06912433;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:3.00300009'/>
+    </g>
+  </symbol>
+  <symbol id='unq' overflow='visible' >
+    <g transform='scale(0.99)'>
+      <rect style='fill:#e07554;stroke:#7e4d31;stroke-width:0.71934468;stroke-linecap:round;stroke-linejoin:round;'
+         width='2.29' height='8.43' x='7.48' y='-0.76' ry='1.14' transform='matrix(0.701,0.713,-0.727,0.685,0,0)' />
+      <path style='fill:white;stroke:#858585;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;'
+         d='m 26.04,8.64 a 4.13,4.13 0 1 1 -8.26,0 4.13,4.13 0 1 1 8.26,0 z'
+         transform='matrix(1.025,0,0,0.987,-14.690,-3.862)' />
+      <text x='5.5' y='7.7' style='font-size:8px;fill:#8a8a8a;'>1</text>
+    </g>
+  </symbol>
+  <symbol id='idx' overflow='visible' >
+    <g transform='scale(0.99)'>
+      <rect style='fill:#e07554;stroke:#7e4d31;stroke-width:0.71934468;stroke-linecap:round;stroke-linejoin:round;'
+         width='2.29' height='8.43' x='7.48' y='-0.76' ry='1.14' transform='matrix(0.701,0.713,-0.727,0.685,0,0)' />
+      <path style='fill:white;stroke:#858585;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;'
+         d='m 26.04,8.64 a 4.13,4.13 0 1 1 -8.26,0 4.13,4.13 0 1 1 8.26,0 z'
+         transform='matrix(1.025,0,0,0.987,-14.690,-3.862)' />
+    </g>
+  </symbol>
+  <symbol id='fk' overflow='visible' >
+    <g transform='scale(0.87)'>
+      <path style='fill:#b7d0f6;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+      d='M 12.48,0.33 7.07,0.89 9.067,2.974 0.329,11.731 1.073,12.597 9.811,3.841 11.77,5.78 z' />
+    </g>
+  </symbol>
+  <symbol id='ref' overflow='visible' >
+    <g transform='scale(0.87)'>
+      <path style='fill:#f3e1b7;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+          d='M 0.10,12.70 5.31,12.15 3.40,10.06 11.82,1.32 11.11,0.45 2.68,9.19 0.80,7.24 z'/>
+    </g>
+  </symbol>
+  <symbol id='flag' overflow='visible' >
+    <g transform='scale(0.92)'>
+      <path style='fill:#b7d0f6;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+          d='M 0.12,12.67 0.16,7.22 C 2.59,7.22 4.13,8.78 9.22,4.22 5.68,4.98 2.53,4.50 0.09,1.80 z'/>
+    </g>
+  </symbol>
+  <symbol id='nn' overflow='visible' >
+  <path style='stroke:#9b3e50;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+          d='M 0,0 3,3 M 0,3 3,0 z'/>
+  </symbol>
+  <marker id='arrow01' viewBox='0 0 15.00 7.50' refX='7.50' refY='3.75' markerUnits='strokeWidth' markerWidth='15.00' markerHeight='7.50' orient='auto'>
+    <path d='M 15.000,3.750 L 7.500,2.500 L 7.500,7.500 L 15.000,3.750 z' style='fill:#5e554d;' />
+  </marker>
+  <marker id='arrow1' viewBox='0 0 15.00 7.50' refX='7.50' refY='3.75' markerUnits='strokeWidth' markerWidth='15.00' markerHeight='7.50' orient='auto'>
+    <path d='M 15.000,3.750 L 7.500,2.500 L 7.500,7.500 L 15.000,3.750 z' style='fill:#5e554d;' />
+  </marker>
+  <marker id='foot01' viewBox='0 0 15.00 7.50' refX='7.50' refY='3.75' markerUnits='strokeWidth' markerWidth='15.00' markerHeight='7.50' orient='auto'>
+    <path d='M 0.00,3.75 L 15.00,3.75 z' />
+    <circle cx='11.25' cy='3.75' r='2.50' style='fill:white;stroke:#5e554d;' />
+    <path d='M 3.75,0.00 L 3.75, 7.50 z' />
+  </marker>
+  <marker id='foot0p' viewBox='0 0 15.00 7.50' refX='7.50' refY='3.75' markerUnits='strokeWidth' markerWidth='15.00' markerHeight='7.50' orient='auto'>
+    <path d='M 0.00,3.75 L 15.00,3.75 z' />
+    <circle cx='11.25' cy='3.75' r='2.50' style='fill:white;stroke:#5e554d;' />
+    <path d='M 0.00,0.00 L 7.50,3.75 L 0.00,7.50' />
+  </marker>
+  <marker id='foot1' viewBox='0 0 15.00 7.50' refX='7.50' refY='3.75' markerUnits='strokeWidth' markerWidth='15.00' markerHeight='7.50' orient='auto'>
+    <path d='M 0.00,3.75 L 15.00,3.75 z' />
+    <path d='M 7.50,0.00 L 7.50, 7.50 z' />
+    <path d='M 3.75,0.00 L 3.75, 7.50 z' />
+  </marker>
+  <marker id='foot1p' viewBox='0 0 15.00 7.50' refX='7.50' refY='3.75' markerUnits='strokeWidth' markerWidth='15.00' markerHeight='7.50' orient='auto'>
+    <path d='M 0.00,3.75 L 15.00,3.75 z' />
+    <path d='M 7.50,0.00 L 7.50, 7.50 z' />
+    <path d='M 0.00,0.00 L 7.50,3.75 L 0.00,7.50' />
+  </marker>
+</defs>
+
+<!-- ============= Desktop ============= -->
+<rect x='1' y='1' width='1483' height='1023' rx='7' ry='7' style='fill:url(#layoutBgA); stroke:#333333; stroke-width:0.5;' />
+<rect x='1' y='1' width='1483' height='1023' rx='7' ry='7' style='fill:url(#layoutBgB)'/>
+
+<!-- ============= Legend ============= -->
+<g transform='translate(10,10)'>
+  <rect x='10' y='10' width='260' height='64' rx='6' ry='6' style='fill:url(#legendGradient);filter:url(#shadow);'/> 
+  <text x='20' y='30'><tspan>Project</tspan> created by <a xlink:href='' text-decoration='underline'>zxb</a></text> 
+  <text x='20' y='44'><tspan>Layout</tspan> XXTB</text> 
+  <text x='20' y='58' style='fill:#777'><tspan>鼠标悬浮于列上可查看注释</tspan></text> 
+</g>
+
+<g transform='translate(0,110)'>
+<!-- ============= Fk 'XXTB_MODEL_KHZB_MAPPING_fk_XXTB_MODEL_KHZB_MAPPING' ============= -->
+<path id='XXTB_MODEL_KHZB_MAPPING_fk_XXTB_MODEL_KHZB_MAPPING'  onmouseover="hghl(['XXTB_MODEL_KHZB_MAPPING_fk_XXTB_MODEL_KHZB_MAPPING','GONGANYUN2.XXTB_MODEL_KHZB_MAPPING.MODEL_ID','GONGANYUN2.XXTB_MODEL_INFO.MODEL_ID'])" onmouseout="uhghl(['XXTB_MODEL_KHZB_MAPPING_fk_XXTB_MODEL_KHZB_MAPPING','GONGANYUN2.XXTB_MODEL_KHZB_MAPPING.MODEL_ID','GONGANYUN2.XXTB_MODEL_INFO.MODEL_ID'])" transform='translate(7,0)' class='scene' d='M 1260 330 L 1192,330 Q 1185,330 1185,322 L 1185,172 Q 1185,165 1177,165 L 1170,165' >
+	<title>Fk fk_XXTB_MODEL_KHZB_MAPPING
+XXTB_MODEL_KHZB_MAPPING ref XXTB_MODEL_INFO ( MODEL_ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow1)'    d='M 1260 330 L 1192,330 Q 1185,330 1185,322 L 1185,172 Q 1185,165 1177,165 L 1170,165' ></path>
+<text x='1094' y='325' transform='rotate(0 1094,325)' title='Fk fk_XXTB_MODEL_KHZB_MAPPING
+XXTB_MODEL_KHZB_MAPPING ref XXTB_MODEL_INFO ( MODEL_ID )' style='fill:#cfc391;'>fk_XXTB_MODEL_KHZB_MAPPING</text>
+<!-- ============= Fk 'XXTB_MODEL_KHZB_MAPPING_fk_XXTB_MODEL_KHZB_MAPPING_0' ============= -->
+<path id='XXTB_MODEL_KHZB_MAPPING_fk_XXTB_MODEL_KHZB_MAPPING_0'  onmouseover="hghl(['XXTB_MODEL_KHZB_MAPPING_fk_XXTB_MODEL_KHZB_MAPPING_0','GONGANYUN2.XXTB_MODEL_KHZB_MAPPING.ZB_ID','GONGANYUN2.XXTB_KHZB_INFO.ZB_ID'])" onmouseout="uhghl(['XXTB_MODEL_KHZB_MAPPING_fk_XXTB_MODEL_KHZB_MAPPING_0','GONGANYUN2.XXTB_MODEL_KHZB_MAPPING.ZB_ID','GONGANYUN2.XXTB_KHZB_INFO.ZB_ID'])" transform='translate(7,0)' class='scene' d='M 1260 345 L 1207,345 Q 1200,345 1200,352 L 1200,397 Q 1200,405 1192,405 L 1185,405' >
+	<title>Fk fk_XXTB_MODEL_KHZB_MAPPING_0
+XXTB_MODEL_KHZB_MAPPING ref XXTB_KHZB_INFO ( ZB_ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)'     d='M 1260 345 L 1207,345 Q 1200,345 1200,352 L 1200,397 Q 1200,405 1192,405 L 1185,405' ></path>
+<text x='1082' y='340' transform='rotate(0 1082,340)' title='Fk fk_XXTB_MODEL_KHZB_MAPPING_0
+XXTB_MODEL_KHZB_MAPPING ref XXTB_KHZB_INFO ( ZB_ID )' style='fill:#cfc391;'>fk_XXTB_MODEL_KHZB_MAPPING_0</text>
+<!-- ============= Fk 'XXTB_FSTJ_fk_XXTB_FSTJ' ============= -->
+<path id='XXTB_FSTJ_fk_XXTB_FSTJ'  onmouseover="hghl(['XXTB_FSTJ_fk_XXTB_FSTJ','GONGANYUN2.XXTB_FSTJ.CITY_ID','GONGANYUN2.XXTB_CITY_INFO.CITY_ID'])" onmouseout="uhghl(['XXTB_FSTJ_fk_XXTB_FSTJ','GONGANYUN2.XXTB_FSTJ.CITY_ID','GONGANYUN2.XXTB_CITY_INFO.CITY_ID'])" transform='translate(7,0)' class='scene' d='M 795 420 L 757,420 Q 750,420 750,412 L 750,142 Q 750,135 742,135 L 735,135' >
+	<title>Fk fk_XXTB_FSTJ
+XXTB_FSTJ ref XXTB_CITY_INFO ( CITY_ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow1)'    d='M 795 420 L 757,420 Q 750,420 750,412 L 750,142 Q 750,135 742,135 L 735,135' ></path>
+<text x='725' y='415' transform='rotate(0 725,415)' title='Fk fk_XXTB_FSTJ
+XXTB_FSTJ ref XXTB_CITY_INFO ( CITY_ID )' style='fill:#cfc391;'>fk_XXTB_FSTJ</text>
+<!-- ============= Fk 'XXTB_FSTJ_fk_XXTB_FSTJ_0' ============= -->
+<path id='XXTB_FSTJ_fk_XXTB_FSTJ_0'  onmouseover="hghl(['XXTB_FSTJ_fk_XXTB_FSTJ_0','GONGANYUN2.XXTB_FSTJ.ZB_ID','GONGANYUN2.XXTB_KHZB_INFO.ZB_ID'])" onmouseout="uhghl(['XXTB_FSTJ_fk_XXTB_FSTJ_0','GONGANYUN2.XXTB_FSTJ.ZB_ID','GONGANYUN2.XXTB_KHZB_INFO.ZB_ID'])" transform='translate(7,0)' class='scene' d='M 945 435 L 982,435 Q 990,435 990,427 L 990,412 Q 990,405 997,405 L 1005,405' >
+	<title>Fk fk_XXTB_FSTJ_0
+XXTB_FSTJ ref XXTB_KHZB_INFO ( ZB_ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow1)'    d='M 945 435 L 982,435 Q 990,435 990,427 L 990,412 Q 990,405 997,405 L 1005,405' ></path>
+<text x='952' y='430' transform='rotate(0 952,430)' title='Fk fk_XXTB_FSTJ_0
+XXTB_FSTJ ref XXTB_KHZB_INFO ( ZB_ID )' style='fill:#cfc391;'>fk_XXTB_FSTJ_0</text>
+<!-- ============= Fk 'XXTB_USER_DEPARTMENT_MAPPING_fk_XXTB_USER_DEPARTMENT_MAPPING' ============= -->
+<path id='XXTB_USER_DEPARTMENT_MAPPING_fk_XXTB_USER_DEPARTMENT_MAPPING'  onmouseover="hghl(['XXTB_USER_DEPARTMENT_MAPPING_fk_XXTB_USER_DEPARTMENT_MAPPING','GONGANYUN2.XXTB_USER_DEPARTMENT_MAPPING.DEPARTMENT_ID','GONGANYUN2.XXTB_DEPARTMENT_INFO.DEPARTMENT_ID'])" onmouseout="uhghl(['XXTB_USER_DEPARTMENT_MAPPING_fk_XXTB_USER_DEPARTMENT_MAPPING','GONGANYUN2.XXTB_USER_DEPARTMENT_MAPPING.DEPARTMENT_ID','GONGANYUN2.XXTB_DEPARTMENT_INFO.DEPARTMENT_ID'])" transform='translate(7,0)' class='scene' d='M 240 315 L 262,315 Q 270,315 270,322 L 270,547 Q 270,555 277,555 L 300,555' >
+	<title>Fk fk_XXTB_USER_DEPARTMENT_MAPPING
+XXTB_USER_DEPARTMENT_MAPPING ref XXTB_DEPARTMENT_INFO ( DEPARTMENT_ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow1)'    d='M 240 315 L 262,315 Q 270,315 270,322 L 270,547 Q 270,555 277,555 L 300,555' ></path>
+<text x='247' y='310' transform='rotate(0 247,310)' title='Fk fk_XXTB_USER_DEPARTMENT_MAPPING
+XXTB_USER_DEPARTMENT_MAPPING ref XXTB_DEPARTMENT_INFO ( DEPARTMENT_ID )' style='fill:#cfc391;'>fk_XXTB_USER_DEPARTMENT_MAPPING</text>
+<!-- ============= Fk 'XXTB_USER_DEPARTMENT_MAPPING_fk_XXTB_USER_DEPARTMENT_MAPPING_0' ============= -->
+<path id='XXTB_USER_DEPARTMENT_MAPPING_fk_XXTB_USER_DEPARTMENT_MAPPING_0'  onmouseover="hghl(['XXTB_USER_DEPARTMENT_MAPPING_fk_XXTB_USER_DEPARTMENT_MAPPING_0','GONGANYUN2.XXTB_USER_DEPARTMENT_MAPPING.USER_ID','GONGANYUN2.WMF_USER.USER_ID'])" onmouseout="uhghl(['XXTB_USER_DEPARTMENT_MAPPING_fk_XXTB_USER_DEPARTMENT_MAPPING_0','GONGANYUN2.XXTB_USER_DEPARTMENT_MAPPING.USER_ID','GONGANYUN2.WMF_USER.USER_ID'])" transform='translate(7,0)' class='scene' d='M 240 300 L 262,300 Q 270,300 270,292 L 270,97 Q 270,90 277,90 L 285,90' >
+	<title>Fk fk_XXTB_USER_DEPARTMENT_MAPPING_0
+XXTB_USER_DEPARTMENT_MAPPING ref WMF_USER ( USER_ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow1)'    d='M 240 300 L 262,300 Q 270,300 270,292 L 270,97 Q 270,90 277,90 L 285,90' ></path>
+<text x='247' y='295' transform='rotate(0 247,295)' title='Fk fk_XXTB_USER_DEPARTMENT_MAPPING_0
+XXTB_USER_DEPARTMENT_MAPPING ref WMF_USER ( USER_ID )' style='fill:#cfc391;'>fk_XXTB_USER_DEPARTMENT_MAPPING_0</text>
+<!-- ============= Fk 'XXTB_KHZB_INFO_fk_XXTB_KHZB_INFO' ============= -->
+<path id='XXTB_KHZB_INFO_fk_XXTB_KHZB_INFO'  onmouseover="hghl(['XXTB_KHZB_INFO_fk_XXTB_KHZB_INFO','GONGANYUN2.XXTB_KHZB_INFO.DEPARTMENT_ID','GONGANYUN2.XXTB_DEPARTMENT_INFO.DEPARTMENT_ID'])" onmouseout="uhghl(['XXTB_KHZB_INFO_fk_XXTB_KHZB_INFO','GONGANYUN2.XXTB_KHZB_INFO.DEPARTMENT_ID','GONGANYUN2.XXTB_DEPARTMENT_INFO.DEPARTMENT_ID'])" transform='translate(7,0)' class='scene' d='M 1005 465 L 967,465 Q 960,465 960,472 L 960,547 Q 960,555 952,555 L 525,555' >
+	<title>Fk fk_XXTB_KHZB_INFO
+XXTB_KHZB_INFO ref XXTB_DEPARTMENT_INFO ( DEPARTMENT_ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow1)'    d='M 1005 465 L 967,465 Q 960,465 960,472 L 960,547 Q 960,555 952,555 L 525,555' ></path>
+<text x='902' y='460' transform='rotate(0 902,460)' title='Fk fk_XXTB_KHZB_INFO
+XXTB_KHZB_INFO ref XXTB_DEPARTMENT_INFO ( DEPARTMENT_ID )' style='fill:#cfc391;'>fk_XXTB_KHZB_INFO</text>
+<!-- ============= Fk 'XXTB_RULE_INFO_fk_XXTB_RULE_INFO' ============= -->
+<path id='XXTB_RULE_INFO_fk_XXTB_RULE_INFO'  onmouseover="hghl(['XXTB_RULE_INFO_fk_XXTB_RULE_INFO','GONGANYUN2.XXTB_RULE_INFO.YSFZ','GONGANYUN2.XXTB_YSFZ_INFO.ID'])" onmouseout="uhghl(['XXTB_RULE_INFO_fk_XXTB_RULE_INFO','GONGANYUN2.XXTB_RULE_INFO.YSFZ','GONGANYUN2.XXTB_YSFZ_INFO.ID'])" transform='translate(7,0)' class='scene' d='M 1005 795 L 952,795 Q 945,795 945,787 L 945,682 Q 945,675 937,675 L 930,675' >
+	<title>Fk fk_XXTB_RULE_INFO
+XXTB_RULE_INFO ref XXTB_YSFZ_INFO ( YSFZ -&gt; ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow1)'    d='M 1005 795 L 952,795 Q 945,795 945,787 L 945,682 Q 945,675 937,675 L 930,675' ></path>
+<text x='904' y='790' transform='rotate(0 904,790)' title='Fk fk_XXTB_RULE_INFO
+XXTB_RULE_INFO ref XXTB_YSFZ_INFO ( YSFZ -&gt; ID )' style='fill:#cfc391;'>fk_XXTB_RULE_INFO</text>
+<!-- ============= Fk 'XXTB_KHZB_RULE_MAPPING_fk_XXTB_KHZB_RULE_MAPPING' ============= -->
+<path id='XXTB_KHZB_RULE_MAPPING_fk_XXTB_KHZB_RULE_MAPPING'  onmouseover="hghl(['XXTB_KHZB_RULE_MAPPING_fk_XXTB_KHZB_RULE_MAPPING','GONGANYUN2.XXTB_KHZB_RULE_MAPPING.ZB_ID','GONGANYUN2.XXTB_KHZB_INFO.ZB_ID'])" onmouseout="uhghl(['XXTB_KHZB_RULE_MAPPING_fk_XXTB_KHZB_RULE_MAPPING','GONGANYUN2.XXTB_KHZB_RULE_MAPPING.ZB_ID','GONGANYUN2.XXTB_KHZB_INFO.ZB_ID'])" transform='translate(7,0)' class='scene' d='M 1245 585 L 1207,585 Q 1200,585 1200,577 L 1200,412 Q 1200,405 1192,405 L 1185,405' >
+	<title>Fk fk_XXTB_KHZB_RULE_MAPPING
+XXTB_KHZB_RULE_MAPPING ref XXTB_KHZB_INFO ( ZB_ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow1)'    d='M 1245 585 L 1207,585 Q 1200,585 1200,577 L 1200,412 Q 1200,405 1192,405 L 1185,405' ></path>
+<text x='1088' y='580' transform='rotate(0 1088,580)' title='Fk fk_XXTB_KHZB_RULE_MAPPING
+XXTB_KHZB_RULE_MAPPING ref XXTB_KHZB_INFO ( ZB_ID )' style='fill:#cfc391;'>fk_XXTB_KHZB_RULE_MAPPING</text>
+<!-- ============= Fk 'XXTB_KHZB_RULE_MAPPING_fk_XXTB_KHZB_RULE_MAPPING_0' ============= -->
+<path id='XXTB_KHZB_RULE_MAPPING_fk_XXTB_KHZB_RULE_MAPPING_0'  onmouseover="hghl(['XXTB_KHZB_RULE_MAPPING_fk_XXTB_KHZB_RULE_MAPPING_0','GONGANYUN2.XXTB_KHZB_RULE_MAPPING.RULE_ID','GONGANYUN2.XXTB_RULE_INFO.RULE_ID'])" onmouseout="uhghl(['XXTB_KHZB_RULE_MAPPING_fk_XXTB_KHZB_RULE_MAPPING_0','GONGANYUN2.XXTB_KHZB_RULE_MAPPING.RULE_ID','GONGANYUN2.XXTB_RULE_INFO.RULE_ID'])" transform='translate(7,0)' class='scene' d='M 1245 600 L 1222,600 Q 1215,600 1215,607 L 1215,667 Q 1215,675 1207,675 L 1200,675' >
+	<title>Fk fk_XXTB_KHZB_RULE_MAPPING_0
+XXTB_KHZB_RULE_MAPPING ref XXTB_RULE_INFO ( RULE_ID )</title>
+</path>
+<path class='defo' transform='translate(7,0)' marker-start='url(#foot0p)' marker-end='url(#arrow1)'    d='M 1245 600 L 1222,600 Q 1215,600 1215,607 L 1215,667 Q 1215,675 1207,675 L 1200,675' ></path>
+<text x='1076' y='595' transform='rotate(0 1076,595)' title='Fk fk_XXTB_KHZB_RULE_MAPPING_0
+XXTB_KHZB_RULE_MAPPING ref XXTB_RULE_INFO ( RULE_ID )' style='fill:#cfc391;'>fk_XXTB_KHZB_RULE_MAPPING_0</text>
+<!-- ============= Table 'XXTB_MODEL_KHZB_MAPPING' ============= -->
+<rect class='table' x='1275' y='278' width='165' height='165' rx='7' ry='7' />
+<line class='delim' x1='1275.500000' y1='304.500000' x2='1439.500000' y2='304.500000'/>
+<line class='delim' x1='1290.500000' y1='304.500000' x2='1290.500000' y2='442.500000'/>
+<line class='delim' x1='1428.500000' y1='304.500000' x2='1428.500000' y2='442.500000'/>
+<path d='M 1275.50 304.50 L 1275.50 285.50 Q 1275.50 278.50 1282.50 278.50 L 1432.50 278.50 Q 1439.50 278.50 1439.50 285.50 L 1439.50 304.50 L1275.50 304.50 ' style='fill:url(#tableHeaderGradient0); stroke:none;' />
+<a xlink:href='#XXTB_MODEL_KHZB_MAPPING'><text x='1278' y='296'>XXTB_MODEL_KHZB_MAPPING</text><title>Table GONGANYUN2.XXTB_MODEL_KHZB_MAPPING</title></a>
+  <use id='nn' x='1277' y='312' xlink:href='#nn'/><a xlink:href='#XXTB_MODEL_KHZB_MAPPING.ID'><use id='pk' x='1277' y='311' xlink:href='#pk'/><title>Pk CONS134219023 ( ID ) </title></a>
+<a xlink:href='#XXTB_MODEL_KHZB_MAPPING.ID'><text id='GONGANYUN2.XXTB_MODEL_KHZB_MAPPING.ID' x='1293' y='322'>ID</text><text x='1425' y='322' text-anchor='end' class='colType'>varchar</text><title>ID
+* varchar
+主键ID</title></a>
+  <a xlink:href='#XXTB_MODEL_KHZB_MAPPING.MODEL_ID'><use id='idx' x='1277' y='326' xlink:href='#idx'/><title>idx_XXTB_MODEL_KHZB_MAPPING ( MODEL_ID ) </title></a>
+<a xlink:href='#XXTB_MODEL_KHZB_MAPPING.MODEL_ID'><text id='GONGANYUN2.XXTB_MODEL_KHZB_MAPPING.MODEL_ID' x='1293' y='337' onmouseover="hghl(['XXTB_MODEL_KHZB_MAPPING_fk_XXTB_MODEL_KHZB_MAPPING'])" onmouseout="uhghl(['XXTB_MODEL_KHZB_MAPPING_fk_XXTB_MODEL_KHZB_MAPPING'])">MODEL_ID</text><text x='1425' y='337' text-anchor='end' class='colType'>varchar</text><title>MODEL_ID
+varchar
+模板ID</title></a>
+<a xlink:href='#XXTB_MODEL_KHZB_MAPPING.MODEL_ID'><use id='fk' x='1428' y='326' xlink:href='#fk'/><title>References XXTB_MODEL_INFO ( MODEL_ID ) </title></a>
+  <a xlink:href='#XXTB_MODEL_KHZB_MAPPING.ZB_ID'><use id='idx' x='1277' y='341' xlink:href='#idx'/><title>idx_XXTB_MODEL_KHZB_MAPPING_0 ( ZB_ID ) </title></a>
+<a xlink:href='#XXTB_MODEL_KHZB_MAPPING.ZB_ID'><text id='GONGANYUN2.XXTB_MODEL_KHZB_MAPPING.ZB_ID' x='1293' y='352' onmouseover="hghl(['XXTB_MODEL_KHZB_MAPPING_fk_XXTB_MODEL_KHZB_MAPPING_0'])" onmouseout="uhghl(['XXTB_MODEL_KHZB_MAPPING_fk_XXTB_MODEL_KHZB_MAPPING_0'])">ZB_ID</text><text x='1425' y='352' text-anchor='end' class='colType'>varchar</text><title>ZB_ID
+varchar
+指标ID</title></a>
+<a xlink:href='#XXTB_MODEL_KHZB_MAPPING.ZB_ID'><use id='fk' x='1428' y='341' xlink:href='#fk'/><title>References XXTB_KHZB_INFO ( ZB_ID ) </title></a>
+  <a xlink:href='#XXTB_MODEL_KHZB_MAPPING.DEPARTMENT_ID'><text id='GONGANYUN2.XXTB_MODEL_KHZB_MAPPING.DEPARTMENT_ID' x='1293' y='367'>DEPARTMENT_ID</text><text x='1425' y='367' text-anchor='end' class='colType'>varchar</text><title>DEPARTMENT_ID
+varchar
+部门ID</title></a>
+  <a xlink:href='#XXTB_MODEL_KHZB_MAPPING.ORDER_NUM'><text id='GONGANYUN2.XXTB_MODEL_KHZB_MAPPING.ORDER_NUM' x='1293' y='382'>ORDER_NUM</text><text x='1425' y='382' text-anchor='end' class='colType'>integer</text><title>ORDER_NUM
+integer
+指标排列顺序</title></a>
+  <a xlink:href='#XXTB_MODEL_KHZB_MAPPING.ZB_ZF'><text id='GONGANYUN2.XXTB_MODEL_KHZB_MAPPING.ZB_ZF' x='1293' y='397'>ZB_ZF</text><text x='1425' y='397' text-anchor='end' class='colType'>float</text><title>ZB_ZF
+float
+指标总分</title></a>
+  <a xlink:href='#XXTB_MODEL_KHZB_MAPPING.ZB_JC'><text id='GONGANYUN2.XXTB_MODEL_KHZB_MAPPING.ZB_JC' x='1293' y='412'>ZB_JC</text><text x='1425' y='412' text-anchor='end' class='colType'>varchar</text><title>ZB_JC
+varchar
+指标简称</title></a>
+  <a xlink:href='#XXTB_MODEL_KHZB_MAPPING.FLAG'><text id='GONGANYUN2.XXTB_MODEL_KHZB_MAPPING.FLAG' x='1293' y='427'>FLAG</text><text x='1425' y='427' text-anchor='end' class='colType'>integer</text><title>FLAG
+integer
+标识是否为特殊指标</title></a>
+
+<!-- ============= Table 'XXTB_FSTJ' ============= -->
+<rect class='table' x='810' y='368' width='135' height='165' rx='7' ry='7' />
+<line class='delim' x1='810.500000' y1='394.500000' x2='944.500000' y2='394.500000'/>
+<line class='delim' x1='825.500000' y1='394.500000' x2='825.500000' y2='532.500000'/>
+<line class='delim' x1='933.500000' y1='394.500000' x2='933.500000' y2='532.500000'/>
+<path d='M 810.50 394.50 L 810.50 375.50 Q 810.50 368.50 817.50 368.50 L 937.50 368.50 Q 944.50 368.50 944.50 375.50 L 944.50 394.50 L810.50 394.50 ' style='fill:url(#tableHeaderGradient0); stroke:none;' />
+<a xlink:href='#XXTB_FSTJ'><text x='846' y='386'>XXTB_FSTJ</text><title>Table GONGANYUN2.XXTB_FSTJ
+考核数据统计</title></a>
+  <use id='nn' x='812' y='402' xlink:href='#nn'/><a xlink:href='#XXTB_FSTJ.XXTB_ID'><use id='pk' x='812' y='401' xlink:href='#pk'/><title>Pk CONS134219019 ( XXTB_ID ) </title></a>
+<a xlink:href='#XXTB_FSTJ.XXTB_ID'><text id='GONGANYUN2.XXTB_FSTJ.XXTB_ID' x='828' y='412'>XXTB_ID</text><text x='930' y='412' text-anchor='end' class='colType'>varchar</text><title>XXTB_ID
+* varchar
+ID</title></a>
+  <a xlink:href='#XXTB_FSTJ.CITY_ID'><use id='idx' x='812' y='416' xlink:href='#idx'/><title>idx_XXTB_FSTJ ( CITY_ID ) </title></a>
+<a xlink:href='#XXTB_FSTJ.CITY_ID'><text id='GONGANYUN2.XXTB_FSTJ.CITY_ID' x='828' y='427' onmouseover="hghl(['XXTB_FSTJ_fk_XXTB_FSTJ'])" onmouseout="uhghl(['XXTB_FSTJ_fk_XXTB_FSTJ'])">CITY_ID</text><text x='930' y='427' text-anchor='end' class='colType'>varchar</text><title>CITY_ID
+varchar
+地市编号</title></a>
+<a xlink:href='#XXTB_FSTJ.CITY_ID'><use id='fk' x='933' y='416' xlink:href='#fk'/><title>References XXTB_CITY_INFO ( CITY_ID ) </title></a>
+  <a xlink:href='#XXTB_FSTJ.ZB_ID'><use id='idx' x='812' y='431' xlink:href='#idx'/><title>idx_XXTB_FSTJ_0 ( ZB_ID ) </title></a>
+<a xlink:href='#XXTB_FSTJ.ZB_ID'><text id='GONGANYUN2.XXTB_FSTJ.ZB_ID' x='828' y='442' onmouseover="hghl(['XXTB_FSTJ_fk_XXTB_FSTJ_0'])" onmouseout="uhghl(['XXTB_FSTJ_fk_XXTB_FSTJ_0'])">ZB_ID</text><text x='930' y='442' text-anchor='end' class='colType'>varchar</text><title>ZB_ID
+varchar
+指标ID</title></a>
+<a xlink:href='#XXTB_FSTJ.ZB_ID'><use id='fk' x='933' y='431' xlink:href='#fk'/><title>References XXTB_KHZB_INFO ( ZB_ID ) </title></a>
+  <a xlink:href='#XXTB_FSTJ.ZB_SJZ'><text id='GONGANYUN2.XXTB_FSTJ.ZB_SJZ' x='828' y='457'>ZB_SJZ</text><text x='930' y='457' text-anchor='end' class='colType'>float</text><title>ZB_SJZ
+float
+指标数据值（上报填的值）</title></a>
+  <a xlink:href='#XXTB_FSTJ.FS'><text id='GONGANYUN2.XXTB_FSTJ.FS' x='828' y='472'>FS</text><text x='930' y='472' text-anchor='end' class='colType'>float</text><title>FS
+float
+指标分数（最终该项得分）</title></a>
+  <a xlink:href='#XXTB_FSTJ.SJ'><text id='GONGANYUN2.XXTB_FSTJ.SJ' x='828' y='487'>SJ</text><text x='930' y='487' text-anchor='end' class='colType'>varchar</text><title>SJ
+varchar
+时间</title></a>
+  <a xlink:href='#XXTB_FSTJ.FLAG'><text id='GONGANYUN2.XXTB_FSTJ.FLAG' x='828' y='502'>FLAG</text><text x='930' y='502' text-anchor='end' class='colType'>varchar</text><title>FLAG
+varchar
+标志</title></a>
+  <a xlink:href='#XXTB_FSTJ.ORDER_NUM'><text id='GONGANYUN2.XXTB_FSTJ.ORDER_NUM' x='828' y='517'>ORDER_NUM</text><text x='930' y='517' text-anchor='end' class='colType'>integer</text><title>ORDER_NUM
+integer
+指标序列（解决总分排序问题，对其他指标序列无效）</title></a>
+
+<!-- ============= Table 'XXTB_DEPARTMENT_INFO' ============= -->
+<rect class='table' x='315' y='518' width='210' height='150' rx='7' ry='7' />
+<line class='delim' x1='315.500000' y1='544.500000' x2='524.500000' y2='544.500000'/>
+<line class='delim' x1='330.500000' y1='544.500000' x2='330.500000' y2='667.500000'/>
+<line class='delim' x1='513.500000' y1='544.500000' x2='513.500000' y2='667.500000'/>
+<path d='M 315.50 544.50 L 315.50 525.50 Q 315.50 518.50 322.50 518.50 L 517.50 518.50 Q 524.50 518.50 524.50 525.50 L 524.50 544.50 L315.50 544.50 ' style='fill:url(#tableHeaderGradient0); stroke:none;' />
+<a xlink:href='#XXTB_DEPARTMENT_INFO'><text x='352' y='536'>XXTB_DEPARTMENT_INFO</text><title>Table GONGANYUN2.XXTB_DEPARTMENT_INFO
+考核部门信息</title></a>
+  <use id='nn' x='317' y='552' xlink:href='#nn'/><a xlink:href='#XXTB_DEPARTMENT_INFO.DEPARTMENT_ID'><use id='pk' x='317' y='551' xlink:href='#pk'/><title>Pk CONS134219018 ( DEPARTMENT_ID ) </title></a>
+<a xlink:href='#XXTB_DEPARTMENT_INFO.DEPARTMENT_ID'><text id='GONGANYUN2.XXTB_DEPARTMENT_INFO.DEPARTMENT_ID' x='333' y='562' onmouseover="hghl(['XXTB_USER_DEPARTMENT_MAPPING_fk_XXTB_USER_DEPARTMENT_MAPPING','XXTB_KHZB_INFO_fk_XXTB_KHZB_INFO','XXTB_KHZB_INFO_fk_XXTB_KHZB_INFO'])" onmouseout="uhghl(['XXTB_USER_DEPARTMENT_MAPPING_fk_XXTB_USER_DEPARTMENT_MAPPING','XXTB_KHZB_INFO_fk_XXTB_KHZB_INFO','XXTB_KHZB_INFO_fk_XXTB_KHZB_INFO'])">DEPARTMENT_ID</text><text x='510' y='562' text-anchor='end' class='colType'>varchar</text><title>DEPARTMENT_ID
+* varchar
+部门编号ID</title></a>
+<a xlink:href='#XXTB_DEPARTMENT_INFO.DEPARTMENT_ID'><use id='ref' x='513' y='551' xlink:href='#ref'/><title>Referred by XXTB_USER_DEPARTMENT_MAPPING ( DEPARTMENT_ID ) 
+Referred by XXTB_KHZB_INFO ( DEPARTMENT_ID ) 
+Referred by XXTB_KHZB_INFO ( DEPARTMENT_ID ) </title></a>
+  <a xlink:href='#XXTB_DEPARTMENT_INFO.DEPARTMENT_NAME'><text id='GONGANYUN2.XXTB_DEPARTMENT_INFO.DEPARTMENT_NAME' x='333' y='577'>DEPARTMENT_NAME</text><text x='510' y='577' text-anchor='end' class='colType'>varchar</text><title>DEPARTMENT_NAME
+varchar
+部门名称</title></a>
+  <a xlink:href='#XXTB_DEPARTMENT_INFO.PARENT_ID'><text id='GONGANYUN2.XXTB_DEPARTMENT_INFO.PARENT_ID' x='333' y='592'>PARENT_ID</text><text x='510' y='592' text-anchor='end' class='colType'>varchar</text><title>PARENT_ID
+varchar
+上级部门ID</title></a>
+  <a xlink:href='#XXTB_DEPARTMENT_INFO.FZR'><text id='GONGANYUN2.XXTB_DEPARTMENT_INFO.FZR' x='333' y='607'>FZR</text><text x='510' y='607' text-anchor='end' class='colType'>varchar</text><title>FZR
+varchar
+负责人</title></a>
+  <a xlink:href='#XXTB_DEPARTMENT_INFO.TEL'><text id='GONGANYUN2.XXTB_DEPARTMENT_INFO.TEL' x='333' y='622'>TEL</text><text x='510' y='622' text-anchor='end' class='colType'>varchar</text><title>TEL
+varchar
+负责人电话</title></a>
+  <a xlink:href='#XXTB_DEPARTMENT_INFO.ORDER_NUM'><text id='GONGANYUN2.XXTB_DEPARTMENT_INFO.ORDER_NUM' x='333' y='637'>ORDER_NUM</text><text x='510' y='637' text-anchor='end' class='colType'>integer</text><title>ORDER_NUM
+integer
+排列标记</title></a>
+  <a xlink:href='#XXTB_DEPARTMENT_INFO.DEPARTMENT_DESCRIPTION'><text id='GONGANYUN2.XXTB_DEPARTMENT_INFO.DEPARTMENT_DESCRIPTION' x='333' y='652'>DEPARTMENT_DESCRIPTION</text><text x='510' y='652' text-anchor='end' class='colType'>varchar</text><title>DEPARTMENT_DESCRIPTION
+varchar
+描述</title></a>
+
+<!-- ============= Table 'XXTB_USER_DEPARTMENT_MAPPING' ============= -->
+<rect class='table' x='45' y='248' width='195' height='105' rx='7' ry='7' />
+<line class='delim' x1='45.500000' y1='274.500000' x2='239.500000' y2='274.500000'/>
+<line class='delim' x1='60.500000' y1='274.500000' x2='60.500000' y2='352.500000'/>
+<line class='delim' x1='228.500000' y1='274.500000' x2='228.500000' y2='352.500000'/>
+<path d='M 45.50 274.50 L 45.50 255.50 Q 45.50 248.50 52.50 248.50 L 232.50 248.50 Q 239.50 248.50 239.50 255.50 L 239.50 274.50 L45.50 274.50 ' style='fill:url(#tableHeaderGradient0); stroke:none;' />
+<a xlink:href='#XXTB_USER_DEPARTMENT_MAPPING'><text x='47' y='266'>XXTB_USER_DEPARTMENT_MAPPING</text><title>Table GONGANYUN2.XXTB_USER_DEPARTMENT_MAPPING
+部门用户配置信息</title></a>
+  <use id='nn' x='47' y='282' xlink:href='#nn'/><a xlink:href='#XXTB_USER_DEPARTMENT_MAPPING.ID'><use id='pk' x='47' y='281' xlink:href='#pk'/><title>Pk CONS134219025 ( ID ) </title></a>
+<a xlink:href='#XXTB_USER_DEPARTMENT_MAPPING.ID'><text id='GONGANYUN2.XXTB_USER_DEPARTMENT_MAPPING.ID' x='63' y='292'>ID</text><text x='225' y='292' text-anchor='end' class='colType'>varchar</text><title>ID
+* varchar
+主键ID</title></a>
+  <a xlink:href='#XXTB_USER_DEPARTMENT_MAPPING.USER_ID'><use id='idx' x='47' y='296' xlink:href='#idx'/><title>idx_XXTB_USER_DEPARTMENT_MAPPING_0 ( USER_ID ) </title></a>
+<a xlink:href='#XXTB_USER_DEPARTMENT_MAPPING.USER_ID'><text id='GONGANYUN2.XXTB_USER_DEPARTMENT_MAPPING.USER_ID' x='63' y='307' onmouseover="hghl(['XXTB_USER_DEPARTMENT_MAPPING_fk_XXTB_USER_DEPARTMENT_MAPPING_0'])" onmouseout="uhghl(['XXTB_USER_DEPARTMENT_MAPPING_fk_XXTB_USER_DEPARTMENT_MAPPING_0'])">USER_ID</text><text x='225' y='307' text-anchor='end' class='colType'>varchar</text><title>USER_ID
+varchar
+用户id</title></a>
+<a xlink:href='#XXTB_USER_DEPARTMENT_MAPPING.USER_ID'><use id='fk' x='228' y='296' xlink:href='#fk'/><title>References WMF_USER ( USER_ID ) </title></a>
+  <a xlink:href='#XXTB_USER_DEPARTMENT_MAPPING.DEPARTMENT_ID'><use id='idx' x='47' y='311' xlink:href='#idx'/><title>idx_XXTB_USER_DEPARTMENT_MAPPING ( DEPARTMENT_ID ) </title></a>
+<a xlink:href='#XXTB_USER_DEPARTMENT_MAPPING.DEPARTMENT_ID'><text id='GONGANYUN2.XXTB_USER_DEPARTMENT_MAPPING.DEPARTMENT_ID' x='63' y='322' onmouseover="hghl(['XXTB_USER_DEPARTMENT_MAPPING_fk_XXTB_USER_DEPARTMENT_MAPPING'])" onmouseout="uhghl(['XXTB_USER_DEPARTMENT_MAPPING_fk_XXTB_USER_DEPARTMENT_MAPPING'])">DEPARTMENT_ID</text><text x='225' y='322' text-anchor='end' class='colType'>varchar</text><title>DEPARTMENT_ID
+varchar
+部门id</title></a>
+<a xlink:href='#XXTB_USER_DEPARTMENT_MAPPING.DEPARTMENT_ID'><use id='fk' x='228' y='311' xlink:href='#fk'/><title>References XXTB_DEPARTMENT_INFO ( DEPARTMENT_ID ) </title></a>
+  <a xlink:href='#XXTB_USER_DEPARTMENT_MAPPING.ROLE'><text id='GONGANYUN2.XXTB_USER_DEPARTMENT_MAPPING.ROLE' x='63' y='337'>ROLE</text><text x='225' y='337' text-anchor='end' class='colType'>varchar</text><title>ROLE
+varchar</title></a>
+
+<!-- ============= Table 'WMF_USER' ============= -->
+<rect class='table' x='300' y='53' width='225' height='390' rx='7' ry='7' />
+<line class='delim' x1='300.500000' y1='79.500000' x2='524.500000' y2='79.500000'/>
+<line class='delim' x1='315.500000' y1='79.500000' x2='315.500000' y2='442.500000'/>
+<line class='delim' x1='513.500000' y1='79.500000' x2='513.500000' y2='442.500000'/>
+<path d='M 300.50 79.50 L 300.50 60.50 Q 300.50 53.50 307.50 53.50 L 517.50 53.50 Q 524.50 53.50 524.50 60.50 L 524.50 79.50 L300.50 79.50 ' style='fill:url(#tableHeaderGradient0); stroke:none;' />
+<a xlink:href='#WMF_USER'><text x='381' y='71'>WMF_USER</text><title>Table GONGANYUN2.WMF_USER
+用户表</title></a>
+  <use id='nn' x='302' y='87' xlink:href='#nn'/><a xlink:href='#WMF_USER.USER_ID'><use id='pk' x='302' y='86' xlink:href='#pk'/><title>Pk CONS134219005 ( USER_ID ) </title></a>
+<a xlink:href='#WMF_USER.USER_ID'><text id='GONGANYUN2.WMF_USER.USER_ID' x='318' y='97' onmouseover="hghl(['MD_USER_COLUMN_MAPPING_fk_MD_USER_COLUMN_MAPPING','MD_USER_DATASET_MAPPING_fk_MD_USER_DATASET_MAPPING','MD_USER_QUERY_VIEW_MAPPING_fk_MD_USER_QUERY_VIEW_MAPPING_0','WMF_USER_ORG_MAPPING_fk_WMF_USER_ORG_MAPPING','WMF_USER_ROLE_MAPPING_fk_WMF_USER_ROLE_MAPPING','WMF_WHITE_USER_fk_WMF_WHITE_USER','XXTB_USER_DEPARTMENT_MAPPING_fk_XXTB_USER_DEPARTMENT_MAPPING_0'])" onmouseout="uhghl(['MD_USER_COLUMN_MAPPING_fk_MD_USER_COLUMN_MAPPING','MD_USER_DATASET_MAPPING_fk_MD_USER_DATASET_MAPPING','MD_USER_QUERY_VIEW_MAPPING_fk_MD_USER_QUERY_VIEW_MAPPING_0','WMF_USER_ORG_MAPPING_fk_WMF_USER_ORG_MAPPING','WMF_USER_ROLE_MAPPING_fk_WMF_USER_ROLE_MAPPING','WMF_WHITE_USER_fk_WMF_WHITE_USER','XXTB_USER_DEPARTMENT_MAPPING_fk_XXTB_USER_DEPARTMENT_MAPPING_0'])">USER_ID</text><text x='510' y='97' text-anchor='end' class='colType'>varchar</text><title>USER_ID
+* varchar
+用户ID（随机生成）</title></a>
+<a xlink:href='#WMF_USER.USER_ID'><use id='ref' x='513' y='86' xlink:href='#ref'/><title>Referred by MD_USER_COLUMN_MAPPING ( USER_ID ) 
+Referred by MD_USER_DATASET_MAPPING ( USER_ID ) 
+Referred by MD_USER_QUERY_VIEW_MAPPING ( USER_ID ) 
+Referred by WMF_USER_ORG_MAPPING ( USER_ID ) 
+Referred by WMF_USER_ROLE_MAPPING ( USER_ID ) 
+Referred by WMF_WHITE_USER ( USER_ID ) 
+Referred by XXTB_USER_DEPARTMENT_MAPPING ( USER_ID ) </title></a>
+  <a xlink:href='#WMF_USER.USER_CODE'><text id='GONGANYUN2.WMF_USER.USER_CODE' x='318' y='112' onmouseover="hghl(['WMF_ONLINE_USER_MAPPING_fk_WMF_ONLINE_USER_MAPPING','WMF_USER_BUTTON_MAPPING_fk_WMF_USER_BUTTON_MAPPING'])" onmouseout="uhghl(['WMF_ONLINE_USER_MAPPING_fk_WMF_ONLINE_USER_MAPPING','WMF_USER_BUTTON_MAPPING_fk_WMF_USER_BUTTON_MAPPING'])">USER_CODE</text><text x='510' y='112' text-anchor='end' class='colType'>varchar</text><title>USER_CODE
+varchar
+用户账号（警号）</title></a>
+<a xlink:href='#WMF_USER.USER_CODE'><use id='ref' x='513' y='101' xlink:href='#ref'/><title>Referred by WMF_ONLINE_USER_MAPPING ( USER_CODE ) 
+Referred by WMF_USER_BUTTON_MAPPING ( USER_CODE ) </title></a>
+  <a xlink:href='#WMF_USER.USER_NAME'><text id='GONGANYUN2.WMF_USER.USER_NAME' x='318' y='127'>USER_NAME</text><text x='510' y='127' text-anchor='end' class='colType'>varchar</text><title>USER_NAME
+varchar
+用户名</title></a>
+  <a xlink:href='#WMF_USER.USER_SFZH'><text id='GONGANYUN2.WMF_USER.USER_SFZH' x='318' y='142'>USER_SFZH</text><text x='510' y='142' text-anchor='end' class='colType'>varchar</text><title>USER_SFZH
+varchar
+用户身份证号</title></a>
+  <a xlink:href='#WMF_USER.USER_PASSWORD'><text id='GONGANYUN2.WMF_USER.USER_PASSWORD' x='318' y='157'>USER_PASSWORD</text><text x='510' y='157' text-anchor='end' class='colType'>varchar</text><title>USER_PASSWORD
+varchar
+用户密码（MD5）</title></a>
+  <a xlink:href='#WMF_USER.SEX'><text id='GONGANYUN2.WMF_USER.SEX' x='318' y='172'>SEX</text><text x='510' y='172' text-anchor='end' class='colType'>varchar</text><title>SEX
+varchar</title></a>
+  <a xlink:href='#WMF_USER.TELEPHONE'><text id='GONGANYUN2.WMF_USER.TELEPHONE' x='318' y='187'>TELEPHONE</text><text x='510' y='187' text-anchor='end' class='colType'>varchar</text><title>TELEPHONE
+varchar</title></a>
+  <a xlink:href='#WMF_USER.EMAIL'><text id='GONGANYUN2.WMF_USER.EMAIL' x='318' y='202'>EMAIL</text><text x='510' y='202' text-anchor='end' class='colType'>varchar</text><title>EMAIL
+varchar</title></a>
+  <a xlink:href='#WMF_USER.USER_TYPE'><text id='GONGANYUN2.WMF_USER.USER_TYPE' x='318' y='217'>USER_TYPE</text><text x='510' y='217' text-anchor='end' class='colType'>varchar</text><title>USER_TYPE
+varchar</title></a>
+  <a xlink:href='#WMF_USER.SECRET_LEVEL'><text id='GONGANYUN2.WMF_USER.SECRET_LEVEL' x='318' y='232'>SECRET_LEVEL</text><text x='510' y='232' text-anchor='end' class='colType'>integer</text><title>SECRET_LEVEL
+integer default '10'</title></a>
+  <a xlink:href='#WMF_USER.VALID_FLAG'><text id='GONGANYUN2.WMF_USER.VALID_FLAG' x='318' y='247'>VALID_FLAG</text><text x='510' y='247' text-anchor='end' class='colType'>integer</text><title>VALID_FLAG
+integer default '1'</title></a>
+  <a xlink:href='#WMF_USER.EXPIRY_TIME'><text id='GONGANYUN2.WMF_USER.EXPIRY_TIME' x='318' y='262'>EXPIRY_TIME</text><text x='510' y='262' text-anchor='end' class='colType'>timestamp</text><title>EXPIRY_TIME
+timestamp</title></a>
+  <a xlink:href='#WMF_USER.VALID_IP'><text id='GONGANYUN2.WMF_USER.VALID_IP' x='318' y='277'>VALID_IP</text><text x='510' y='277' text-anchor='end' class='colType'>varchar</text><title>VALID_IP
+varchar</title></a>
+  <a xlink:href='#WMF_USER.CRYPT_KEY'><text id='GONGANYUN2.WMF_USER.CRYPT_KEY' x='318' y='292'>CRYPT_KEY</text><text x='510' y='292' text-anchor='end' class='colType'>varchar</text><title>CRYPT_KEY
+varchar</title></a>
+  <a xlink:href='#WMF_USER.UPDATE_USER'><text id='GONGANYUN2.WMF_USER.UPDATE_USER' x='318' y='307'>UPDATE_USER</text><text x='510' y='307' text-anchor='end' class='colType'>varchar</text><title>UPDATE_USER
+varchar</title></a>
+  <a xlink:href='#WMF_USER.UPDATE_TIME'><text id='GONGANYUN2.WMF_USER.UPDATE_TIME' x='318' y='322'>UPDATE_TIME</text><text x='510' y='322' text-anchor='end' class='colType'>timestamp</text><title>UPDATE_TIME
+timestamp</title></a>
+  <a xlink:href='#WMF_USER.NOTE'><text id='GONGANYUN2.WMF_USER.NOTE' x='318' y='337'>NOTE</text><text x='510' y='337' text-anchor='end' class='colType'>varchar</text><title>NOTE
+varchar</title></a>
+  <a xlink:href='#WMF_USER.USER_PORTRAIT'><text id='GONGANYUN2.WMF_USER.USER_PORTRAIT' x='318' y='352'>USER_PORTRAIT</text><text x='510' y='352' text-anchor='end' class='colType'>varchar</text><title>USER_PORTRAIT
+varchar</title></a>
+  <a xlink:href='#WMF_USER.UPDATE_PASSWORD_FLAG'><text id='GONGANYUN2.WMF_USER.UPDATE_PASSWORD_FLAG' x='318' y='367'>UPDATE_PASSWORD_FLAG</text><text x='510' y='367' text-anchor='end' class='colType'>varchar</text><title>UPDATE_PASSWORD_FLAG
+varchar</title></a>
+  <a xlink:href='#WMF_USER.CREATE_TIME'><text id='GONGANYUN2.WMF_USER.CREATE_TIME' x='318' y='382'>CREATE_TIME</text><text x='510' y='382' text-anchor='end' class='colType'>timestamp</text><title>CREATE_TIME
+timestamp</title></a>
+  <a xlink:href='#WMF_USER.SPACE_SIZE'><text id='GONGANYUN2.WMF_USER.SPACE_SIZE' x='318' y='397'>SPACE_SIZE</text><text x='510' y='397' text-anchor='end' class='colType'>integer</text><title>SPACE_SIZE
+integer</title></a>
+  <a xlink:href='#WMF_USER.AUDIT_CODE'><text id='GONGANYUN2.WMF_USER.AUDIT_CODE' x='318' y='412'>AUDIT_CODE</text><text x='510' y='412' text-anchor='end' class='colType'>varchar2</text><title>AUDIT_CODE
+varchar2</title></a>
+  <a xlink:href='#WMF_USER.POSITION_CODE'><text id='GONGANYUN2.WMF_USER.POSITION_CODE' x='318' y='427'>POSITION_CODE</text><text x='510' y='427' text-anchor='end' class='colType'>varchar2</text><title>POSITION_CODE
+varchar2</title></a>
+
+<!-- ============= Table 'XXTB_CITY_INFO' ============= -->
+<rect class='table' x='585' y='98' width='150' height='180' rx='7' ry='7' />
+<line class='delim' x1='585.500000' y1='124.500000' x2='734.500000' y2='124.500000'/>
+<line class='delim' x1='600.500000' y1='124.500000' x2='600.500000' y2='277.500000'/>
+<line class='delim' x1='723.500000' y1='124.500000' x2='723.500000' y2='277.500000'/>
+<path d='M 585.50 124.50 L 585.50 105.50 Q 585.50 98.50 592.50 98.50 L 727.50 98.50 Q 734.50 98.50 734.50 105.50 L 734.50 124.50 L585.50 124.50 ' style='fill:url(#tableHeaderGradient0); stroke:none;' />
+<a xlink:href='#XXTB_CITY_INFO'><text x='614' y='116'>XXTB_CITY_INFO</text><title>Table GONGANYUN2.XXTB_CITY_INFO
+地市表</title></a>
+  <use id='nn' x='587' y='132' xlink:href='#nn'/><a xlink:href='#XXTB_CITY_INFO.CITY_ID'><use id='pk' x='587' y='131' xlink:href='#pk'/><title>Pk CONS134219017 ( CITY_ID ) </title></a>
+<a xlink:href='#XXTB_CITY_INFO.CITY_ID'><text id='GONGANYUN2.XXTB_CITY_INFO.CITY_ID' x='603' y='142' onmouseover="hghl(['XXTB_FSTJ_fk_XXTB_FSTJ'])" onmouseout="uhghl(['XXTB_FSTJ_fk_XXTB_FSTJ'])">CITY_ID</text><text x='720' y='142' text-anchor='end' class='colType'>varchar</text><title>CITY_ID
+* varchar
+地市编号</title></a>
+<a xlink:href='#XXTB_CITY_INFO.CITY_ID'><use id='ref' x='723' y='131' xlink:href='#ref'/><title>Referred by XXTB_FSTJ ( CITY_ID ) </title></a>
+  <a xlink:href='#XXTB_CITY_INFO.CITY_NAME'><text id='GONGANYUN2.XXTB_CITY_INFO.CITY_NAME' x='603' y='157'>CITY_NAME</text><text x='720' y='157' text-anchor='end' class='colType'>varchar</text><title>CITY_NAME
+varchar
+地市名称</title></a>
+  <a xlink:href='#XXTB_CITY_INFO.BM'><text id='GONGANYUN2.XXTB_CITY_INFO.BM' x='603' y='172'>BM</text><text x='720' y='172' text-anchor='end' class='colType'>varchar</text><title>BM
+varchar
+地市编码</title></a>
+  <a xlink:href='#XXTB_CITY_INFO.ORDER_NUM'><text id='GONGANYUN2.XXTB_CITY_INFO.ORDER_NUM' x='603' y='187'>ORDER_NUM</text><text x='720' y='187' text-anchor='end' class='colType'>integer</text><title>ORDER_NUM
+integer
+排列标记</title></a>
+  <a xlink:href='#XXTB_CITY_INFO.CREATE_USER'><text id='GONGANYUN2.XXTB_CITY_INFO.CREATE_USER' x='603' y='202'>CREATE_USER</text><text x='720' y='202' text-anchor='end' class='colType'>varchar</text><title>CREATE_USER
+varchar
+创建人</title></a>
+  <a xlink:href='#XXTB_CITY_INFO.CREATE_TIME'><text id='GONGANYUN2.XXTB_CITY_INFO.CREATE_TIME' x='603' y='217'>CREATE_TIME</text><text x='720' y='217' text-anchor='end' class='colType'>timestamp</text><title>CREATE_TIME
+timestamp
+创建时间</title></a>
+  <a xlink:href='#XXTB_CITY_INFO.MODIFY_USER'><text id='GONGANYUN2.XXTB_CITY_INFO.MODIFY_USER' x='603' y='232'>MODIFY_USER</text><text x='720' y='232' text-anchor='end' class='colType'>varchar</text><title>MODIFY_USER
+varchar
+修改人</title></a>
+  <a xlink:href='#XXTB_CITY_INFO.MODIFY_TIME'><text id='GONGANYUN2.XXTB_CITY_INFO.MODIFY_TIME' x='603' y='247'>MODIFY_TIME</text><text x='720' y='247' text-anchor='end' class='colType'>timestamp</text><title>MODIFY_TIME
+timestamp
+修改时间</title></a>
+  <a xlink:href='#XXTB_CITY_INFO.JYRS'><text id='GONGANYUN2.XXTB_CITY_INFO.JYRS' x='603' y='262'>JYRS</text><text x='720' y='262' text-anchor='end' class='colType'>integer</text><title>JYRS
+integer
+警员人数</title></a>
+
+<!-- ============= Table 'XXTB_MODEL_INFO' ============= -->
+<rect class='table' x='1020' y='128' width='150' height='165' rx='7' ry='7' />
+<line class='delim' x1='1020.500000' y1='154.500000' x2='1169.500000' y2='154.500000'/>
+<line class='delim' x1='1035.500000' y1='154.500000' x2='1035.500000' y2='292.500000'/>
+<line class='delim' x1='1158.500000' y1='154.500000' x2='1158.500000' y2='292.500000'/>
+<path d='M 1020.50 154.50 L 1020.50 135.50 Q 1020.50 128.50 1027.50 128.50 L 1162.50 128.50 Q 1169.50 128.50 1169.50 135.50 L 1169.50 154.50 L1020.50 154.50 ' style='fill:url(#tableHeaderGradient0); stroke:none;' />
+<a xlink:href='#XXTB_MODEL_INFO'><text x='1043' y='146'>XXTB_MODEL_INFO</text><title>Table GONGANYUN2.XXTB_MODEL_INFO
+模板表</title></a>
+  <use id='nn' x='1022' y='162' xlink:href='#nn'/><a xlink:href='#XXTB_MODEL_INFO.MODEL_ID'><use id='pk' x='1022' y='161' xlink:href='#pk'/><title>Pk CONS134219022 ( MODEL_ID, SJ ) Unq Pk_XXTB_MODEL_INFO ( MODEL_ID ) </title></a>
+<a xlink:href='#XXTB_MODEL_INFO.MODEL_ID'><text id='GONGANYUN2.XXTB_MODEL_INFO.MODEL_ID' x='1038' y='172' onmouseover="hghl(['XXTB_MODEL_KHZB_MAPPING_fk_XXTB_MODEL_KHZB_MAPPING'])" onmouseout="uhghl(['XXTB_MODEL_KHZB_MAPPING_fk_XXTB_MODEL_KHZB_MAPPING'])">MODEL_ID</text><text x='1155' y='172' text-anchor='end' class='colType'>varchar</text><title>MODEL_ID
+* varchar
+模板ID</title></a>
+<a xlink:href='#XXTB_MODEL_INFO.MODEL_ID'><use id='ref' x='1158' y='161' xlink:href='#ref'/><title>Referred by XXTB_MODEL_KHZB_MAPPING ( MODEL_ID ) </title></a>
+  <use id='nn' x='1022' y='177' xlink:href='#nn'/><a xlink:href='#XXTB_MODEL_INFO.SJ'><use id='pk' x='1022' y='176' xlink:href='#pk'/><title>Pk CONS134219022 ( MODEL_ID, SJ ) </title></a>
+<a xlink:href='#XXTB_MODEL_INFO.SJ'><text id='GONGANYUN2.XXTB_MODEL_INFO.SJ' x='1038' y='187'>SJ</text><text x='1155' y='187' text-anchor='end' class='colType'>varchar</text><title>SJ
+* varchar
+模板月份</title></a>
+  <a xlink:href='#XXTB_MODEL_INFO.MODEL_NAME'><text id='GONGANYUN2.XXTB_MODEL_INFO.MODEL_NAME' x='1038' y='202'>MODEL_NAME</text><text x='1155' y='202' text-anchor='end' class='colType'>varchar</text><title>MODEL_NAME
+varchar
+模板名</title></a>
+  <a xlink:href='#XXTB_MODEL_INFO.PZR'><text id='GONGANYUN2.XXTB_MODEL_INFO.PZR' x='1038' y='217'>PZR</text><text x='1155' y='217' text-anchor='end' class='colType'>varchar</text><title>PZR
+varchar
+配置人</title></a>
+  <a xlink:href='#XXTB_MODEL_INFO.PARENT_ID'><text id='GONGANYUN2.XXTB_MODEL_INFO.PARENT_ID' x='1038' y='232'>PARENT_ID</text><text x='1155' y='232' text-anchor='end' class='colType'>varchar</text><title>PARENT_ID
+varchar
+上级模板ID</title></a>
+  <a xlink:href='#XXTB_MODEL_INFO.RESERVE'><text id='GONGANYUN2.XXTB_MODEL_INFO.RESERVE' x='1038' y='247'>RESERVE</text><text x='1155' y='247' text-anchor='end' class='colType'>varchar</text><title>RESERVE
+varchar</title></a>
+  <a xlink:href='#XXTB_MODEL_INFO.TEL'><text id='GONGANYUN2.XXTB_MODEL_INFO.TEL' x='1038' y='262'>TEL</text><text x='1155' y='262' text-anchor='end' class='colType'>varchar</text><title>TEL
+varchar
+联系电话</title></a>
+  <a xlink:href='#XXTB_MODEL_INFO.CREATE_TIME'><text id='GONGANYUN2.XXTB_MODEL_INFO.CREATE_TIME' x='1038' y='277'>CREATE_TIME</text><text x='1155' y='277' text-anchor='end' class='colType'>timestamp</text><title>CREATE_TIME
+timestamp
+创建时间</title></a>
+
+<!-- ============= Table 'XXTB_KHZB_INFO' ============= -->
+<rect class='table' x='1020' y='368' width='165' height='210' rx='7' ry='7' />
+<line class='delim' x1='1020.500000' y1='394.500000' x2='1184.500000' y2='394.500000'/>
+<line class='delim' x1='1035.500000' y1='394.500000' x2='1035.500000' y2='577.500000'/>
+<line class='delim' x1='1173.500000' y1='394.500000' x2='1173.500000' y2='577.500000'/>
+<path d='M 1020.50 394.50 L 1020.50 375.50 Q 1020.50 368.50 1027.50 368.50 L 1177.50 368.50 Q 1184.50 368.50 1184.50 375.50 L 1184.50 394.50 L1020.50 394.50 ' style='fill:url(#tableHeaderGradient0); stroke:none;' />
+<a xlink:href='#XXTB_KHZB_INFO'><text x='1054' y='386'>XXTB_KHZB_INFO</text><title>Table GONGANYUN2.XXTB_KHZB_INFO
+指标表</title></a>
+  <use id='nn' x='1022' y='402' xlink:href='#nn'/><a xlink:href='#XXTB_KHZB_INFO.ZB_ID'><use id='pk' x='1022' y='401' xlink:href='#pk'/><title>Pk CONS134219020 ( ZB_ID ) </title></a>
+<a xlink:href='#XXTB_KHZB_INFO.ZB_ID'><text id='GONGANYUN2.XXTB_KHZB_INFO.ZB_ID' x='1038' y='412' onmouseover="hghl(['XXTB_FSTJ_fk_XXTB_FSTJ_0','XXTB_KHZB_RULE_MAPPING_fk_XXTB_KHZB_RULE_MAPPING','XXTB_MODEL_KHZB_MAPPING_fk_XXTB_MODEL_KHZB_MAPPING_0'])" onmouseout="uhghl(['XXTB_FSTJ_fk_XXTB_FSTJ_0','XXTB_KHZB_RULE_MAPPING_fk_XXTB_KHZB_RULE_MAPPING','XXTB_MODEL_KHZB_MAPPING_fk_XXTB_MODEL_KHZB_MAPPING_0'])">ZB_ID</text><text x='1170' y='412' text-anchor='end' class='colType'>varchar</text><title>ZB_ID
+* varchar
+指标编号ID</title></a>
+<a xlink:href='#XXTB_KHZB_INFO.ZB_ID'><use id='ref' x='1173' y='401' xlink:href='#ref'/><title>Referred by XXTB_FSTJ ( ZB_ID ) 
+Referred by XXTB_KHZB_RULE_MAPPING ( ZB_ID ) 
+Referred by XXTB_MODEL_KHZB_MAPPING ( ZB_ID ) </title></a>
+  <a xlink:href='#XXTB_KHZB_INFO.ZB_NAME'><text id='GONGANYUN2.XXTB_KHZB_INFO.ZB_NAME' x='1038' y='427'>ZB_NAME</text><text x='1170' y='427' text-anchor='end' class='colType'>varchar</text><title>ZB_NAME
+varchar
+指标名称</title></a>
+  <a xlink:href='#XXTB_KHZB_INFO.ZB_JC'><text id='GONGANYUN2.XXTB_KHZB_INFO.ZB_JC' x='1038' y='442'>ZB_JC</text><text x='1170' y='442' text-anchor='end' class='colType'>varchar</text><title>ZB_JC
+varchar
+指标简称</title></a>
+  <a xlink:href='#XXTB_KHZB_INFO.ZB_ZF'><text id='GONGANYUN2.XXTB_KHZB_INFO.ZB_ZF' x='1038' y='457'>ZB_ZF</text><text x='1170' y='457' text-anchor='end' class='colType'>float</text><title>ZB_ZF
+float
+指标总分</title></a>
+  <a xlink:href='#XXTB_KHZB_INFO.DEPARTMENT_ID'><use id='idx' x='1022' y='461' xlink:href='#idx'/><title>idx_XXTB_KHZB_INFO ( DEPARTMENT_ID ) </title></a>
+<a xlink:href='#XXTB_KHZB_INFO.DEPARTMENT_ID'><text id='GONGANYUN2.XXTB_KHZB_INFO.DEPARTMENT_ID' x='1038' y='472' onmouseover="hghl(['XXTB_KHZB_INFO_fk_XXTB_KHZB_INFO'])" onmouseout="uhghl(['XXTB_KHZB_INFO_fk_XXTB_KHZB_INFO'])">DEPARTMENT_ID</text><text x='1170' y='472' text-anchor='end' class='colType'>varchar</text><title>DEPARTMENT_ID
+varchar
+部门ID</title></a>
+<a xlink:href='#XXTB_KHZB_INFO.DEPARTMENT_ID'><use id='fk' x='1173' y='461' xlink:href='#fk'/><title>References XXTB_DEPARTMENT_INFO ( DEPARTMENT_ID ) </title></a>
+  <a xlink:href='#XXTB_KHZB_INFO.CREATE_USER'><text id='GONGANYUN2.XXTB_KHZB_INFO.CREATE_USER' x='1038' y='487'>CREATE_USER</text><text x='1170' y='487' text-anchor='end' class='colType'>varchar</text><title>CREATE_USER
+varchar
+创建人</title></a>
+  <a xlink:href='#XXTB_KHZB_INFO.CREATE_TIME'><text id='GONGANYUN2.XXTB_KHZB_INFO.CREATE_TIME' x='1038' y='502'>CREATE_TIME</text><text x='1170' y='502' text-anchor='end' class='colType'>timestamp</text><title>CREATE_TIME
+timestamp
+创建时间</title></a>
+  <a xlink:href='#XXTB_KHZB_INFO.MODIFY_USER'><text id='GONGANYUN2.XXTB_KHZB_INFO.MODIFY_USER' x='1038' y='517'>MODIFY_USER</text><text x='1170' y='517' text-anchor='end' class='colType'>varchar</text><title>MODIFY_USER
+varchar
+修改人</title></a>
+  <a xlink:href='#XXTB_KHZB_INFO.MODIFY_TIME'><text id='GONGANYUN2.XXTB_KHZB_INFO.MODIFY_TIME' x='1038' y='532'>MODIFY_TIME</text><text x='1170' y='532' text-anchor='end' class='colType'>timestamp</text><title>MODIFY_TIME
+timestamp
+修改时间</title></a>
+  <a xlink:href='#XXTB_KHZB_INFO.ZB_DESCRIPTION'><text id='GONGANYUN2.XXTB_KHZB_INFO.ZB_DESCRIPTION' x='1038' y='547'>ZB_DESCRIPTION</text><text x='1170' y='547' text-anchor='end' class='colType'>varchar</text><title>ZB_DESCRIPTION
+varchar
+指标描述</title></a>
+  <a xlink:href='#XXTB_KHZB_INFO.FLAG'><text id='GONGANYUN2.XXTB_KHZB_INFO.FLAG' x='1038' y='562'>FLAG</text><text x='1170' y='562' text-anchor='end' class='colType'>varchar</text><title>FLAG
+varchar
+标识是否为特殊指标</title></a>
+
+<!-- ============= Table 'XXTB_YSFZ_INFO' ============= -->
+<rect class='table' x='780' y='638' width='150' height='105' rx='7' ry='7' />
+<line class='delim' x1='780.500000' y1='664.500000' x2='929.500000' y2='664.500000'/>
+<line class='delim' x1='795.500000' y1='664.500000' x2='795.500000' y2='742.500000'/>
+<line class='delim' x1='918.500000' y1='664.500000' x2='918.500000' y2='742.500000'/>
+<path d='M 780.50 664.50 L 780.50 645.50 Q 780.50 638.50 787.50 638.50 L 922.50 638.50 Q 929.50 638.50 929.50 645.50 L 929.50 664.50 L780.50 664.50 ' style='fill:url(#tableHeaderGradient0); stroke:none;' />
+<a xlink:href='#XXTB_YSFZ_INFO'><text x='807' y='656'>XXTB_YSFZ_INFO</text><title>Table GONGANYUN2.XXTB_YSFZ_INFO
+运算法则</title></a>
+  <use id='nn' x='782' y='672' xlink:href='#nn'/><a xlink:href='#XXTB_YSFZ_INFO.ID'><use id='pk' x='782' y='671' xlink:href='#pk'/><title>Pk CONS134219026 ( ID ) </title></a>
+<a xlink:href='#XXTB_YSFZ_INFO.ID'><text id='GONGANYUN2.XXTB_YSFZ_INFO.ID' x='798' y='682' onmouseover="hghl(['XXTB_RULE_INFO_fk_XXTB_RULE_INFO'])" onmouseout="uhghl(['XXTB_RULE_INFO_fk_XXTB_RULE_INFO'])">ID</text><text x='915' y='682' text-anchor='end' class='colType'>varchar</text><title>ID
+* varchar
+运算法则ID</title></a>
+<a xlink:href='#XXTB_YSFZ_INFO.ID'><use id='ref' x='918' y='671' xlink:href='#ref'/><title>Referred by XXTB_RULE_INFO ( YSFZ -&gt; ID ) </title></a>
+  <a xlink:href='#XXTB_YSFZ_INFO.NAME'><text id='GONGANYUN2.XXTB_YSFZ_INFO.NAME' x='798' y='697'>NAME</text><text x='915' y='697' text-anchor='end' class='colType'>varchar</text><title>NAME
+varchar
+法则名称</title></a>
+  <a xlink:href='#XXTB_YSFZ_INFO.SERVICE_NAME'><text id='GONGANYUN2.XXTB_YSFZ_INFO.SERVICE_NAME' x='798' y='712'>SERVICE_NAME</text><text x='915' y='712' text-anchor='end' class='colType'>varchar</text><title>SERVICE_NAME
+varchar
+服务名（对应ServiceBean)</title></a>
+  <a xlink:href='#XXTB_YSFZ_INFO.DESCRIPTION'><text id='GONGANYUN2.XXTB_YSFZ_INFO.DESCRIPTION' x='798' y='727'>DESCRIPTION</text><text x='915' y='727' text-anchor='end' class='colType'>varchar</text><title>DESCRIPTION
+varchar
+运算法则描述</title></a>
+
+<!-- ============= Table 'XXTB_RULE_INFO' ============= -->
+<rect class='table' x='1020' y='638' width='180' height='225' rx='7' ry='7' />
+<line class='delim' x1='1020.500000' y1='664.500000' x2='1199.500000' y2='664.500000'/>
+<line class='delim' x1='1035.500000' y1='664.500000' x2='1035.500000' y2='862.500000'/>
+<line class='delim' x1='1188.500000' y1='664.500000' x2='1188.500000' y2='862.500000'/>
+<path d='M 1020.50 664.50 L 1020.50 645.50 Q 1020.50 638.50 1027.50 638.50 L 1192.50 638.50 Q 1199.50 638.50 1199.50 645.50 L 1199.50 664.50 L1020.50 664.50 ' style='fill:url(#tableHeaderGradient0); stroke:none;' />
+<a xlink:href='#XXTB_RULE_INFO'><text x='1063' y='656'>XXTB_RULE_INFO</text><title>Table GONGANYUN2.XXTB_RULE_INFO
+指标规则表</title></a>
+  <use id='nn' x='1022' y='672' xlink:href='#nn'/><a xlink:href='#XXTB_RULE_INFO.RULE_ID'><use id='pk' x='1022' y='671' xlink:href='#pk'/><title>Pk CONS134219024 ( RULE_ID ) </title></a>
+<a xlink:href='#XXTB_RULE_INFO.RULE_ID'><text id='GONGANYUN2.XXTB_RULE_INFO.RULE_ID' x='1038' y='682' onmouseover="hghl(['XXTB_KHZB_RULE_MAPPING_fk_XXTB_KHZB_RULE_MAPPING_0'])" onmouseout="uhghl(['XXTB_KHZB_RULE_MAPPING_fk_XXTB_KHZB_RULE_MAPPING_0'])">RULE_ID</text><text x='1185' y='682' text-anchor='end' class='colType'>varchar</text><title>RULE_ID
+* varchar
+规则编号ID</title></a>
+<a xlink:href='#XXTB_RULE_INFO.RULE_ID'><use id='ref' x='1188' y='671' xlink:href='#ref'/><title>Referred by XXTB_KHZB_RULE_MAPPING ( RULE_ID ) </title></a>
+  <a xlink:href='#XXTB_RULE_INFO.RULE_NAME'><text id='GONGANYUN2.XXTB_RULE_INFO.RULE_NAME' x='1038' y='697'>RULE_NAME</text><text x='1185' y='697' text-anchor='end' class='colType'>varchar</text><title>RULE_NAME
+varchar
+规则名称</title></a>
+  <a xlink:href='#XXTB_RULE_INFO.RULE_DESCRIPTION'><text id='GONGANYUN2.XXTB_RULE_INFO.RULE_DESCRIPTION' x='1038' y='712'>RULE_DESCRIPTION</text><text x='1185' y='712' text-anchor='end' class='colType'>varchar</text><title>RULE_DESCRIPTION
+varchar
+规则描述</title></a>
+  <a xlink:href='#XXTB_RULE_INFO.CREATE_USER'><text id='GONGANYUN2.XXTB_RULE_INFO.CREATE_USER' x='1038' y='727'>CREATE_USER</text><text x='1185' y='727' text-anchor='end' class='colType'>varchar</text><title>CREATE_USER
+varchar
+创建人</title></a>
+  <a xlink:href='#XXTB_RULE_INFO.CREATE_TIME'><text id='GONGANYUN2.XXTB_RULE_INFO.CREATE_TIME' x='1038' y='742'>CREATE_TIME</text><text x='1185' y='742' text-anchor='end' class='colType'>timestamp</text><title>CREATE_TIME
+timestamp
+创建时间</title></a>
+  <a xlink:href='#XXTB_RULE_INFO.MODIFY_USER'><text id='GONGANYUN2.XXTB_RULE_INFO.MODIFY_USER' x='1038' y='757'>MODIFY_USER</text><text x='1185' y='757' text-anchor='end' class='colType'>varchar</text><title>MODIFY_USER
+varchar
+修改人</title></a>
+  <a xlink:href='#XXTB_RULE_INFO.MODIFY_TIME'><text id='GONGANYUN2.XXTB_RULE_INFO.MODIFY_TIME' x='1038' y='772'>MODIFY_TIME</text><text x='1185' y='772' text-anchor='end' class='colType'>timestamp</text><title>MODIFY_TIME
+timestamp
+修改时间</title></a>
+  <a xlink:href='#XXTB_RULE_INFO.RESULT'><text id='GONGANYUN2.XXTB_RULE_INFO.RESULT' x='1038' y='787'>RESULT</text><text x='1185' y='787' text-anchor='end' class='colType'>varchar</text><title>RESULT
+varchar
+比较结果值</title></a>
+  <a xlink:href='#XXTB_RULE_INFO.YSFZ'><use id='idx' x='1022' y='791' xlink:href='#idx'/><title>idx_XXTB_RULE_INFO ( YSFZ ) </title></a>
+<a xlink:href='#XXTB_RULE_INFO.YSFZ'><text id='GONGANYUN2.XXTB_RULE_INFO.YSFZ' x='1038' y='802' onmouseover="hghl(['XXTB_RULE_INFO_fk_XXTB_RULE_INFO'])" onmouseout="uhghl(['XXTB_RULE_INFO_fk_XXTB_RULE_INFO'])">YSFZ</text><text x='1185' y='802' text-anchor='end' class='colType'>varchar</text><title>YSFZ
+varchar
+运算法则ID</title></a>
+<a xlink:href='#XXTB_RULE_INFO.YSFZ'><use id='fk' x='1188' y='791' xlink:href='#fk'/><title>References XXTB_YSFZ_INFO ( YSFZ -&gt; ID ) </title></a>
+  <a xlink:href='#XXTB_RULE_INFO.SCORE'><text id='GONGANYUN2.XXTB_RULE_INFO.SCORE' x='1038' y='817'>SCORE</text><text x='1185' y='817' text-anchor='end' class='colType'>varchar</text><title>SCORE
+varchar
+权重值</title></a>
+  <a xlink:href='#XXTB_RULE_INFO.SCORES'><text id='GONGANYUN2.XXTB_RULE_INFO.SCORES' x='1038' y='832'>SCORES</text><text x='1185' y='832' text-anchor='end' class='colType'>varchar</text><title>SCORES
+varchar
+权重值（针对分段给分情况）</title></a>
+  <a xlink:href='#XXTB_RULE_INFO.NOTE'><text id='GONGANYUN2.XXTB_RULE_INFO.NOTE' x='1038' y='847'>NOTE</text><text x='1185' y='847' text-anchor='end' class='colType'>varchar</text><title>NOTE
+varchar
+备注</title></a>
+
+<!-- ============= Table 'XXTB_KHZB_RULE_MAPPING' ============= -->
+<rect class='table' x='1260' y='533' width='165' height='105' rx='7' ry='7' />
+<line class='delim' x1='1260.500000' y1='559.500000' x2='1424.500000' y2='559.500000'/>
+<line class='delim' x1='1275.500000' y1='559.500000' x2='1275.500000' y2='637.500000'/>
+<line class='delim' x1='1413.500000' y1='559.500000' x2='1413.500000' y2='637.500000'/>
+<path d='M 1260.50 559.50 L 1260.50 540.50 Q 1260.50 533.50 1267.50 533.50 L 1417.50 533.50 Q 1424.50 533.50 1424.50 540.50 L 1424.50 559.50 L1260.50 559.50 ' style='fill:url(#tableHeaderGradient0); stroke:none;' />
+<a xlink:href='#XXTB_KHZB_RULE_MAPPING'><text x='1267' y='551'>XXTB_KHZB_RULE_MAPPING</text><title>Table GONGANYUN2.XXTB_KHZB_RULE_MAPPING
+规则与指标映射表</title></a>
+  <use id='nn' x='1262' y='567' xlink:href='#nn'/><a xlink:href='#XXTB_KHZB_RULE_MAPPING.ID'><use id='pk' x='1262' y='566' xlink:href='#pk'/><title>Pk CONS134219021 ( ID ) </title></a>
+<a xlink:href='#XXTB_KHZB_RULE_MAPPING.ID'><text id='GONGANYUN2.XXTB_KHZB_RULE_MAPPING.ID' x='1278' y='577'>ID</text><text x='1410' y='577' text-anchor='end' class='colType'>varchar</text><title>ID
+* varchar
+ID</title></a>
+  <a xlink:href='#XXTB_KHZB_RULE_MAPPING.ZB_ID'><use id='idx' x='1262' y='581' xlink:href='#idx'/><title>idx_XXTB_KHZB_RULE_MAPPING_0 ( ZB_ID ) </title></a>
+<a xlink:href='#XXTB_KHZB_RULE_MAPPING.ZB_ID'><text id='GONGANYUN2.XXTB_KHZB_RULE_MAPPING.ZB_ID' x='1278' y='592' onmouseover="hghl(['XXTB_KHZB_RULE_MAPPING_fk_XXTB_KHZB_RULE_MAPPING'])" onmouseout="uhghl(['XXTB_KHZB_RULE_MAPPING_fk_XXTB_KHZB_RULE_MAPPING'])">ZB_ID</text><text x='1410' y='592' text-anchor='end' class='colType'>varchar</text><title>ZB_ID
+varchar
+指标编号ID</title></a>
+<a xlink:href='#XXTB_KHZB_RULE_MAPPING.ZB_ID'><use id='fk' x='1413' y='581' xlink:href='#fk'/><title>References XXTB_KHZB_INFO ( ZB_ID ) </title></a>
+  <a xlink:href='#XXTB_KHZB_RULE_MAPPING.RULE_ID'><use id='idx' x='1262' y='596' xlink:href='#idx'/><title>idx_XXTB_KHZB_RULE_MAPPING ( RULE_ID ) </title></a>
+<a xlink:href='#XXTB_KHZB_RULE_MAPPING.RULE_ID'><text id='GONGANYUN2.XXTB_KHZB_RULE_MAPPING.RULE_ID' x='1278' y='607' onmouseover="hghl(['XXTB_KHZB_RULE_MAPPING_fk_XXTB_KHZB_RULE_MAPPING_0'])" onmouseout="uhghl(['XXTB_KHZB_RULE_MAPPING_fk_XXTB_KHZB_RULE_MAPPING_0'])">RULE_ID</text><text x='1410' y='607' text-anchor='end' class='colType'>varchar</text><title>RULE_ID
+varchar
+规则ID</title></a>
+<a xlink:href='#XXTB_KHZB_RULE_MAPPING.RULE_ID'><use id='fk' x='1413' y='596' xlink:href='#fk'/><title>References XXTB_RULE_INFO ( RULE_ID ) </title></a>
+  <a xlink:href='#XXTB_KHZB_RULE_MAPPING.RULE_ORDER'><text id='GONGANYUN2.XXTB_KHZB_RULE_MAPPING.RULE_ORDER' x='1278' y='622'>RULE_ORDER</text><text x='1410' y='622' text-anchor='end' class='colType'>integer</text><title>RULE_ORDER
+integer
+规则的排列顺序</title></a>
+
+<!-- ============= Callout ============= -->
+<rect class='callout' x='825' y='330' width='90' height='31' rx='15' ry='15'  />
+<text x='847' y='330'>
+    <tspan x='828' dx='7' dy='18'>考核数据统计</tspan>
+</text>
+<use x='840' y='361' xlink:href='#calloutArrowDown'/>
+
+<!-- ============= Callout ============= -->
+<rect class='callout' x='480' y='495' width='90' height='31' rx='15' ry='15'  />
+<text x='502' y='495'>
+    <tspan x='483' dx='7' dy='18'>考核部门信息</tspan>
+</text>
+<use x='495' y='526' xlink:href='#calloutArrowDown'/>
+
+<!-- ============= Callout ============= -->
+<rect class='callout' x='45' y='210' width='105' height='31' rx='15' ry='15'  />
+<text x='67' y='210'>
+    <tspan x='48' dx='7' dy='18'>部门用户配置信息</tspan>
+</text>
+<use x='60' y='241' xlink:href='#calloutArrowDown'/>
+
+<!-- ============= Callout ============= -->
+<rect class='callout' x='465' y='30' width='60' height='31' rx='15' ry='15'  />
+<text x='487' y='30'>
+    <tspan x='468' dx='7' dy='18'>用户表</tspan>
+</text>
+<use x='480' y='61' xlink:href='#calloutArrowDown'/>
+
+<!-- ============= Callout ============= -->
+<rect class='callout' x='705' y='75' width='60' height='31' rx='15' ry='15'  />
+<text x='727' y='75'>
+    <tspan x='708' dx='7' dy='18'>地市表</tspan>
+</text>
+<use x='720' y='106' xlink:href='#calloutArrowDown'/>
+
+<!-- ============= Callout ============= -->
+<rect class='callout' x='1140' y='105' width='60' height='31' rx='15' ry='15'  />
+<text x='1162' y='105'>
+    <tspan x='1143' dx='7' dy='18'>模板表</tspan>
+</text>
+<use x='1155' y='136' xlink:href='#calloutArrowDown'/>
+
+<!-- ============= Callout ============= -->
+<rect class='callout' x='1140' y='345' width='60' height='31' rx='15' ry='15'  />
+<text x='1162' y='345'>
+    <tspan x='1143' dx='7' dy='18'>指标表</tspan>
+</text>
+<use x='1155' y='376' xlink:href='#calloutArrowDown'/>
+
+<!-- ============= Callout ============= -->
+<rect class='callout' x='780' y='615' width='60' height='31' rx='15' ry='15'  />
+<text x='802' y='615'>
+    <tspan x='783' dx='7' dy='18'>运算法则</tspan>
+</text>
+<!-- ============= Callout ============= -->
+<rect class='callout' x='1020' y='615' width='75' height='31' rx='15' ry='15'  />
+<text x='1042' y='615'>
+    <tspan x='1023' dx='7' dy='18'>指标规则表</tspan>
+</text>
+<use x='1035' y='646' xlink:href='#calloutArrowDown'/>
+
+<!-- ============= Callout ============= -->
+<rect class='callout' x='1335' y='495' width='105' height='31' rx='15' ry='15'  />
+<text x='1357' y='495'>
+    <tspan x='1338' dx='7' dy='18'>规则与指标映射表</tspan>
+</text>
+<use x='1350' y='526' xlink:href='#calloutArrowDown'/>
+
+</g></svg>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='XXTB_MODEL_KHZB_MAPPING'>Table XXTB_MODEL_KHZB_MAPPING</a></th></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='XXTB_MODEL_KHZB_MAPPING.ID'>ID</a></td>
+		<td> varchar   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_MODEL_KHZB_MAPPING.MODEL_ID'>MODEL&#95;ID</a></td>
+		<td> varchar   </td>
+		<td> 模板ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_MODEL_KHZB_MAPPING.ZB_ID'>ZB&#95;ID</a></td>
+		<td> varchar   </td>
+		<td> 指标ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_MODEL_KHZB_MAPPING.DEPARTMENT_ID'>DEPARTMENT&#95;ID</a></td>
+		<td> varchar   </td>
+		<td> 部门ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_MODEL_KHZB_MAPPING.ORDER_NUM'>ORDER&#95;NUM</a></td>
+		<td> integer   </td>
+		<td> 指标排列顺序 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_MODEL_KHZB_MAPPING.ZB_ZF'>ZB&#95;ZF</a></td>
+		<td> float   </td>
+		<td> 指标总分 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_MODEL_KHZB_MAPPING.ZB_JC'>ZB&#95;JC</a></td>
+		<td> varchar   </td>
+		<td> 指标简称 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_MODEL_KHZB_MAPPING.FLAG'>FLAG</a></td>
+		<td> integer   </td>
+		<td> 标识是否为特殊指标 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>CONS134219023</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;XXTB&#95;MODEL&#95;KHZB&#95;MAPPING</td>
+		<td> ON MODEL&#95;ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;XXTB&#95;MODEL&#95;KHZB&#95;MAPPING&#95;0</td>
+		<td> ON ZB&#95;ID</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_XXTB_MODEL_KHZB_MAPPING</td>
+		<td > ( MODEL&#95;ID ) ref <a href='#XXTB&#95;MODEL&#95;INFO'>XXTB&#95;MODEL&#95;INFO</a> (MODEL&#95;ID) </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_XXTB_MODEL_KHZB_MAPPING_0</td>
+		<td > ( ZB&#95;ID ) ref <a href='#XXTB&#95;KHZB&#95;INFO'>XXTB&#95;KHZB&#95;INFO</a> (ZB&#95;ID) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='XXTB_FSTJ'>Table XXTB_FSTJ</a></th></tr>
+<tr><td colspan='3'>考核数据统计 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='XXTB_FSTJ.XXTB_ID'>XXTB&#95;ID</a></td>
+		<td> varchar   </td>
+		<td> ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_FSTJ.CITY_ID'>CITY&#95;ID</a></td>
+		<td> varchar   </td>
+		<td> 地市编号 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_FSTJ.ZB_ID'>ZB&#95;ID</a></td>
+		<td> varchar   </td>
+		<td> 指标ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_FSTJ.ZB_SJZ'>ZB&#95;SJZ</a></td>
+		<td> float   </td>
+		<td> 指标数据值（上报填的值） </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_FSTJ.FS'>FS</a></td>
+		<td> float   </td>
+		<td> 指标分数（最终该项得分） </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_FSTJ.SJ'>SJ</a></td>
+		<td> varchar   </td>
+		<td> 时间 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_FSTJ.FLAG'>FLAG</a></td>
+		<td> varchar   </td>
+		<td> 标志 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_FSTJ.ORDER_NUM'>ORDER&#95;NUM</a></td>
+		<td> integer   </td>
+		<td> 指标序列（解决总分排序问题，对其他指标序列无效） </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>CONS134219019</td>
+		<td> ON XXTB&#95;ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;XXTB&#95;FSTJ</td>
+		<td> ON CITY&#95;ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;XXTB&#95;FSTJ&#95;0</td>
+		<td> ON ZB&#95;ID</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_XXTB_FSTJ</td>
+		<td > ( CITY&#95;ID ) ref <a href='#XXTB&#95;CITY&#95;INFO'>XXTB&#95;CITY&#95;INFO</a> (CITY&#95;ID) </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_XXTB_FSTJ_0</td>
+		<td > ( ZB&#95;ID ) ref <a href='#XXTB&#95;KHZB&#95;INFO'>XXTB&#95;KHZB&#95;INFO</a> (ZB&#95;ID) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='XXTB_DEPARTMENT_INFO'>Table XXTB_DEPARTMENT_INFO</a></th></tr>
+<tr><td colspan='3'>考核部门信息 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='XXTB_DEPARTMENT_INFO.DEPARTMENT_ID'>DEPARTMENT&#95;ID</a></td>
+		<td> varchar   </td>
+		<td> 部门编号ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_DEPARTMENT_INFO.DEPARTMENT_NAME'>DEPARTMENT&#95;NAME</a></td>
+		<td> varchar   </td>
+		<td> 部门名称 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_DEPARTMENT_INFO.PARENT_ID'>PARENT&#95;ID</a></td>
+		<td> varchar   </td>
+		<td> 上级部门ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_DEPARTMENT_INFO.FZR'>FZR</a></td>
+		<td> varchar   </td>
+		<td> 负责人 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_DEPARTMENT_INFO.TEL'>TEL</a></td>
+		<td> varchar   </td>
+		<td> 负责人电话 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_DEPARTMENT_INFO.ORDER_NUM'>ORDER&#95;NUM</a></td>
+		<td> integer   </td>
+		<td> 排列标记 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_DEPARTMENT_INFO.DEPARTMENT_DESCRIPTION'>DEPARTMENT&#95;DESCRIPTION</a></td>
+		<td> varchar   </td>
+		<td> 描述 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>CONS134219018</td>
+		<td> ON DEPARTMENT&#95;ID</td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='XXTB_USER_DEPARTMENT_MAPPING'>Table XXTB_USER_DEPARTMENT_MAPPING</a></th></tr>
+<tr><td colspan='3'>部门用户配置信息 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='XXTB_USER_DEPARTMENT_MAPPING.ID'>ID</a></td>
+		<td> varchar   </td>
+		<td> 主键ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_USER_DEPARTMENT_MAPPING.USER_ID'>USER&#95;ID</a></td>
+		<td> varchar   </td>
+		<td> 用户id </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_USER_DEPARTMENT_MAPPING.DEPARTMENT_ID'>DEPARTMENT&#95;ID</a></td>
+		<td> varchar   </td>
+		<td> 部门id </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_USER_DEPARTMENT_MAPPING.ROLE'>ROLE</a></td>
+		<td> varchar   </td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>CONS134219025</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;XXTB&#95;USER&#95;DEPARTMENT&#95;MAPPING</td>
+		<td> ON DEPARTMENT&#95;ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;XXTB&#95;USER&#95;DEPARTMENT&#95;MAPPING&#95;0</td>
+		<td> ON USER&#95;ID</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_XXTB_USER_DEPARTMENT_MAPPING</td>
+		<td > ( DEPARTMENT&#95;ID ) ref <a href='#XXTB&#95;DEPARTMENT&#95;INFO'>XXTB&#95;DEPARTMENT&#95;INFO</a> (DEPARTMENT&#95;ID) </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_XXTB_USER_DEPARTMENT_MAPPING_0</td>
+		<td > ( USER&#95;ID ) ref <a href='#WMF&#95;USER'>WMF&#95;USER</a> (USER&#95;ID) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='WMF_USER'>Table WMF_USER</a></th></tr>
+<tr><td colspan='3'>用户表 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='WMF_USER.USER_ID'>USER&#95;ID</a></td>
+		<td> varchar   </td>
+		<td> 用户ID（随机生成） </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.USER_CODE'>USER&#95;CODE</a></td>
+		<td> varchar   </td>
+		<td> 用户账号（警号） </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.USER_NAME'>USER&#95;NAME</a></td>
+		<td> varchar   </td>
+		<td> 用户名 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.USER_SFZH'>USER&#95;SFZH</a></td>
+		<td> varchar   </td>
+		<td> 用户身份证号 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.USER_PASSWORD'>USER&#95;PASSWORD</a></td>
+		<td> varchar   </td>
+		<td> 用户密码（MD5） </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.SEX'>SEX</a></td>
+		<td> varchar   </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.TELEPHONE'>TELEPHONE</a></td>
+		<td> varchar   </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.EMAIL'>EMAIL</a></td>
+		<td> varchar   </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.USER_TYPE'>USER&#95;TYPE</a></td>
+		<td> varchar   </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.SECRET_LEVEL'>SECRET&#95;LEVEL</a></td>
+		<td> integer   DEFO '10' </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.VALID_FLAG'>VALID&#95;FLAG</a></td>
+		<td> integer   DEFO '1' </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.EXPIRY_TIME'>EXPIRY&#95;TIME</a></td>
+		<td> timestamp   </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.VALID_IP'>VALID&#95;IP</a></td>
+		<td> varchar   </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.CRYPT_KEY'>CRYPT&#95;KEY</a></td>
+		<td> varchar   </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.UPDATE_USER'>UPDATE&#95;USER</a></td>
+		<td> varchar   </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.UPDATE_TIME'>UPDATE&#95;TIME</a></td>
+		<td> timestamp   </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.NOTE'>NOTE</a></td>
+		<td> varchar   </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.USER_PORTRAIT'>USER&#95;PORTRAIT</a></td>
+		<td> varchar   </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.UPDATE_PASSWORD_FLAG'>UPDATE&#95;PASSWORD&#95;FLAG</a></td>
+		<td> varchar   </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.CREATE_TIME'>CREATE&#95;TIME</a></td>
+		<td> timestamp   </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.SPACE_SIZE'>SPACE&#95;SIZE</a></td>
+		<td> integer   </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.AUDIT_CODE'>AUDIT&#95;CODE</a></td>
+		<td> varchar2   </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='WMF_USER.POSITION_CODE'>POSITION&#95;CODE</a></td>
+		<td> varchar2   </td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>CONS134219005</td>
+		<td> ON USER&#95;ID</td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='XXTB_CITY_INFO'>Table XXTB_CITY_INFO</a></th></tr>
+<tr><td colspan='3'>地市表 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='XXTB_CITY_INFO.CITY_ID'>CITY&#95;ID</a></td>
+		<td> varchar   </td>
+		<td> 地市编号 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_CITY_INFO.CITY_NAME'>CITY&#95;NAME</a></td>
+		<td> varchar   </td>
+		<td> 地市名称 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_CITY_INFO.BM'>BM</a></td>
+		<td> varchar   </td>
+		<td> 地市编码 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_CITY_INFO.ORDER_NUM'>ORDER&#95;NUM</a></td>
+		<td> integer   </td>
+		<td> 排列标记 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_CITY_INFO.CREATE_USER'>CREATE&#95;USER</a></td>
+		<td> varchar   </td>
+		<td> 创建人 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_CITY_INFO.CREATE_TIME'>CREATE&#95;TIME</a></td>
+		<td> timestamp   </td>
+		<td> 创建时间 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_CITY_INFO.MODIFY_USER'>MODIFY&#95;USER</a></td>
+		<td> varchar   </td>
+		<td> 修改人 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_CITY_INFO.MODIFY_TIME'>MODIFY&#95;TIME</a></td>
+		<td> timestamp   </td>
+		<td> 修改时间 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_CITY_INFO.JYRS'>JYRS</a></td>
+		<td> integer   </td>
+		<td> 警员人数 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>CONS134219017</td>
+		<td> ON CITY&#95;ID</td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='XXTB_MODEL_INFO'>Table XXTB_MODEL_INFO</a></th></tr>
+<tr><td colspan='3'>模板表 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='XXTB_MODEL_INFO.MODEL_ID'>MODEL&#95;ID</a></td>
+		<td> varchar   </td>
+		<td> 模板ID </td>
+	</tr>
+	<tr>
+		<td>*</td>
+		<td><a name='XXTB_MODEL_INFO.SJ'>SJ</a></td>
+		<td> varchar   </td>
+		<td> 模板月份 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_MODEL_INFO.MODEL_NAME'>MODEL&#95;NAME</a></td>
+		<td> varchar   </td>
+		<td> 模板名 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_MODEL_INFO.PZR'>PZR</a></td>
+		<td> varchar   </td>
+		<td> 配置人 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_MODEL_INFO.PARENT_ID'>PARENT&#95;ID</a></td>
+		<td> varchar   </td>
+		<td> 上级模板ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_MODEL_INFO.RESERVE'>RESERVE</a></td>
+		<td> varchar   </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_MODEL_INFO.TEL'>TEL</a></td>
+		<td> varchar   </td>
+		<td> 联系电话 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_MODEL_INFO.CREATE_TIME'>CREATE&#95;TIME</a></td>
+		<td> timestamp   </td>
+		<td> 创建时间 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>CONS134219022</td>
+		<td> ON MODEL&#95;ID&#44; SJ</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>U</td><td>Pk&#95;XXTB&#95;MODEL&#95;INFO</td>
+		<td> ON MODEL&#95;ID</td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='XXTB_KHZB_INFO'>Table XXTB_KHZB_INFO</a></th></tr>
+<tr><td colspan='3'>指标表 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='XXTB_KHZB_INFO.ZB_ID'>ZB&#95;ID</a></td>
+		<td> varchar   </td>
+		<td> 指标编号ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_KHZB_INFO.ZB_NAME'>ZB&#95;NAME</a></td>
+		<td> varchar   </td>
+		<td> 指标名称 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_KHZB_INFO.ZB_JC'>ZB&#95;JC</a></td>
+		<td> varchar   </td>
+		<td> 指标简称 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_KHZB_INFO.ZB_ZF'>ZB&#95;ZF</a></td>
+		<td> float   </td>
+		<td> 指标总分 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_KHZB_INFO.DEPARTMENT_ID'>DEPARTMENT&#95;ID</a></td>
+		<td> varchar   </td>
+		<td> 部门ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_KHZB_INFO.CREATE_USER'>CREATE&#95;USER</a></td>
+		<td> varchar   </td>
+		<td> 创建人 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_KHZB_INFO.CREATE_TIME'>CREATE&#95;TIME</a></td>
+		<td> timestamp   </td>
+		<td> 创建时间 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_KHZB_INFO.MODIFY_USER'>MODIFY&#95;USER</a></td>
+		<td> varchar   </td>
+		<td> 修改人 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_KHZB_INFO.MODIFY_TIME'>MODIFY&#95;TIME</a></td>
+		<td> timestamp   </td>
+		<td> 修改时间 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_KHZB_INFO.ZB_DESCRIPTION'>ZB&#95;DESCRIPTION</a></td>
+		<td> varchar   </td>
+		<td> 指标描述 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_KHZB_INFO.FLAG'>FLAG</a></td>
+		<td> varchar   </td>
+		<td> 标识是否为特殊指标 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>CONS134219020</td>
+		<td> ON ZB&#95;ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;XXTB&#95;KHZB&#95;INFO</td>
+		<td> ON DEPARTMENT&#95;ID</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_XXTB_KHZB_INFO</td>
+		<td > ( DEPARTMENT&#95;ID ) ref <a href='#XXTB&#95;DEPARTMENT&#95;INFO'>XXTB&#95;DEPARTMENT&#95;INFO</a> (DEPARTMENT&#95;ID) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='XXTB_YSFZ_INFO'>Table XXTB_YSFZ_INFO</a></th></tr>
+<tr><td colspan='3'>运算法则 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='XXTB_YSFZ_INFO.ID'>ID</a></td>
+		<td> varchar   </td>
+		<td> 运算法则ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_YSFZ_INFO.NAME'>NAME</a></td>
+		<td> varchar   </td>
+		<td> 法则名称 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_YSFZ_INFO.SERVICE_NAME'>SERVICE&#95;NAME</a></td>
+		<td> varchar   </td>
+		<td> 服务名（对应ServiceBean&#41; </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_YSFZ_INFO.DESCRIPTION'>DESCRIPTION</a></td>
+		<td> varchar   </td>
+		<td> 运算法则描述 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>CONS134219026</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='XXTB_RULE_INFO'>Table XXTB_RULE_INFO</a></th></tr>
+<tr><td colspan='3'>指标规则表 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='XXTB_RULE_INFO.RULE_ID'>RULE&#95;ID</a></td>
+		<td> varchar   </td>
+		<td> 规则编号ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_RULE_INFO.RULE_NAME'>RULE&#95;NAME</a></td>
+		<td> varchar   </td>
+		<td> 规则名称 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_RULE_INFO.RULE_DESCRIPTION'>RULE&#95;DESCRIPTION</a></td>
+		<td> varchar   </td>
+		<td> 规则描述 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_RULE_INFO.CREATE_USER'>CREATE&#95;USER</a></td>
+		<td> varchar   </td>
+		<td> 创建人 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_RULE_INFO.CREATE_TIME'>CREATE&#95;TIME</a></td>
+		<td> timestamp   </td>
+		<td> 创建时间 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_RULE_INFO.MODIFY_USER'>MODIFY&#95;USER</a></td>
+		<td> varchar   </td>
+		<td> 修改人 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_RULE_INFO.MODIFY_TIME'>MODIFY&#95;TIME</a></td>
+		<td> timestamp   </td>
+		<td> 修改时间 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_RULE_INFO.RESULT'>RESULT</a></td>
+		<td> varchar   </td>
+		<td> 比较结果值 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_RULE_INFO.YSFZ'>YSFZ</a></td>
+		<td> varchar   </td>
+		<td> 运算法则ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_RULE_INFO.SCORE'>SCORE</a></td>
+		<td> varchar   </td>
+		<td> 权重值 </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_RULE_INFO.SCORES'>SCORES</a></td>
+		<td> varchar   </td>
+		<td> 权重值（针对分段给分情况） </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_RULE_INFO.NOTE'>NOTE</a></td>
+		<td> varchar   </td>
+		<td> 备注 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>CONS134219024</td>
+		<td> ON RULE&#95;ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;XXTB&#95;RULE&#95;INFO</td>
+		<td> ON YSFZ</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_XXTB_RULE_INFO</td>
+		<td > ( YSFZ ) ref <a href='#XXTB&#95;YSFZ&#95;INFO'>XXTB&#95;YSFZ&#95;INFO</a> (ID) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+<br/><br/>
+<table class='bordered'>
+<thead>
+<tr><th colspan='4'><a name='XXTB_KHZB_RULE_MAPPING'>Table XXTB_KHZB_RULE_MAPPING</a></th></tr>
+<tr><td colspan='3'>规则与指标映射表 </td></tr>
+</thead>
+<tbody>
+	<tr>
+		<td>*</td>
+		<td><a name='XXTB_KHZB_RULE_MAPPING.ID'>ID</a></td>
+		<td> varchar   </td>
+		<td> ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_KHZB_RULE_MAPPING.ZB_ID'>ZB&#95;ID</a></td>
+		<td> varchar   </td>
+		<td> 指标编号ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_KHZB_RULE_MAPPING.RULE_ID'>RULE&#95;ID</a></td>
+		<td> varchar   </td>
+		<td> 规则ID </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><a name='XXTB_KHZB_RULE_MAPPING.RULE_ORDER'>RULE&#95;ORDER</a></td>
+		<td> integer   </td>
+		<td> 规则的排列顺序 </td>
+	</tr>
+<tr><th colspan='4'><b>Indexes</b></th></tr>
+	<tr>		<td>Pk</td><td>CONS134219021</td>
+		<td> ON ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;XXTB&#95;KHZB&#95;RULE&#95;MAPPING</td>
+		<td> ON RULE&#95;ID</td>
+		<td>  </td>
+	</tr>
+	<tr>		<td>&nbsp;</td><td>idx&#95;XXTB&#95;KHZB&#95;RULE&#95;MAPPING&#95;0</td>
+		<td> ON ZB&#95;ID</td>
+		<td>  </td>
+	</tr>
+<tr><th colspan='4'><b>Foreign Keys</b></th></tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_XXTB_KHZB_RULE_MAPPING</td>
+		<td > ( ZB&#95;ID ) ref <a href='#XXTB&#95;KHZB&#95;INFO'>XXTB&#95;KHZB&#95;INFO</a> (ZB&#95;ID) </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td><td>fk_XXTB_KHZB_RULE_MAPPING_0</td>
+		<td > ( RULE&#95;ID ) ref <a href='#XXTB&#95;RULE&#95;INFO'>XXTB&#95;RULE&#95;INFO</a> (RULE&#95;ID) </td>
+		<td>  </td>
+	</tr>
+</tbody>
+</table>
+
+</body></html>
