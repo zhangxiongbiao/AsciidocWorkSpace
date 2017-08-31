@@ -23,28 +23,36 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 219.0,
-		"last_filter": "",
+		"height": 334.0,
+		"last_filter": "mark",
 		"selected_items":
 		[
+			[
+				"mark",
+				"Markmon launch"
+			],
+			[
+				"package",
+				"Package Control: Install Package"
+			],
+			[
+				"markmon",
+				"Markmon exit"
+			],
+			[
+				"preview",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
 			[
 				"hex",
 				"HexViewer: Toggle Hex View"
 			],
 			[
 				"packageinstall",
-				"Package Control: Install Package"
-			],
-			[
-				"preview",
-				"OmniMarkupPreviewer: Export Current Markup as HTML"
-			],
-			[
-				"mark",
-				"OmniMarkupPreviewer: Empty Cache"
-			],
-			[
-				"install",
 				"Package Control: Install Package"
 			],
 			[
@@ -58,10 +66,6 @@
 			[
 				"as",
 				"Set Syntax: AsciiDoc (Asciidoctor)"
-			],
-			[
-				"package",
-				"Package Control: Install Package"
 			],
 			[
 				"package install",
@@ -92,7 +96,7 @@
 				"Indent XML"
 			]
 		],
-		"width": 432.0
+		"width": 400.0
 	},
 	"console":
 	{
@@ -112,11 +116,36 @@
 	},
 	"expanded_folders":
 	[
-		"/E/15-AsciiWorkSpace"
+		"/E/15-AsciiWorkSpace",
+		"/E/15-AsciiWorkSpace/基本配置",
+		"/E/15-AsciiWorkSpace/基本配置/images"
 	],
 	"file_history":
 	[
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/dubbo.properties",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/switcher.yaml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/log4j.xml",
+		"/C/Users/zxb/AppData/Local/Temp/7zO8F69D3CA/File.java",
+		"/C/Users/zxb/AppData/Local/Temp/7zO83A95456/File.java",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/nginx [7].conf",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/nginx [6].conf",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/nginx [5].conf",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/nginx [4].conf",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/nginx [3].conf",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/nginx [2].conf",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/nginx.conf",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/switcher [2].yaml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/beans-provider.xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/mongodb.properties",
+		"/E/abc.md",
+		"/C/Users/zxb/AppData/Roaming/Sublime Text 3/Packages/User/sublime-text-markmon.sublime-settings",
+		"/C/Users/zxb/Desktop/新建文本文档.md",
+		"/E/path.txt",
+		"/C/Users/zxb/AppData/Roaming/Sublime Text 3/Packages/sublime-text-markmon/sublime-text-markmon.sublime-settings",
+		"/C/Users/zxb/Desktop/新建文本文档.txt",
+		"/C/Users/zxb/AppData/Roaming/Sublime Text 3/Packages/User/Package Control.sublime-settings",
 		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/settings.xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/default.conf",
 		"/C/zxbProgramFiles/workdir/project/code/DM-GAHYB-CODE/product/DMCS/code/3.0.1/trunk/dmga-cs-common/target/test-classes/switcher.yaml",
 		"/C/zxbProgramFiles/workdir/project/code/DM-GAHYB-CODE/product/DMCS/code/3.0.1/trunk/dmga-cs-archive/target/classes/switcher.yaml",
 		"/C/Users/zxb/AppData/Local/Temp/7zOC462C424/dnainfo.js.vm",
@@ -129,11 +158,8 @@
 		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/beans-provider [2].xml",
 		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/beans-consumer [2].xml",
 		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/beans-consumer.xml",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/beans-provider.xml",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/dubbo.properties",
 		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/hbase.properties",
 		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/beans-search.xml",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/mongodb.properties",
 		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/shard1_rs.conf",
 		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/shard2_rs.conf",
 		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/shard3_rs.conf",
@@ -157,8 +183,6 @@
 		"/D/Program Files/shadowsocks/pac.txt",
 		"/C/zxbProgramFiles/program32/shadowsockets/pac.txt",
 		"/C/zxbProgramFiles/workdir/project/code/DM-GAHYB-CODE/product/DMCS/code/3.0.1/trunk/dmga-cs-archive/target/dmga-cs-archive-3.0.1-SNAPSHOT/WEB-INF/classes/dubbo.properties",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/switcher.yaml",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/switcher [2].yaml",
 		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/web.xml",
 		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/beans-permission.xml",
 		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/beans-aop.xml",
@@ -225,25 +249,7 @@
 		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/test.yaml",
 		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/_2017-03-19 [5].log",
 		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/abc_2017-03-19 [3].log",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/abc_2017-03-19 [2].log",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/abc_2017-03-19.log",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/_2017-03-19 [3].log",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/jlogstash [2].gc",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/jlogstash.gc",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/logstash-input-mongodb.conf",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/Gemfile.jruby-1.9.lock",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/logstash-jdbc-mongodb [2].conf",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/Gemfile [2]",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/Gemfile",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/logstash-jdbc-mongodb.conf",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/Gemfile [3]",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/bundler",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/logstash-input-mongodb-0.3.3.gem",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/logstash-jdbc-ajxx [2].conf",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/logstash-jdbc-ajxx-sary.conf",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/logstash-jdbc-sjry [7].conf",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/logstash-jdbc-elasticsearch.conf",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/logstash-jdbc-ajxx.conf"
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/abc_2017-03-19 [2].log"
 	],
 	"find":
 	{

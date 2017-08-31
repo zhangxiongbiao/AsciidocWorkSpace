@@ -1,0 +1,10 @@
+= Java相关技术
+:toc:
+:numbered:
+
+== Base64相关包encode及decode效率对比
+link:http://migbase64.sourceforge.net/[MigBase]
+
+image::images\01.png[]
+
+https://stackoverflow.com/questions/6355704/how-efficient-is-the-encoding-decoding-algorithm-of-base64-class-in-java[原文链接]

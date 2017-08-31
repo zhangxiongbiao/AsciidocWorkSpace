@@ -1,0 +1,287 @@
+= metadata
+:toc:
+:numbered:
+
+
+
+== 分布式数据源连接
+
+=== 共享连接
+
+=== 共享SqlMap
+在完成共享连接后，各工程在使用 `metadata` 提供的数据库连接服务时，只传递了 `SqlID` ，在 `metadata` 中执行 `ibatis` 查询时则会找不到该 `SqlID` .
+
+.example
+[source,java]
+----
+There is no statement named com.esearch.xxx in this SqlMap.
+----
+
+出现这个错误的主要原因是 `metadata` 工程下的 `sqlMapClient` 默认只会扫描 `classpath` 下的 `*.xml` ， `sqlMapClient` 配置如下：
+
+[source,xml]
+----
+<bean id="sqlMapClient" class="com.dm.wmf.core.factory.SqlMapClientFactoryBeanDMImpl">
+      <property name="dataSource" ref="dataSource" />
+      <property name="configLocation" value="classpath:resource/wmf/sqlMapConfig.xml" />
+      <property name="mappingLocations">
+          <list>
+              <value>classpath*:com/dm/**/domain/*.xml</value>
+          </list>
+      </property>
+      <property name="lobHandler" ref="lobHandler" />
+</bean>
+----
+
+为了解决这个问题，其它工程需要将自己扫描到的 `*.xml` 信息传递给 `metadata` ，并加载到 `metadata` 的 `sqlMapClient` 中。
+
+==== 解决思路
+共享 `SqlMap` 主要分为如下几步实现。
+
+发送*.xml到metadata::
+   各非metadata工程，启动时需要将自己扫描到的 `*.xml` 发送给已在运行的metadata。
+
+metadata加载*.xml::
+   metadata加载其它工程的 `*.xml` ，采用覆盖已有 `statement` 的方式，依次将所有工程的 `statement` 加载进来。
+
+[NOTE]
+====
+SqlMapExecutorDelegate中的mappedStatements为HashMap，这个在并发时会有问题。
+====
+
+metadata启动时加载所有*.xml::
+  如果 `metadata` 节点重启了，则原先已加载的 `statement` 由于在 `jvm` 内存中会全部丢失。所以可以将所有的 `statement` 存储到数据库中， `metadata` 启动时加载所有 `*.xml` 。
+
+==== 发送*.xml到metadata
+
+在发送*.xml出去前，首先需要获取到工程下的所有*.xml，目前框架采用 `spring 3.x` + `ibatis` ， `ibatis` 的*.xml加载则采用 `spring` 配置的方式。
+
+.beans-core.xml
+[source,xml]
+----
+<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+      <property name="dataSource" ref="dataSource" />
+      <property name="configLocation" value="classpath:resource/wmf/sqlMapConfig.xml" />
+      <property name="mappingLocations">
+          <list>
+              <value>classpath*:com/dm/**/domain/*.xml</value>
+          </list>
+      </property>
+      <property name="lobHandler" ref="lobHandler" />
+</bean>  // <1>
+
+<!-- 数据访问对象 -->
+<bean id="sqlDao" class="com.dm.wmf.core.dao.SqlDaoIBatisImpl">
+  <property name="sqlMapClient" ref="sqlMapClient" />   // <2>
+</bean>
+----
+<1> `SqlMapClientFactoryBean` 工厂类生成 `sqlMapClient`
+<2> `SqlMapClientImpl` 类再注入到 `SqlDao` 中。
+
+[NOTE]
+====
+SqlDao是继承于SqlMapClientTemplate的，sqlMapClient实际上是注入到SqlMapClientTemplate中的。
+====
+
+由此可见，加载 `*.xml` 实际上是由 `SqlMapClientFactoryBean` 在生成 `SqlMapClientImpl` 实例时执行的。
+
+.SqlMapClientFactoryBean
+image::images\metadata-f0c7b.png[]
+
+[TIP]
+====
+*.xml文件最终转换为 _Resource_ 对象，对应上图中的 _mappingLocation_
+====
+
+所以欲获取加载的 `mappings` 信息，只需要这些 _mappingLocation_ 的 _InputStream_ 即可。
+
+[TIP]
+====
+_mappingLocation.getInputStream()_ 返回的则为 *.xml 对应的二进制数据。
+====
+
+===== 获取*.xml的二进制数据
+
+由于 _SqlMapClientFactoryBean_ 为 _Spring_ 提供的工具类，且用于创建 _SqlMapClient_ 实例。为保存加载 _SqlMapClient_ 过程中提供的 _*.xml_ 数据，可以采用继承然后 _override_ 的方式。
+
+ 1. 创建工厂类继承于 _SqlMapClientFactoryBean_
+ 2. _override_ _SqlMapClientFactoryBean_ 中的 _buildSqlMapClient_ 方法
+ 3. 使用成员变量记录 _mappingLocations_ 等变量
+
+image::images\metadata-58ba3.png[]
+
+===== 发送*.xml的二进制数据
+
+1. 发送*.xml的方法应该定义在 `dmga-util` 工程下，方便其它系统无感知的升级
+2. 反射调用 _SqlMapClientFactoryBeanDMImpl_ 实现的 _getMappingLocations_ 方法，因为 `dmga-util` 不依赖于 `dmga-core` 。
+3. 检测是否本工程有发送 _*.xml_ 的服务，如果本工程有则说明当前跑的工程是 _metadata_ 工程。如果为 _metadata_ 工程，则不执行该服务，否则应该执行。
+
+
+.定义发送Mapping服务
+[source,java]
+----
+/**
+ * 发送Mapping信息的服务
+ *
+ * @author zxb
+ * @version 1.0.0
+ * 2017年08月29日 10:27
+ * @since 1.0.0
+ */
+public interface SendMappingService {
+
+    List<IBatisLoadResult> send(List<IBatisMapping> iBatisMappingList);
+}
+----
+
+获取所有*.xml的二进制数据
+
+.SendMappingServiceImpl
+[source,java]
+----
+Object sqlMapClientFactoryBeanDMImpl = ApplicationContextHolder.getBean(SQL_MAP_CLIENT);
+Class<?> clazz = sqlMapClientFactoryBeanDMImpl.getClass();
+Method method = clazz.getMethod(GET_MAPPING_LOCATIONS);
+Resource[] resources = (Resource[]) method.invoke(sqlMapClientFactoryBeanDMImpl); // <1>
+----
+<1> 反射调用sqlMapClientFactoryBeanDMImpl的getMappingLocations方法，获取当前SqlMapClient加载的所有MappingLocations
+
+调用远程方法，发送*.xml到metadata
+
+.SendMappingServiceImpl
+[source,java]
+----
+/**
+ * 调用Dubbo服务，发送Mapping信息，交给Metadata工程去加载
+ *
+ * @param iBatisMappingList IBatis映射信息
+ * @return IBatis映射加载结果
+ */
+@Override
+public List<IBatisLoadResult> send(List<IBatisMapping> iBatisMappingList) {
+    LOGGER.debug("iBatisMappingList大小:{}", iBatisMappingList.size());
+    ReferenceConfig<Object> referenceConfig = new ReferenceConfig<Object>();
+    referenceConfig.setInterface("com.dm.metadata.servicewrapper.LoadMappingService");
+    referenceConfig.setProtocol("dubbo");
+    referenceConfig.setCluster("broadcast"); // <1>
+    Object object = referenceConfig.get();
+    Class<?> clazz = object.getClass();
+    try {
+        Method method = clazz.getMethod("load", List.class);
+        List<IBatisLoadResult> iBatisLoadResults = (List<IBatisLoadResult>) method.invoke(object, iBatisMappingList);
+        return iBatisLoadResults;
+    } catch (Exception e) {
+        LOGGER.error("调用metadata工程的加载Mapping方法失败", e);
+    }
+    return null;
+}
+----
+<1> 此处采用broadcast，用于广播所有metadata提供者，执行加载mapping方法。
+
+
+检查本工程是否 _metadata_ ，如果是 _metadata_ 工程则不需要发送 _*.xml_ 了。此处采用在 _metadata.properties_ 中配置的方式。
+
+.metadata.properties
+image::images\metadata-12880.png[]
+
+image::images\metadata-361a7.png[]
+
+==== metadata加载*.xml
+
+_metadata_ 则只需要实现 _LoadMappingService_ 即可。实际加载 _Mapping_ 信息，通过调用 _SqlMapClientFactoryBeanDMImpl_ 的 _addMapping_ 方法来实现。
+
+.LoadMappingService
+[source,java]
+----
+/**
+ * 加载IBatisMapping
+ *
+ * @author zxb
+ * @version 1.0.0
+ * 2017年08月29日 11:21
+ * @since 1.0.0
+ */
+public interface LoadMappingService {
+
+    /**
+     * 加载Mapping
+     *
+     * @param iBatisMappingList IBatis Mapping信息集合
+     * @return IBatis加载结果
+     */
+    List<IBatisLoadResult> load(List<IBatisMapping> iBatisMappingList);
+}
+----
+
+.LoadMappingServiceImpl
+[source,java]
+----
+@Service(interfaceClass = LoadMappingService.class)
+public class LoadMappingServiceImpl implements LoadMappingService {
+
+    /** logger */
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoadMappingServiceImpl.class);
+
+    @Resource(name = "&sqlMapClient")
+    private SqlMapClientFactoryBeanDMImpl sqlMapClientFactory;
+
+    @Override
+    public List<IBatisLoadResult> load(List<IBatisMapping> iBatisMappingList) {
+        IBatisLoadResult iBatisLoadResult;
+        List<IBatisLoadResult> iBatisLoadResultList = new ArrayList<IBatisLoadResult>();
+
+        for (IBatisMapping iBatisMapping : iBatisMappingList) {
+            iBatisLoadResult = new IBatisLoadResult();
+            iBatisLoadResult.setUrl(iBatisMapping.getUrl());
+
+            try {
+                sqlMapClientFactory.addMapping(iBatisMapping.getBytes());
+                iBatisLoadResult.setSuccess(Boolean.TRUE);
+            } catch (IOException e) {
+                String message = "加载mapping失败，源地址：" + iBatisMapping.getUrl();
+                LOGGER.error(message, e);
+                iBatisLoadResult.setSuccess(Boolean.FALSE);
+                iBatisLoadResult.setMessage(message + "，" + e.getMessage());
+            }
+            iBatisLoadResultList.add(iBatisLoadResult);
+        }
+        return iBatisLoadResultList;
+    }
+}
+----
+
+然而默认情况下，SqlMapClient加载MapStatement时，如果已经存在相同的ID时，则会抛出异常。为了兼容已有的 `dmga-dubbo-service` 中的配置信息，需要在相同ID情况下采用覆盖的方式。
+
+1. 覆写SqlMapExecutorDelegate类，重写关于MappedStatement相关的方法。
++
+image::images\metadata-7df2d.png[]
+
+2. 覆写SqlMapParser类，重写关于SqlIncludes的ID重复的问题。
++
+image::images\metadata-67005.png[]
+
+3. 手动在addMapping()方法中设置LobHandler，解决ByteHandler等问题。
++
+image::images\metadata-621d6.png[]
+
+==== metadata启动加载*.xml
+
+1. 其它工程启动时添加Mapping到metadata，metadata同时保存到数据库。
+2. metadata启动后将加载数据库中所有的Mapping信息。
+
+.表MD_IBATIS_MAPPING
+|===
+|列名称|示例值|说明
+|ID|CAC2CB2CE44FA06EBA1C87A578D2789F|主键列
+|URL|/com/dm/searchrecord/domain/searchrecord.xml|xml文件的URL值
+|BYTES|字节|存储二进制xml文件
+|UPDATE_TIME|2017-08-30 17:00:23|文件更新时间
+|===
+
+1. 加载Mapping信息同时异步保存到库中
++
+image::images\metadata-d2b47.png[]
+
+2. metdata启动时从数据库中加载所有Mapping信息
++
+image::images\metadata-7d039.png[]

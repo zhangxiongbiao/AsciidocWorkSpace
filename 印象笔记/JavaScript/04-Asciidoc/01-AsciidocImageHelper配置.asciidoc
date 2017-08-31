@@ -1,0 +1,22 @@
+= AsciidocImageHelper配置
+:toc:
+:numbered:
+:experimental:
+
+== 配置拷贝本地图片
+
+kbd:[Ctrl+,] 打开配置
+
+image::images\01-AsciidocImageHelper配置-492c2.png[]
+
+勾选 `URL support`
+
+image::images\01-AsciidocImageHelper配置-c0365.png[]
+
+== 拷贝本地图片
+
+选择本地图片，然后kbd:[Shift]加鼠标右键，选择 `复制为路径`。
+
+image::images\01-AsciidocImageHelper配置-261fa.png[]
+
+再进入 `Atom` 编辑器后 kbd:[Ctrl+V] 即可。

@@ -1,0 +1,11 @@
+= 如何下载Hadoop文档
+
+在官网上想下载指定版本的文档，经过 _Google_ 后发现，可以直接用 _svn_ 下载。
+
+https://stackoverflow.com/questions/28186507/how-to-download-hadoop-documentation-of-specific-version[参考链接]
+
+进入 _Hadoop_ 的 _svn_ 地址：https://svn.apache.org/repos/asf/hadoop/common/site/main/publish/docs/
+
+如需要下载 _r2.6.0_ 版本的文档
+
+ svn checkout https://svn.apache.org/repos/asf/hadoop/common/site/main/publish/docs/r2.6.0/
