@@ -1,0 +1,34 @@
+= 35-Vmware安装CentOS6.5 minimal
+
+== 新建虚拟机
+新建虚拟机时，选择稍后安装操作系统
+
+.选择稍后安装操作系统
+image::images\35-Vmware安装CentOS6.5mininal-40f7f.png[]
+
+[CAUTION]
+====
+使用 _VMWare_ 安装 _CentOS6.5 mininal_ 时不要自动安装，使用手动安装。
+否则会报错：centos 6.5 minimal special device /dev/hda does not exist
+====
+
+== 安装虚拟机镜像
+
+1. 虚拟机设置界面，设置镜像为 _minimal.iso_
++
+image::images\35-Vmware安装CentOS6.5minimal-d08f9.png[]
+
+2. 安装界面，选择第一个
++
+image::images\35-Vmware安装CentOS6.5minimal-71857.png[]
+
+3. 镜像完整性检查，选择SKIP
++
+image::images\35-Vmware安装CentOS6.5minimal-b3f65.png[]
+
+[TIP]
+====
+当时这里没有选择 _Skip_ ，坑了好长时间
+====
+
+4. 剩下的就是安装了...

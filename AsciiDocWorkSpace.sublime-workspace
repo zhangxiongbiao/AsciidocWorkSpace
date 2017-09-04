@@ -122,6 +122,10 @@
 	],
 	"file_history":
 	[
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/hdfs-site.xml",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/core-site.xml",
+		"/F/01-download/Centos-6.repo",
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/param_list.vm",
 		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/dubbo.properties",
 		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/switcher.yaml",
 		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/log4j.xml",
@@ -245,11 +249,7 @@
 		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/jlogstash [3].gc",
 		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/_2017-03-19.log",
 		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/_2017-03-19 [2].log",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/_2017-03-19 [4].log",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/test.yaml",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/_2017-03-19 [5].log",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/abc_2017-03-19 [3].log",
-		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/abc_2017-03-19 [2].log"
+		"/C/Users/zxb/Documents/NetSarang/Xftp/Temporary/_2017-03-19 [4].log"
 	],
 	"find":
 	{

@@ -1,0 +1,71 @@
+= 09-Hadoop安装
+
+== 环境准备
+
+1. 安装平台：Linux
+2. Java：JDK1.8
+3. ssh及sshd
+4. rsync
+
+=== JDK
+http://wiki.apache.org/hadoop/HadoopJavaVersions[JDK与Hadoop版本对应]
+
+image::images\09-Hadoop安装-fb916.png[]
+
+=== 安装ssh、rsync
+
+[source,bash]
+----
+ yum install ssh -y
+ yum install rsync -y
+----
+
+=== 配置环境变量
+
+ 执行命令: vi /etc/profile.d/java.sh
+
+[source,bash]
+----
+export JAVA_HOME=/opt/middleware/jdk1.8.0_102
+export HADOOP_HOME=/opt/middleware/hadoop-2.6.0
+export HADOOP_PREFIX=/opt/middleware/hadoop-2.6.0
+export PATH=$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PATH
+----
+
+ 使变量生效：source /etc/profile.d/java.sh
+
+
+ 检查变量是否生效：echo $JAVA_HOME
+
+== 单机安装
+默认情况下， _Hadoop_ 配置的就是单机配置，所以 _Hadoop_ 配置不需要任何改动即可。
+
+跑一个小程序试试 _Hadoop_
+
+  mkdir -p /data/hadoop/installer/input/
+
+  cp $HADOOP_HOME/etc/hadoop/*.xml /data/hadoop/installer/input/
+
+  hadoop jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.0.jar grep /data/hadoop/installer/input /data/hadoop/installer/output 'dfs[a-z.]+'
+
+  cat /data/hadoop/installer/output/*
+
+
+== 伪集群安装
+
+=== ssh本机免密登陆
+
+.配置ssh
+[source,bash]
+----
+ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+----
+
+.检测是否免密
+image::images\09-Hadoop安装-6f417.png[]
+
+[TIP]
+====
+第一次 `ssh localhost` 时会提示添加到 `know hosts` 中，输入 `yes` 就可以了。
+====
